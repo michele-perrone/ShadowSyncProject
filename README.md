@@ -32,9 +32,7 @@ Verificare che l'output è della forma `3.X.Y`. Altrimenti ai comandi successivi
 ### Virtual enviroment
 
 #### Windows
-conda:
-
-pip:
+[Tutorial](https://www.youtube.com/watch?v=ThU13tikHQw)
 
 #### Linux: 
 Conda:
