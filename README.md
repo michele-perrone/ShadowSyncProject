@@ -6,9 +6,9 @@
     * [Virtual Enviroment](#venv)
 
 ## Documents
-[Abstract](!https://www.overleaf.com/3486219427fydybqrpkgxq)
+[Abstract](https://www.overleaf.com/3486219427fydybqrpkgxq)
 
-[Presentation](!https://docs.google.com/presentation/d/1LFyTLhim1t9SbvFDJJ7-GJlO1ojOpn4Hszm1eV8Ltk4/edit?usp=sharing)
+[Presentation](https://docs.google.com/presentation/d/1LFyTLhim1t9SbvFDJJ7-GJlO1ojOpn4Hszm1eV8Ltk4/edit?usp=sharing)
 
 ## Installation
 
