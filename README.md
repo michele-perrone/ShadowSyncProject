@@ -36,6 +36,10 @@ Verificare che l'output è della forma `3.X.Y`. Altrimenti ai comandi successivi
 
 #### Linux: 
 Conda:
+```
+conda create -n yourenvname python=x.x
+conda activate myenv
+```
 
 Pip:
 ```
@@ -44,6 +48,9 @@ source venv/bin/activate
 ```
 Installare le dipendenze di python.
 
+Conda:
+
+Pip:
 ```
 python -m pip install -r requirements.txt
 ```
