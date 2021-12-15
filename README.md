@@ -3,7 +3,7 @@
 * [Shadow_sync_project](#shadow_sync_project)
   * [Documents](#documents)
   * [Installation](#installation)
-   * [Virtual Enviroment](#virtual-enviroment)
+  * [Virtual Enviroment](#virtual-enviroment)
   * [Mediapipe](#mediapipe)
 
 ## Documents
