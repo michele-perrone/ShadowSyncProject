@@ -1,0 +1,4 @@
+install the following packages in the virtual environemnt:
+- opencv-contrib-python (full package of opencv, idk if its necessary or the 'standard' opencv is good)
+- mediapipe
+- The tutorial i followed for creating the venv: https://www.youtube.com/watch?v=ThU13tikHQw
