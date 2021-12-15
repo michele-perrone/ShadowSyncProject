@@ -4,7 +4,7 @@
   * [Documents](#documents)
   * [Installation](#installation)
   * [Virtual Enviroment](#virtual-enviroment)
-  * [Mediapipe](#mediapipe)
+  * [Libraries](#librearies)
 
 ## Documents
 [Abstract](https://www.overleaf.com/3486219427fydybqrpkgxq)
