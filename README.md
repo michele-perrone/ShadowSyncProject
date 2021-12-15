@@ -3,8 +3,8 @@
 * [Shadow_sync_project](#shadow_sync_project)
   * [Documents](#documents)
   * [Installation](#installation)
-  * [Virtual Enviroment](#virtual-enviroment)
-  * [Libraries](#librearies)
+   * [Virtual Enviroment](#virtual-enviroment)
+  * [Libraries](#libraries)
 
 ## Documents
 [Abstract](https://www.overleaf.com/3486219427fydybqrpkgxq)
