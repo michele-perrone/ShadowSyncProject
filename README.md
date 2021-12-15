@@ -17,7 +17,7 @@ Scaricare la repo.
 
 ```
 git clone https://github.com/Jacopo-brz/Shadow_sync_project.git
-cd uniadvisor-api
+cd Shadow_sync_project
 ```
 
 Verificare se usare python o python3. Eseguire il seguente comando
@@ -31,8 +31,12 @@ Verificare che l'output è della forma `3.X.Y`. Altrimenti ai comandi successivi
 
 ### Virtual enviroment
 
-1. Windows:
-2. Linux: 
+#### Windows
+conda:
+
+pip:
+
+#### Linux: 
 Conda:
 
 Pip:
@@ -45,6 +49,7 @@ Installare le dipendenze di python.
 ```
 python -m pip install -r requirements.txt
 ```
-3. Mac:
+#### Mac
+conda:
 
-
+pip:
