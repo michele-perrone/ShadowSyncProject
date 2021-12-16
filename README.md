@@ -63,3 +63,4 @@ pip:
 
 ## Libraries
 [Mediapipe](https://google.github.io/mediapipe/)
+python-osc
