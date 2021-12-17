@@ -9,8 +9,14 @@ from pythonosc.udp_client import SimpleUDPClient
 import asyncio
 # 2 OTHER LIBRARIES HERE
 
-# 3 CREATE MODEL OBJECT HERE
-# global_model = ...
+# 3 CREATE SENDER FUNCTIONS HERE -> THEY ARE ONLY NEEDED TO FORMAT COMPLEX OR MULTIPLE SENDS
+
+def specific_sender(a, b):
+    client.send_message("/position", a)   # Send float message
+    client.send_message("/position", b)
+
+def ss2(a, b, c):
+    client.send_message("/some/address", [a, 2., c, "hello"])  # Send message with int, float and string
 
 # 4 CREATE HANDLER FUNCTIONS HERE -> THEY BETTER ONLY MODIFY THE GLOBAL MODEL WITH THE RECEIVED PARAMETERS
 def filter_handler(address, *args):
@@ -20,24 +26,19 @@ def filter_handler(address, *args):
 def default_handler(address, *args):
     print(f"DEFAULT {address}: {args}")
 
-# 5 CREATE DISPATCHER AND MAPPING OF OSC MESSAGES TO CORRESPONDING HANDLERS HERE. PLEASE KEEP DEFAULT HANDLER
+
+# 5 CREATE MODEL OBJECT HERE
+# global_model = ...
+
+# 6 CREATE DISPATCHER AND MAPPING OF OSC MESSAGES TO CORRESPONDING HANDLERS HERE. PLEASE KEEP DEFAULT HANDLER
 dispatcher = Dispatcher()
 dispatcher.map("/filter", filter_handler)
 dispatcher.set_default_handler(default_handler)
 
-# 6 DEFINE IP, PORT AND CLIENT FOR OSC COMMUNICATION HERE
+# 7 DEFINE IP, PORT AND CLIENT FOR OSC COMMUNICATION HERE
 ip = "127.0.1.1"
 port = 1998
 client = SimpleUDPClient(ip, port)  # Create client
-
-# 7 CREATE SENDER FUNCTIONS HERE -> THEY ARE ONLY NEEDED TO FORMAT COMPLEX OR MULTIPLE SENDS
-
-def specific_sender(a, b):
-    client.send_message("/position", a)   # Send float message
-    client.send_message("/position", b)
-
-def ss2(a, b, c):
-    client.send_message("/some/address", [a, 2., c, "hello"])  # Send message with int, float and string
 
 # 8 PUT CODE FOR THE REST OF THE PROJECT IN app_main()
 async def app_main():
