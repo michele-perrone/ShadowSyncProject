@@ -1,11 +1,14 @@
 import cv2 #image processing via openCv
 import mediapipe as mp #pose estimation via mediapipe
+import os
 
 mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
 pose = mpPose.Pose() #with default params for detection and tracking tolerance (until detection confidence is high enough, it keeps tracking)
 # Create a VideoCapture object and read from input file
-cap = cv2.VideoCapture(r".\ComputerVisionPython\Videos\robot_dance.mp4") #PC webcam
+print("HI")
+print(os.path.join(os.path.curdir, "Videos", "robot_dance.mp4"))
+cap = cv2.VideoCapture(os.path.join(os.path.curdir, "Videos", "robot_dance.mp4")) #PC webcam
 #cap = cv2.VideoCapture(0)
 # Check if it is opened successfully
 if (cap.isOpened()== False):
