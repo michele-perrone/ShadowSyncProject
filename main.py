@@ -29,22 +29,25 @@ dispatcher.map("/pose", pose_handler)
 dispatcher.set_default_handler(default_handler)
 
 # 8 DEFINE IP, PORT AND CLIENT FOR OSC COMMUNICATION HERE
-send_ip = "192.168.168.127"
-my_ip = "192.168.168.225"
+send_ip_1 = "192.168.168.75"
+send_ip_2 = "192.168.168.127"
+my_ip = "127.0.1.1"
 send_port = 1998
-listen_port = 1998
-client = SimpleUDPClient(send_ip, send_port)  # Create client
-
+listen_port = 1999
+client_1 = SimpleUDPClient(send_ip_1, send_port)  # Create client
+client_2 = SimpleUDPClient(send_ip_2, send_port)
+client_self = SimpleUDPClient(my_ip, send_port)
 # 9 PUT CODE FOR THE REST OF THE PROJECT IN app_main()
 async def app_main():
     cap, mpDraw, mpPose, pose_cv = init_pose_estimation()
     while(True):
-        await asyncio.sleep(0.001)
+        await asyncio.sleep(0.00001)
         ret, img = cap.read()
-        #print(img)
         if ret == True:  
             img, pose = get_body_position(img, mpDraw, mpPose, pose_cv) #pose detection
-            pose_sender(client, pose)
+            pose_sender(client_1, pose)
+            pose_sender(client_2, pose)
+            pose_sender(client_self, pose)
             cv2.imshow('Image', img)
         else: 
             return

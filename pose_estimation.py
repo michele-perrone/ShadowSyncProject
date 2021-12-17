@@ -18,27 +18,29 @@ def init_pose_estimation():
 def get_body_position(img, mpDraw, mpPose, pose_cv):
 	imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) #conversion of the acquired img in RGB scale
 	results = pose_cv.process(imgRGB) #pose detection# print(results.pose_landmarks)
+	pose = 0
 	if results.pose_landmarks: #==True, landmarks detected
 		mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS) #draw the landmarks
-	for id, lm in enumerate(results.pose_landmarks.landmark):
-		h, w, c = img.shape
-		cx, cy = int(lm.x*w), int(lm.y*h) #pixel coords in the frame of the landmarks
-		cv2.circle(img, (cx,cy), 5, (155,155,0)) #superimpose a circle to the landmarks''' 
-	left_shoulder = [results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_SHOULDER].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_SHOULDER].y]
-	right_shoulder = [results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_SHOULDER].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_SHOULDER].y]
-	left_hip = [results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_HIP].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_HIP].y]
-	right_hip = [results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_HIP].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_HIP].y]
-	centroid = [(left_shoulder[0] + right_shoulder[0] + left_hip[0] + right_hip[0])/4, (left_shoulder[1] + right_shoulder[1] + left_hip[1] + right_hip[1])/4]
+		for id, lm in enumerate(results.pose_landmarks.landmark):
+			h, w, c = img.shape
+			cx, cy = int(lm.x*w), int(lm.y*h) #pixel coords in the frame of the landmarks
+			cv2.circle(img, (cx,cy), 5, (155,155,0)) #superimpose a circle to the landmarks''' 
+		left_shoulder = [results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_SHOULDER].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_SHOULDER].y]
+		right_shoulder = [results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_SHOULDER].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_SHOULDER].y]
+		left_hip = [results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_HIP].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_HIP].y]
+		right_hip = [results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_HIP].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_HIP].y]
+		centroid = [(left_shoulder[0] + right_shoulder[0] + left_hip[0] + right_hip[0])/4, (left_shoulder[1] + right_shoulder[1] + left_hip[1] + right_hip[1])/4]
 	
-	pose = {
-		'left_shoulder': left_shoulder,
-		'right_shoulder': right_shoulder,
-		'left_hip': left_hip,
-		'right_hip': right_hip,
-		'body': centroid,
-	}
+		pose = {
+			'left_shoulder': left_shoulder,
+			'right_shoulder': right_shoulder,
+			'left_hip': left_hip,
+			'right_hip': right_hip,
+			'body': centroid,
+		}
 
-	cv2.circle(img, (int(centroid[0]*w), int(centroid[1]*h)), 8, (155,155,222), cv2.FILLED) #superimpose a circle to the landmarks''' 
+		cv2.circle(img, (int(centroid[0]*w), int(centroid[1]*h)), 8, (155,155,222), cv2.FILLED) #superimpose a circle to the landmarks''' 
+
 	if cv2.waitKey(1) & 0xFF == ord('q'):
 		return
 	
