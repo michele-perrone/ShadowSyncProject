@@ -29,9 +29,11 @@ dispatcher.map("/pose", pose_handler)
 dispatcher.set_default_handler(default_handler)
 
 # 8 DEFINE IP, PORT AND CLIENT FOR OSC COMMUNICATION HERE
-ip = "127.0.1.1"
-port = 1998
-client = SimpleUDPClient(ip, port)  # Create client
+send_ip = "192.168.168.127"
+my_ip = "192.168.168.225"
+send_port = 1998
+listen_port = 1998
+client = SimpleUDPClient(send_ip, send_port)  # Create client
 
 # 9 PUT CODE FOR THE REST OF THE PROJECT IN app_main()
 async def app_main():
@@ -39,6 +41,7 @@ async def app_main():
     while(True):
         await asyncio.sleep(0.001)
         ret, img = cap.read()
+        #print(img)
         if ret == True:  
             img, pose = get_body_position(img, mpDraw, mpPose, pose_cv) #pose detection
             pose_sender(client, pose)
@@ -57,7 +60,7 @@ async def app_main():
 
 # 10 WRITE THE INITIALIZER MAIN FOR THE OSC SERVER AND RUN IT
 async def init_main():
-    server = AsyncIOOSCUDPServer((ip, port), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer((my_ip, listen_port), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
 
     await app_main()  # Enter main loop of program -> MUST CONTAIN A asyncio.sleep(something) IN ORDER TO WORK

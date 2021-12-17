@@ -24,11 +24,11 @@ def get_body_position(img, mpDraw, mpPose, pose_cv):
 		h, w, c = img.shape
 		cx, cy = int(lm.x*w), int(lm.y*h) #pixel coords in the frame of the landmarks
 		cv2.circle(img, (cx,cy), 5, (155,155,0)) #superimpose a circle to the landmarks''' 
-	left_shoulder = [results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_SHOULDER].x*w , results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_SHOULDER].y*h]
-	right_shoulder = [results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_SHOULDER].x*w , results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_SHOULDER].y*h]
-	left_hip = [results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_HIP].x*w , results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_HIP].y*h]
-	right_hip = [results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_HIP].x*w , results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_HIP].y*h]
-	centroid = [int((left_shoulder[0] + right_shoulder[0] + left_hip[0] + right_hip[0])/4) , int((left_shoulder[1] + right_shoulder[1] + left_hip[1] + right_hip[1])/4) ]
+	left_shoulder = [results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_SHOULDER].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_SHOULDER].y]
+	right_shoulder = [results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_SHOULDER].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_SHOULDER].y]
+	left_hip = [results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_HIP].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.LEFT_HIP].y]
+	right_hip = [results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_HIP].x , results.pose_landmarks.landmark[mpPose.PoseLandmark.RIGHT_HIP].y]
+	centroid = [(left_shoulder[0] + right_shoulder[0] + left_hip[0] + right_hip[0])/4, (left_shoulder[1] + right_shoulder[1] + left_hip[1] + right_hip[1])/4]
 	
 	pose = {
 		'left_shoulder': left_shoulder,
@@ -38,7 +38,7 @@ def get_body_position(img, mpDraw, mpPose, pose_cv):
 		'body': centroid,
 	}
 
-	cv2.circle(img, (centroid[0], centroid[1]), 8, (155,155,222), cv2.FILLED) #superimpose a circle to the landmarks''' 
+	cv2.circle(img, (int(centroid[0]*w), int(centroid[1]*h)), 8, (155,155,222), cv2.FILLED) #superimpose a circle to the landmarks''' 
 	if cv2.waitKey(1) & 0xFF == ord('q'):
 		return
 	
