@@ -35,12 +35,13 @@ client = SimpleUDPClient(ip, port)  # Create client
 
 # 9 PUT CODE FOR THE REST OF THE PROJECT IN app_main()
 async def app_main():
-    cap = init_pose_estimation()
+    cap, mpDraw, mpPose, pose_cv = init_pose_estimation()
     while(True):
         await asyncio.sleep(0.001)
         ret, img = cap.read()
         if ret == True:  
-            img, pose = get_body_position(img) #pose detection
+            img, pose = get_body_position(img, mpDraw, mpPose, pose_cv) #pose detection
+            pose_sender(client, pose)
             cv2.imshow('Image', img)
         else: 
             return

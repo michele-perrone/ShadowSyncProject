@@ -7,15 +7,15 @@ def init_pose_estimation():
   print(os.path.join(os.path.curdir, "Videos", "robot_dance.mp4"))
   cap = cv2.VideoCapture(os.path.join(os.path.curdir, "Videos", "robot_dance.mp4")) #PC webcam
   #cap = cv2.VideoCapture(0)
-  # Check if it is opened successfully
+  mpDraw = mp.solutions.drawing_utils
+  mpPose = mp.solutions.pose
+  pose_cv = mpPose.Pose() #with default params for detection and tracking tolerance (until detection confidence is high enough, it keeps tracking)
+# Check if it is opened successfully
   if (cap.isOpened()== False):
 	  print("Error opening video file")
-  return cap
+  return cap, mpDraw, mpPose, pose_cv
 
-def get_body_position(img):
-	mpDraw = mp.solutions.drawing_utils
-	mpPose = mp.solutions.pose
-	pose_cv = mpPose.Pose() #with default params for detection and tracking tolerance (until detection confidence is high enough, it keeps tracking)
+def get_body_position(img, mpDraw, mpPose, pose_cv):
 	imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) #conversion of the acquired img in RGB scale
 	results = pose_cv.process(imgRGB) #pose detection# print(results.pose_landmarks)
 	if results.pose_landmarks: #==True, landmarks detected
