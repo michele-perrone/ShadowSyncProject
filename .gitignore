@@ -1,3 +1,15 @@
 venv
 .vscode
 __pycache__/
+osc/openframeworks_osc/build-SimpleOSCReceiver-Desktop-Debug
+osc/openframeworks_osc/build-SimpleOSCSender-Desktop-Debug
+osc/openframeworks_osc/SimpleOSCReceiver/bin
+osc/openframeworks_osc/SimpleOSCReceiver/config.make
+osc/openframeworks_osc/SimpleOSCReceiver/Makefile
+osc/openframeworks_osc/SimpleOSCReceiver/SimpleOSCReceiver.qbs
+osc/openframeworks_osc/SimpleOSCReceiver/SimpleOSCReceiver.qbs.user
+osc/openframeworks_osc/SimpleOSCSender/bin
+osc/openframeworks_osc/SimpleOSCSender/config.make
+osc/openframeworks_osc/SimpleOSCSender/Makefile
+osc/openframeworks_osc/SimpleOSCSender/SimpleOSCSender.qbs
+osc/openframeworks_osc/SimpleOSCSender/SimpleOSCSender.qbs.user
