@@ -11,6 +11,8 @@
 
 [Presentation](https://docs.google.com/presentation/d/1LFyTLhim1t9SbvFDJJ7-GJlO1ojOpn4Hszm1eV8Ltk4/edit?usp=sharing)
 
+[OSC Communication Scheme](https://docs.google.com/drawings/d/1_bteFoAQ-XNcbMFUPh2aHLeAcxxXcW8jXVOBckXudQc/edit?usp=sharing)
+
 ## Installation
 
 
