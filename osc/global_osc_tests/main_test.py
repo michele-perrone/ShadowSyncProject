@@ -22,7 +22,7 @@ dispatcher = Dispatcher()
 dispatcher.map("/pyUtil/areyouonline", areyouonline_handler)
 dispatcher.set_default_handler(default_handler)
 
-server_ip = "192.168.168.75"
+server_ip = "10.0.2.2"
 my_ip = "127.0.1.1"
 # Server listens on 1255 and send back on 5511 for Computer1 and 5522 for Computer2
 server_port = 1255

@@ -6,10 +6,10 @@ import sys
 import time
 from datetime import datetime
 import builtins as __builtin__
+from model import Model
 
 # STATUS BITS
-computer_1_online = 0
-computer_2_online = 0
+m = Model()
 
 # Custom print for status monitoring
 def print(*args, sep = ' '):
@@ -25,9 +25,9 @@ def print(*args, sep = ' '):
     
     sys.stdout.write('\r')
     sys.stdout.write('[%s] Computer 1: ' % readable_timestamp)
-    sys.stdout.write('\033[92mONLINE\033[0m' if c1==1 else '\033[91mOFFLINE\033[0m')
+    sys.stdout.write('\033[92mONLINE\033[0m' if m.computer_1_online==1 else '\033[91mOFFLINE\033[0m')
     sys.stdout.write(' | Computer 2: ')
-    sys.stdout.write('\033[92mONLINE\033[0m' if c2==1 else '\033[91mOFFLINE\033[0m')
+    sys.stdout.write('\033[92mONLINE\033[0m' if m.computer_2_online==1 else '\033[91mOFFLINE\033[0m')
     sys.stdout.write('\r')
     sys.stdout.flush()
 
@@ -40,19 +40,22 @@ def areyouonline(computer_number):
 
 # Function that handles the areyouonline request and answers
 def iamonline_handler(address, *args):
+    # __builtin__.print(args[0], "ONLINE")
     turnedON_handler(address, *args)
 
 def turnedON_handler(address, *args):
+    # __builtin__.print(args[0], "turned on")
     if args[0]==1: 
-        computer_1_online = 1
-    elif args[1]==2:
-        computer_2_online = 1
+        m.computer_1_online = 1
+    elif args[0]==2:
+        m.computer_2_online = 1
 
 def turnedOFF_handler(address, *args):
+    # print(args[0], "turned off")
     if args[0]==1: 
-        computer_1_online = 0
-    elif args[1]==2:
-        computer_2_online = 0
+        m.computer_1_online = 0
+    elif args[0]==2:
+        m.computer_2_online = 0
 
 # Default Handler
 def default_handler(address, *args):
@@ -64,8 +67,8 @@ dispatcher.map("/pyUtil/turnedON", turnedON_handler)
 dispatcher.map("/pyUtil/turnedOFF", turnedOFF_handler)
 dispatcher.set_default_handler(default_handler)
 
-computer1_ip = "192.168.168.75"
-computer2_ip = "192.168.168.75"
+computer1_ip = "10.0.2.0"
+computer2_ip = "10.0.2.0"
 my_ip = "127.0.1.1"
 # Server listens on 1255 and send back on 5511 for Computer1 and 5522 for Computer2
 computer1_port = 5511
@@ -77,25 +80,20 @@ to_me = SimpleUDPClient(my_ip, listen_port)
 
 async def app_main():
     for i in range(100):
-        print("Doing things...")
-        if i==32:
-            print("Asking computer 1 if online")
-            areyouonline(1)
-        if i==52:
-            print("Asking computer 2 if online")
-            areyouonline(2)
-        await asyncio.sleep(0.1)
+        print(m.computer_1_online, "Doing things...")
+        areyouonline(2)
+        # if i==3:
+        #     # print("Asking computer 1 if online")
+        #     m.computer_1_online = 1
+        # if i==52:
+            # print("Asking computer 2 if online")
+            # areyouonline(2)
+        await asyncio.sleep(1)
 
 async def init_main():
-    server = AsyncIOOSCUDPServer((my_ip, port), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer((my_ip, listen_port), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint() 
-
-    to_server.send_message("/pyUtil/turnedON", CLIENT_NUMBER)
-
     await app_main() 
-
-    to_server.send_message("/pyUtil/turnedOFF", CLIENT_NUMBER)
-
     transport.close() 
 
 
