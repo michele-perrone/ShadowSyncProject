@@ -8,8 +8,15 @@ void Body::setup() {
 	material.setDiffuseColor(ofFloatColor::aqua);
 	com.set(3, 10); //center of mass
 	for (int i = 0; i < 5; i++) {
-		body_junctions[i].set(2, 10);
-		body_junctions[i].setParent(com);      //each junction is a child of com, if it moves, the whole body moves
+		//vector of junctions
+		ofSpherePrimitive temp_junction;
+		temp_junction.set(2, 10);
+		temp_junction.setParent(com);
+		body_junctions.push_back(temp_junction);
+
+		//array of junctions
+		//body_junctions[i].set(2, 10);
+		//body_junctions[i].setParent(com);      //each junction is a child of com, if it moves, the whole body moves
 		//body_junctions[i].move(20+20*i, 0, 0); //algined along x axis
 	}
 	//child nodes can move independetly

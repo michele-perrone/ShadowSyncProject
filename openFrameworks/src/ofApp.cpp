@@ -97,6 +97,11 @@ void ofApp::draw(){
 
     cam.end();
     
+    //show FPS on screen
+    stringstream ss;
+    ss << "FPS: " << ofToString(ofGetFrameRate(), 0) << endl << endl;
+    ofDrawBitmapString(ss.str().c_str(), 20, 20);
+
 }
 
 //--------------------------------------------------------------

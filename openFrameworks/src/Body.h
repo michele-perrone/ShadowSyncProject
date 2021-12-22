@@ -11,5 +11,6 @@ public:
 private:
 	ofMaterial material;
 	ofSpherePrimitive com; 
-	ofSpherePrimitive body_junctions[5];
+	//ofSpherePrimitive body_junctions[5];
+	vector <ofSpherePrimitive> body_junctions;
 };
