@@ -36,7 +36,7 @@ send_port = 1998
 listen_port = 1999
 client_1 = SimpleUDPClient(send_ip_1, send_port)  # Create client
 client_2 = SimpleUDPClient(send_ip_2, send_port)
-client_self = SimpleUDPClient(my_ip, send_port)
+client_self = SimpleUDPClient("127.0.1.1", send_port)
 # 9 PUT CODE FOR THE REST OF THE PROJECT IN app_main()
 async def app_main():
     cap, mpDraw, mpPose, pose_cv = init_pose_estimation()
@@ -63,7 +63,7 @@ async def app_main():
 
 # 10 WRITE THE INITIALIZER MAIN FOR THE OSC SERVER AND RUN IT
 async def init_main():
-    server = AsyncIOOSCUDPServer((my_ip, listen_port), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer(("127.0.0.1", listen_port), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
 
     await app_main()  # Enter main loop of program -> MUST CONTAIN A asyncio.sleep(something) IN ORDER TO WORK

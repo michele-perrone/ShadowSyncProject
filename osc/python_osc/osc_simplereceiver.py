@@ -13,7 +13,7 @@ dispatcher = Dispatcher()
 dispatcher.map("/position", print_handler)
 dispatcher.set_default_handler(default_handler)
 
-ip = "localhost"
+ip = "127.0.1.1"
 port = 1255
 
 server = BlockingOSCUDPServer((ip, port), dispatcher)
