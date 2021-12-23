@@ -31,6 +31,9 @@ if CLIENT_NUMBER==1:
     listen_port = 5511
 else:
     listen_port = 5522
+
+print("Listening on port", listen_port)
+
 to_server = SimpleUDPClient(server_ip, server_port)
 to_me = SimpleUDPClient(my_ip, listen_port)
 
@@ -41,15 +44,11 @@ async def app_main():
 
 async def init_main():
     server = AsyncIOOSCUDPServer((my_ip, listen_port), dispatcher, asyncio.get_event_loop())
-    transport, protocol = await server.create_serve_endpoint() 
+    transport, protocol = await server.create_serve_endpoint()
 
-    to_server.send_message("/pyUtil/turnedON", CLIENT_NUMBER)
+    await app_main()
 
-    await app_main() 
-
-    to_server.send_message("/pyUtil/turnedOFF", CLIENT_NUMBER)
-
-    transport.close() 
+    transport.close()
 
 
 asyncio.run(init_main())

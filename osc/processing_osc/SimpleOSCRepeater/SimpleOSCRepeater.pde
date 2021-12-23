@@ -17,6 +17,6 @@ void oscEvent(OscMessage m) {
   OscMessage new_m = new OscMessage(m.addrPattern());
   new_m.add(m.get(0).intValue());
   println("Sending...");
-  oscP5.send(new_m, myRemoteLocation); 
+  oscP5.send(new_m, myRemoteLocation);
   //myMessage.print();
 }
