@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 import builtins as __builtin__
 from model import Model
+from threading import Thread
 
 # STATUS BITS
 m = Model()
@@ -25,38 +26,25 @@ def print(*args, sep = ' '):
     
     sys.stdout.write('\r')
     sys.stdout.write('[%s] Computer 1: ' % readable_timestamp)
-    sys.stdout.write('\033[92mONLINE\033[0m' if m.computer_1_online==1 else '\033[91mOFFLINE\033[0m')
+    sys.stdout.write('\033[92mONLINE\033[0m' if m.computer_online[1]==1 else '\033[91mOFFLINE\033[0m')
     sys.stdout.write(' | Computer 2: ')
-    sys.stdout.write('\033[92mONLINE\033[0m' if m.computer_2_online==1 else '\033[91mOFFLINE\033[0m')
+    sys.stdout.write('\033[92mONLINE\033[0m' if m.computer_online[2]==1 else '\033[91mOFFLINE\033[0m')
     sys.stdout.write('\r')
     sys.stdout.flush()
 
-# Function that answers to the areyouonline request
-def areyouonline(computer_number):
-    __builtin__.print("Ping ", computer_number)
-    if computer_number==1:
-        to_computer1.send_message("/pyUtil/areyouonline", 0)
-    elif computer_number==2:
-        to_computer2.send_message("/pyUtil/areyouonline", 0)
-
 # Function that handles the areyouonline request and answers
 def yes_handler(address, *args):
-    __builtin__.print(args[0], "ping received")
+    # __builtin__.print(args[0], "ping received")
+    m.ack[args[0]] = 1
     turnedON_handler(address, *args)
 
 def turnedON_handler(address, *args):
-    if args[0]==1: 
-        m.computer_1_online = 1
-    elif args[0]==2:
-        m.computer_2_online = 1
-    __builtin__.print(args[0], "is now", m.computer_1_online, m.computer_2_online)
+    m.computer_online[args[0]] = 1
+    # __builtin__.print(args[0], "is now", m.computer_online[1], m.computer_online[2])
 
 def turnedOFF_handler(address, *args):
-    if args[0]==1: 
-        m.computer_1_online = 0
-    elif args[0]==2:
-        m.computer_2_online = 0
-    __builtin__.print(args[0], "is now", m.computer_1_online, m.computer_2_online)
+    m.computer_online[args[0]] = 0
+    #  __builtin__.print(args[0], "is now", m.computer_online[1], m.computer_online[2])
 
 # Default Handler
 def default_handler(address, *args):
@@ -76,13 +64,39 @@ computer2_port = 5520
 listen_port = 1255
 to_computer1 = SimpleUDPClient(computer1_ip, computer1_port)
 to_computer2 = SimpleUDPClient(computer2_ip, computer2_port)
-to_me = SimpleUDPClient("127.0.0.1", listen_port)
+to_me = SimpleUDPClient("127.0.1.1", listen_port)
+
+def ping_loop():
+    print("Ping")
+
+    if m.ack[1]==0:
+        m.computer_online[1] = 0
+    else:
+        m.ack[1] = 0
+
+    if m.ack[2]==0:
+        m.computer_online[2] = 0
+    else:
+        m.ack[2] = 0
+
+    to_computer1.send_message("/pyUtil/areyouonline", 0)
+    to_computer2.send_message("/pyUtil/areyouonline", 0)
+
+    time.sleep(1)
 
 async def app_main():
+
     for i in range(100):
-        print()
-        areyouonline(1)
-        areyouonline(2)
+        print("Starting ping thread")
+        ping_1=Thread(target=ping_loop)
+        ping_1.setDaemon(True)
+        ping_1.start()
+
+        # to_computer2.send_message("/pyUtil/areyouonline", 0)
+        
+        # print("Doing things")
+        # areyouonline(1)
+        # areyouonline(2)
         # if i==3:
         #     # print("Asking computer 1 if online")
         #     m.computer_1_online = 1
@@ -92,7 +106,7 @@ async def app_main():
         await asyncio.sleep(1)
 
 async def init_main():
-    server = AsyncIOOSCUDPServer(("127.0.0.1", listen_port), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer(("127.0.1.1", listen_port), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint() 
     await app_main() 
     transport.close() 

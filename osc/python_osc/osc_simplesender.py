@@ -1,7 +1,7 @@
 from pythonosc.udp_client import SimpleUDPClient
 
-ip = "192.168.130.2"
-port = 5510
+ip = "192.168.130.213"
+port = 5520
 
 client = SimpleUDPClient(ip, port)  # Create client
 
