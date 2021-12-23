@@ -12,6 +12,7 @@ def iamonline():
 
 # Function that handles the areyouonline request and answers
 def areyouonline_handler(address, *args):
+    print("RECEIVED")
     iamonline()
 
 # Default Handler
@@ -22,7 +23,7 @@ dispatcher = Dispatcher()
 dispatcher.map("/pyUtil/areyouonline", areyouonline_handler)
 dispatcher.set_default_handler(default_handler)
 
-server_ip = "10.0.2.2"
+server_ip = "127.0.1.1"
 my_ip = "127.0.1.1"
 # Server listens on 1255 and send back on 5511 for Computer1 and 5522 for Computer2
 server_port = 1255
@@ -30,6 +31,9 @@ if CLIENT_NUMBER==1:
     listen_port = 5511
 else:
     listen_port = 5522
+
+print("Listening on port", listen_port)
+
 to_server = SimpleUDPClient(server_ip, server_port)
 to_me = SimpleUDPClient(my_ip, listen_port)
 
@@ -42,11 +46,7 @@ async def init_main():
     server = AsyncIOOSCUDPServer((my_ip, listen_port), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint() 
 
-    to_server.send_message("/pyUtil/turnedON", CLIENT_NUMBER)
-
     await app_main() 
-
-    to_server.send_message("/pyUtil/turnedOFF", CLIENT_NUMBER)
 
     transport.close() 
 

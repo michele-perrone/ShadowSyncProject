@@ -37,7 +37,7 @@ dispatcher.set_default_handler(default_handler)
 
 # 7 DEFINE IP, PORT AND CLIENT FOR OSC COMMUNICATION HERE
 ip = "127.0.1.1"
-port = 1998
+port = 1255
 client = SimpleUDPClient(ip, port)  # Create client
 
 # 8 PUT CODE FOR THE REST OF THE PROJECT IN app_main()

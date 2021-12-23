@@ -67,7 +67,7 @@ dispatcher.map("/pyUtil/turnedON", turnedON_handler)
 dispatcher.map("/pyUtil/turnedOFF", turnedOFF_handler)
 dispatcher.set_default_handler(default_handler)
 
-computer1_ip = "10.0.2.0"
+computer1_ip = "192.168.1.66"
 computer2_ip = "10.0.2.0"
 my_ip = "127.0.1.1"
 # Server listens on 1255 and send back on 5511 for Computer1 and 5522 for Computer2
@@ -81,7 +81,7 @@ to_me = SimpleUDPClient(my_ip, listen_port)
 async def app_main():
     for i in range(100):
         print(m.computer_1_online, "Doing things...")
-        areyouonline(2)
+        areyouonline(1)
         # if i==3:
         #     # print("Asking computer 1 if online")
         #     m.computer_1_online = 1
