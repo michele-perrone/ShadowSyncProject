@@ -6,7 +6,7 @@ NetAddress myRemoteLocation;
 
 void setup(){
   oscP5 = new OscP5(this, 1254);
-  myRemoteLocation = new NetAddress("127.0.1.1",1255);
+  myRemoteLocation = new NetAddress("127.0.0.1",1255);
 }
 
 void draw() {
