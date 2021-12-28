@@ -2,6 +2,10 @@
 
 #include "ofMain.h"
 #include "Body.h"
+#include "ofxOsc.h"
+#include "Shadow.h"
+
+#define PORT 1998
 
 class ofApp : public ofBaseApp{
 	// default openFrameworks setup
@@ -33,7 +37,7 @@ class ofApp : public ofBaseApp{
 		//float moving_x_coord = 0;
 		//int t = 0;
 
-		//ofMatrix4x4 mat; //only way i found for moving around a mesh. In depth, every 3D transformation (rotation, translation, scaling) is performed by 4x4 matrices
+		ofMatrix4x4 mat; //only way i found for moving around a mesh. In depth, every 3D transformation (rotation, translation, scaling) is performed by 4x4 matrices
 
 		ofLight light;
 		ofEasyCam cam;
@@ -47,5 +51,14 @@ class ofApp : public ofBaseApp{
 		ofMaterial wall_material;
 
 		Body body;
+		float z_body = 120; //dummy value until we have 3D coords from osc
+		//OSC
 
+		ofxOscReceiver osc_receiver;
+		float data1, data2;
+
+		//2D shadow test
+		ofMesh circleMesh;
+
+		Shadow shadow;
 };

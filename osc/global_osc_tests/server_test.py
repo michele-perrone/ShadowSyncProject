@@ -88,9 +88,9 @@ async def app_main():
 
     for i in range(100):
         print("Starting ping thread")
-        ping_1=Thread(target=ping_loop)
-        ping_1.setDaemon(True)
-        ping_1.start()
+        ping=Thread(target=ping_loop)
+        ping.setDaemon(True)
+        ping.start()
 
         # to_computer2.send_message("/pyUtil/areyouonline", 0)
         

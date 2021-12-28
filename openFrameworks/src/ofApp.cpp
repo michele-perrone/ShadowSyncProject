@@ -1,6 +1,6 @@
 #include "ofApp.h"
-#define PL_XZ 400 //xz plane dimension
-#define PL_Y 300  //y plane dimension 
+#define PL_XZ 400 //the xz plane dimension
+#define PL_Y 300  //the y plane dimension 
 
 
 //--------------------------------------------------------------
@@ -16,34 +16,71 @@ void ofApp::setup(){
     //}
 
     light.setup();
-    light.setPosition(0, 200, 200);
+    light.setPosition(-50, 200, 200);
 
-    ofEnableDepthTest(); //you can't see through objects
+    ofEnableDepthTest(); //you can't see through objects (es. wall)
 
 
-    cam.setPosition(ofVec3f(-180, 100, 250)); //camera positioning and heading config
+    cam.setPosition(ofVec3f(-180, 100, 250)); //camera positioning and heading configuration
     cam.lookAt(ofVec3f(0, 20, -20));
     
-    //mat.rotate(180, 0, 0, 1);    //with this two commands, we are combining two "high-abstraction level" matrix transformations
-    //mat.translate(-150, 100, 0); //in just one (otherwise, you can define manually a 4x4 mat that performs your transformation)
-
+    mat.rotate(90, 0, 0, 1);    //with this two commands, we are combining two "high-abstraction level" matrix transformations
+    mat.translate(0, 0, 1);    //in just one (otherwise, at a low level you can define manually a 4x4 mat that performs your transformation)
+    
     plane_floor.set(PL_XZ, PL_XZ);
     plane_floor.rotateDeg(270, 1, 0, 0); //by default, it is orthogonal to x axis, centered in origin
 
     plane_wall.set(PL_XZ, PL_Y);
 
+    //material def
     floor_material.setDiffuseColor(ofFloatColor::darkGray);
     floor_material.setShininess(0.01);
     wall_material.setDiffuseColor(ofFloatColor::white);
     wall_material.setShininess(0.01);
 
     body.setup();
-    body.move(-100, 40, 120); //moving com --> moves all body
+    body.move(-100, 40, z_body); //moving com --> moves all body
+
+    // OSC
+    osc_receiver.setup(PORT);
+
+    //Shadow 
+    shadow.setup(0, 0);
+
+    /*manual setup of a circle mesh NOT WORKING WELL the rendering for some triangles
+    //circleMesh.setMode(OF_PRIMITIVE_TRIANGLES);
+    int radius = 10;
+    int circle_pts = 200;
+    float omega = 0;
+    int zc = 0;
+    circleMesh.addVertex(ofVec3f(0, 0, 0)); //origin
+    for (int i = 0; i < circle_pts; i++)
+    {
+        circleMesh.addVertex(ofVec3f(cos(omega) * radius, sin(omega) * radius, zc)); //circonference vertex
+        //std::cout << "cos, sin: " << cos(omega) << ", " << sin(omega) << std::endl;
+        circleMesh.addColor(ofFloatColor(0, 0, 0));
+        omega += (TWO_PI/circle_pts); 
+    }
+
+    for (int j = 1; j < circle_pts ; j++)
+    {
+        
+        circleMesh.addIndex(j);
+        circleMesh.addIndex(0);
+        circleMesh.addIndex(j + 1);
+    }
+
+   
+    circleMesh.addIndex(circle_pts);
+    circleMesh.addIndex(0);
+    circleMesh.addIndex(1);
+    */
+
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    /* //how to biuld a custom mesh
+    /* //quick guide on how to biuld a custom mesh
     //build the mesh of a square: 4 vertices and 6 indexes (min. conditions required by 2 triangles)
      
     mesh.addVertex(ofPoint(0, 0, 0)); // make a new vertex
@@ -67,6 +104,26 @@ void ofApp::update(){
     mesh.addIndex(3);
     mesh.addIndex(0);
     */
+
+    //OSC
+    while (osc_receiver.hasWaitingMessages())
+    {
+        ofxOscMessage m;
+        osc_receiver.getNextMessage(m);
+        if (m.getAddress() == "/pose")
+        {
+            data1 = m.getArgAsFloat(8); // x centroid
+            data2 = m.getArgAsFloat(9); // y centroid
+
+            //shadow and body update, still testing 
+            shadow.move(data1, data2); //actually it doesn't seem to move as the centroid, but at least it moves
+            body.move(0.5-data1, 0.5-data2, 0); // both x, y dir nomalized btw -0.5, 0.5 (otherwise it will go far away along + x,y dir)
+            std::cout << "data1 = " << data1 << std::endl;
+            std::cout << "data2 = " << data2 << std::endl;
+        }
+    }
+
+ 
 }
 
 //--------------------------------------------------------------
@@ -81,9 +138,12 @@ void ofApp::draw(){
     plane_floor.draw();
     floor_material.end();
 
+    
+
     wall_material.begin();
     plane_wall.draw();
     wall_material.end();
+
 
     //spherical mesh roto-translation
     //ofPushMatrix();
@@ -94,7 +154,16 @@ void ofApp::draw(){
     ofDrawGrid(20, 20, true, true, true, true); //3D grid
     
     body.draw();
+    //circleMesh.draw(); //does not work well for some reason a triangle has rendering problems
+    ofPushMatrix();
+    ofMultMatrix(mat); //this matrix multiplication allow us to see the circle
+    //ofSetColor(ofFloatColor::gold);
+    //ofFill();
+    //ofDrawCircle(0, 0, 10); //easiest solution for drawing a circle on the wall
+    shadow.draw(); //dummy solution, otherwise not visible since its a 2D entity and gets covered by wall plane
+    ofPopMatrix();
 
+    
     cam.end();
     
     //show FPS on screen
