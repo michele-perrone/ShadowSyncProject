@@ -47,6 +47,8 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
                 pose[i] = [results.pose_landmarks.landmark[mpPose.PoseLandmark[upperI]].x,
                             results.pose_landmarks.landmark[mpPose.PoseLandmark[upperI]].y,
                             results.pose_landmarks.landmark[mpPose.PoseLandmark[upperI]].z]
+                if i == "right_thumb":
+                    print("z coord: ", pose[i][2]) #testing z coord estimation with right hand
             else:
                 pose[i] = [int((pose['left_shoulder'][0] + pose['right_shoulder'][0] + pose['left_hip'][0] + pose['right_hip'][0])) / 4,
                             int((pose['left_shoulder'][1] + pose['right_shoulder'][1] + pose['left_hip'][1] + pose['right_hip'][1])) / 4]
