@@ -16,7 +16,7 @@ def init_pose_estimation():
     mpPose = mp.solutions.pose
     pose_cv = mpPose.Pose()  # with default params for detection and tracking tolerance (until detection confidence is high enough, it keeps tracking)
 
-    data = open('data/landmark.json')
+    data = open('python\data\landmark.json')
     pose = json.load(data)
     poseLandmarksArray = [x.upper() for x in pose]
 
