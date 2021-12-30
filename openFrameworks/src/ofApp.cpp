@@ -1,6 +1,6 @@
 #include "ofApp.h"
-#define PL_XZ 400 //the xz plane dimension
-#define PL_Y 300  //the y plane dimension 
+#define PL_XZ 200 //the xz plane dimension
+#define PL_Y 100  //the y plane dimension 
 
 
 //--------------------------------------------------------------
@@ -16,21 +16,24 @@ void ofApp::setup(){
     //}
 
     light.setup();
-    light.setPosition(-50, 200, 200);
+    light.setPosition(200, 100, 400);
 
     ofEnableDepthTest(); //you can't see through objects (es. wall)
 
 
-    cam.setPosition(ofVec3f(-180, 100, 250)); //camera positioning and heading configuration
-    cam.lookAt(ofVec3f(0, 20, -20));
-    
+    cam.setPosition(ofVec3f(157, 52, 363)); //camera positioning and heading configuration
+    cam.lookAt(ofVec3f(PL_XZ/2, PL_Y/2, 0));
+    //!definition of the transformation
     mat.rotate(90, 0, 0, 1);    //with this two commands, we are combining two "high-abstraction level" matrix transformations
     mat.translate(0, 0, 1);    //in just one (otherwise, at a low level you can define manually a 4x4 mat that performs your transformation)
     
     plane_floor.set(PL_XZ, PL_XZ);
     plane_floor.rotateDeg(270, 1, 0, 0); //by default, it is orthogonal to x axis, centered in origin
+    plane_floor.move(PL_XZ/2, 0, PL_XZ/2);
+
 
     plane_wall.set(PL_XZ, PL_Y);
+    plane_wall.move(PL_XZ/2, PL_Y/2, 0);
 
     //material def
     floor_material.setDiffuseColor(ofFloatColor::darkGray);
@@ -38,11 +41,12 @@ void ofApp::setup(){
     wall_material.setDiffuseColor(ofFloatColor::white);
     wall_material.setShininess(0.01);
 
+    //body, test particle system setup
     body.setup();
-    body.move(-100, 40, z_body); //moving com --> moves all body
+    body.move(100, 40, z_body); //moving com --> moves all body
 
     // OSC
-    osc_receiver.setup(PORT);
+    //osc_receiver.setup(PORT);
 
     //Shadow 
     shadow.setup(0, 0);
@@ -76,6 +80,10 @@ void ofApp::setup(){
     circleMesh.addIndex(1);
     */
 
+    //Testing particle system
+    ofNode& origin = body.getOrigin();
+    body.setupParticleSystem(origin);
+ 
 }
 
 //--------------------------------------------------------------
@@ -121,8 +129,9 @@ void ofApp::update(){
             std::cout << "data1 = " << data1 << std::endl;
             std::cout << "data2 = " << data2 << std::endl;
         }
-    }
+    }  
 
+    body.updateParticleSystem();
  
 }
 
@@ -151,11 +160,12 @@ void ofApp::draw(){
     //mesh.draw();
     //ofPopMatrix();
 
-    ofDrawGrid(20, 20, true, true, true, true); //3D grid
+    ofDrawGrid(10, 20, true, true, true, true); //3D grid
     
     body.draw();
     //circleMesh.draw(); //does not work well for some reason a triangle has rendering problems
     ofPushMatrix();
+    //!application of the transformation
     ofMultMatrix(mat); //this matrix multiplication allow us to see the circle
     //ofSetColor(ofFloatColor::gold);
     //ofFill();
@@ -163,6 +173,9 @@ void ofApp::draw(){
     shadow.draw(); //dummy solution, otherwise not visible since its a 2D entity and gets covered by wall plane
     ofPopMatrix();
 
+    //particle sys testing
+    //ofEnableAlphaBlending();
+    body.drawParticleSystem();
     
     cam.end();
     
@@ -170,6 +183,12 @@ void ofApp::draw(){
     stringstream ss;
     ss << "FPS: " << ofToString(ofGetFrameRate(), 0) << endl << endl;
     ofDrawBitmapString(ss.str().c_str(), 20, 20);
+
+    //cam coordinates on screen (just for set it up)
+    //glm::vec3 cam_pos = cam.getPosition();
+    //stringstream cp;
+    //cp << "cam x, y, z coordinates: " << ofToString(cam_pos.x) << ", " << ofToString(cam_pos.y) << ", " << ofToString(cam_pos.z) << endl << endl;
+    //ofDrawBitmapString(cp.str().c_str(), 50, 50);
 
 }
 

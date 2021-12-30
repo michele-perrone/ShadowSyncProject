@@ -4,6 +4,7 @@
 #include "Body.h"
 #include "ofxOsc.h"
 #include "Shadow.h"
+#include "Particle3D.h"
 
 #define PORT 1998
 
