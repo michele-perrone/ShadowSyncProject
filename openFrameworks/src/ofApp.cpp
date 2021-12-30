@@ -4,13 +4,12 @@
 
 
 //--------------------------------------------------------------
-void ofApp::setup(){
-
+void ofApp::setup()
+{
     light.setup();
     light.setPosition(200, 100, 400);
 
     ofEnableDepthTest(); //you can't see through objects (es. wall)
-
 
     cam.setPosition(ofVec3f(157, 52, 363)); //camera positioning and heading configuration
     cam.lookAt(ofVec3f(PL_XZ/2, PL_Y/2, 0));
@@ -21,7 +20,6 @@ void ofApp::setup(){
     plane_floor.set(PL_XZ, PL_XZ);
     plane_floor.rotateDeg(270, 1, 0, 0); //by default, it is orthogonal to x axis, centered in origin
     plane_floor.move(PL_XZ/2, 0, PL_XZ/2);
-
 
     plane_wall.set(PL_XZ, PL_Y);
     plane_wall.move(PL_XZ/2, PL_Y/2, -1);
@@ -41,15 +39,11 @@ void ofApp::setup(){
 
     //Shadow 
     shadow.setup(0, 0);
-
-    //Testing particle system
-    ofNode& origin = body.getOrigin();
-    body.setupParticleSystem(origin);
- 
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update()
+{
     //OSC
     while (osc_receiver.hasWaitingMessages())
     {
@@ -68,13 +62,12 @@ void ofApp::update(){
         }
     }  
 
-    body.updateParticleSystem();
- 
+    body.updateParticleSystems();
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
-
+void ofApp::draw()
+{
     //everything shown in 3D rendering goes btw cam.begin() and cam.end(), same for material
     cam.begin();
 
@@ -82,29 +75,21 @@ void ofApp::draw(){
 
     floor_material.begin();
     plane_floor.draw();
-    floor_material.end();
-
-    
+    floor_material.end();    
 
     wall_material.begin();
     plane_wall.draw();
     wall_material.end();
 
+    ofDrawGrid(10, 20, true, true, true, true); //3D grid    
 
-    ofDrawGrid(10, 20, true, true, true, true); //3D grid
-    
-
-    body.draw();
+    body.draw(); // The body takes now also care of the particle systems!
    
     ofPushMatrix();
     //!application of the transformation
     ofMultMatrix(mat); //this matrix multiplication allow us to see the circle
     shadow.draw(); //dummy solution, otherwise not visible since its a 2D entity and gets covered by wall plane
     ofPopMatrix();
-
-    //particle sys testing
-    //ofEnableAlphaBlending();
-    body.drawParticleSystem();
     
     cam.end();
     
@@ -118,7 +103,6 @@ void ofApp::draw(){
     //stringstream cp;
     //cp << "cam x, y, z coordinates: " << ofToString(cam_pos.x) << ", " << ofToString(cam_pos.y) << ", " << ofToString(cam_pos.z) << endl << endl;
     //ofDrawBitmapString(cp.str().c_str(), 50, 50);
-
 }
 
 //--------------------------------------------------------------

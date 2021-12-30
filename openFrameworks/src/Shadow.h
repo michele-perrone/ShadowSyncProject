@@ -1,22 +1,26 @@
 #pragma once
 #include "ofMain.h"
 
-struct Circle { //centered arounf each node pos, received from OSC
+struct Circle
+{ //centered arounf each node pos, received from OSC
 	ofVec2f center;
 	float radius;
-	void set(float xc, float yc, float r) {
+    void set(float xc, float yc, float r)
+    {
 		center.x = xc;
 		center.y = yc;
 		radius = r;
 	}
-	void draw() {
+    void draw()
+    {
 		ofSetColor(0, 0, 0);
 		ofFill();
 		ofDrawCircle(center, radius);
 	}
 };
 
-class Shadow {
+class Shadow
+{
 public:
 	Shadow();
 	void setup(float x, float y); // ~ stick to the wall

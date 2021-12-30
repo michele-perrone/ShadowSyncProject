@@ -2,7 +2,8 @@
 #include "ofApp.h"
 
 //========================================================================
-int main() {
+int main()
+{
     ofGLFWWindowSettings settings;
     settings.setGLVersion(3, 2);
     settings.setSize(1920, 1080);
