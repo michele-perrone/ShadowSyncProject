@@ -5,15 +5,6 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    //sphere.set(30, 10);
-    //sphere.move(100, 100,0);
-    //mesh = sphere.getMesh(); //doesn't take the sphere's positioning
-
-    //spherical mesh color 
-    //for (int i = 0; i < mesh.getVertices().size(); i++)
-    //{
-    //    mesh.addColor(ofFloatColor(float(i) / mesh.getVertices().size(), 0, 1.0 - (float(i) / mesh.getVertices().size())));
-    //}
 
     light.setup();
     light.setPosition(200, 100, 400);
@@ -33,7 +24,7 @@ void ofApp::setup(){
 
 
     plane_wall.set(PL_XZ, PL_Y);
-    plane_wall.move(PL_XZ/2, PL_Y/2, 0);
+    plane_wall.move(PL_XZ/2, PL_Y/2, -1);
 
     //material def
     floor_material.setDiffuseColor(ofFloatColor::darkGray);
@@ -51,35 +42,6 @@ void ofApp::setup(){
     //Shadow 
     shadow.setup(0, 0);
 
-    /*manual setup of a circle mesh NOT WORKING WELL the rendering for some triangles
-    //circleMesh.setMode(OF_PRIMITIVE_TRIANGLES);
-    int radius = 10;
-    int circle_pts = 200;
-    float omega = 0;
-    int zc = 0;
-    circleMesh.addVertex(ofVec3f(0, 0, 0)); //origin
-    for (int i = 0; i < circle_pts; i++)
-    {
-        circleMesh.addVertex(ofVec3f(cos(omega) * radius, sin(omega) * radius, zc)); //circonference vertex
-        //std::cout << "cos, sin: " << cos(omega) << ", " << sin(omega) << std::endl;
-        circleMesh.addColor(ofFloatColor(0, 0, 0));
-        omega += (TWO_PI/circle_pts); 
-    }
-
-    for (int j = 1; j < circle_pts ; j++)
-    {
-        
-        circleMesh.addIndex(j);
-        circleMesh.addIndex(0);
-        circleMesh.addIndex(j + 1);
-    }
-
-   
-    circleMesh.addIndex(circle_pts);
-    circleMesh.addIndex(0);
-    circleMesh.addIndex(1);
-    */
-
     //Testing particle system
     ofNode& origin = body.getOrigin();
     body.setupParticleSystem(origin);
@@ -88,31 +50,6 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    /* //quick guide on how to biuld a custom mesh
-    //build the mesh of a square: 4 vertices and 6 indexes (min. conditions required by 2 triangles)
-     
-    mesh.addVertex(ofPoint(0, 0, 0)); // make a new vertex
-    mesh.addColor(ofFloatColor(0, 0, 0));  // add a color at that vertex
-
-    mesh.addVertex(ofPoint(width, 0, 0));
-    mesh.addColor(ofFloatColor(0, 0, 0));  
-
-    mesh.addVertex(ofPoint(width, height, 0));
-    mesh.addColor(ofFloatColor(0, 0, 0)); 
-
-    mesh.addVertex(ofPoint(0, height, 0));
-    mesh.addColor(ofFloatColor(0, 0, 0)); 
-
-    //first triangle composed of three vertices --> those at index [0,1,2] of the mesh
-    mesh.addIndex(0);
-    mesh.addIndex(1);
-    mesh.addIndex(2);
-    //second triangle composed of three vertices--> those at index [2,3,0] of the mesh
-    mesh.addIndex(2);
-    mesh.addIndex(3);
-    mesh.addIndex(0);
-    */
-
     //OSC
     while (osc_receiver.hasWaitingMessages())
     {
@@ -154,22 +91,14 @@ void ofApp::draw(){
     wall_material.end();
 
 
-    //spherical mesh roto-translation
-    //ofPushMatrix();
-    //ofMultMatrix(mat);
-    //mesh.draw();
-    //ofPopMatrix();
-
     ofDrawGrid(10, 20, true, true, true, true); //3D grid
     
+
     body.draw();
-    //circleMesh.draw(); //does not work well for some reason a triangle has rendering problems
+   
     ofPushMatrix();
     //!application of the transformation
     ofMultMatrix(mat); //this matrix multiplication allow us to see the circle
-    //ofSetColor(ofFloatColor::gold);
-    //ofFill();
-    //ofDrawCircle(0, 0, 10); //easiest solution for drawing a circle on the wall
     shadow.draw(); //dummy solution, otherwise not visible since its a 2D entity and gets covered by wall plane
     ofPopMatrix();
 
@@ -184,7 +113,7 @@ void ofApp::draw(){
     ss << "FPS: " << ofToString(ofGetFrameRate(), 0) << endl << endl;
     ofDrawBitmapString(ss.str().c_str(), 20, 20);
 
-    //cam coordinates on screen (just for set it up)
+    //UTILITY cam coordinates on screen (just for set it up)
     //glm::vec3 cam_pos = cam.getPosition();
     //stringstream cp;
     //cp << "cam x, y, z coordinates: " << ofToString(cam_pos.x) << ", " << ofToString(cam_pos.y) << ", " << ofToString(cam_pos.z) << endl << endl;

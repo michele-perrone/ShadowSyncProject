@@ -27,17 +27,7 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 		
-	// SSP setup	
-		//ofMesh mesh;
-		//int width = 100;
-		//int height = 100;
-
-		//ofSpherePrimitive sphere;
-		//ofVboMesh mesh;
-
-		//float moving_x_coord = 0;
-		//int t = 0;
-
+	
 		ofMatrix4x4 mat; //only way i found for moving around a mesh. In depth, every 3D transformation (rotation, translation, scaling) is performed by 4x4 matrices
 
 		ofLight light;
@@ -53,13 +43,11 @@ class ofApp : public ofBaseApp{
 
 		Body body;
 		float z_body = 120; //dummy value until we have 3D coords from osc
+		
 		//OSC
-
 		ofxOscReceiver osc_receiver;
 		float data1, data2;
 
 		//2D shadow test
-		ofMesh circleMesh;
-
 		Shadow shadow;
 };

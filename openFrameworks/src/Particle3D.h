@@ -7,13 +7,12 @@ public:
     Particle3D();
     void setup(ofNode& origin, float rad, float lifesp, glm::vec3 f);
     void update();
-    void applyForce();
     void draw();
     bool isDead();
     float lifespan;
 
 private:
-    glm::vec3 position, velocity, acceleration, force;
+    glm::vec3 position, velocity, force;
     float radius;
     ofSpherePrimitive myParticle;
 };
