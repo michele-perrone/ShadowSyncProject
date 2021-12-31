@@ -1,7 +1,7 @@
 #pragma once
 #include "ofMain.h"
-#include <ParticleSystem2d.h>
-#include <Circle.h>
+#include "ParticleSystem2D.h"
+#include "Circle.h"
 
 
 class Shadow

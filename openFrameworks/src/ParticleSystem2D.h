@@ -1,6 +1,6 @@
 #pragma once
 #include "ofMain.h"
-#include <Particle2d.h>
+#include "Particle2D.h"
 
 class ParticleSystem2D
 {

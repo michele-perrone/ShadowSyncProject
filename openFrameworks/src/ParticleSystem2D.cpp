@@ -1,4 +1,4 @@
-#include <ParticleSystem2d.h>
+#include "ParticleSystem2D.h"
 
 //======================= 2D particle system =======
 

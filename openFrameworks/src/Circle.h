@@ -1,5 +1,5 @@
 #pragma once
-#include <ofMain.h>
+#include "ofMain.h"
 
 struct Circle
 { //centered arounf each node pos, received from OSC
