@@ -12,7 +12,7 @@ void Particle2D::setup(glm::vec2& origin, float radius, float lifespan, glm::vec
 	this->radius = radius;
 	this->lifespan = lifespan;
 	this->force = force;
-	my2dParticle.set(origin.x, origin.y, radius);
+	my2dParticle.set(origin, radius); //con un pointer
 	my2dParticleColor = ofFloatColor::grey; //rn setup manually
 
 }
@@ -25,13 +25,14 @@ void Particle2D::update()
 	lifespan -= this->death_rate;
 }
 
-void Particle2D::move_position(float x_sys_origin, float y_sys_origin)
+/*
+void Particle2D::follow_system_origin(float x_sys_origin, float y_sys_origin)
 {
 	this->position.x += x_sys_origin;
 	this->position.y += y_sys_origin;
 	my2dParticle.move(this->position); //otherwise, the particle position is not updated to the new origin! IDK how this works in 3D
 	
-}
+}*/
 
 
 void Particle2D::draw()

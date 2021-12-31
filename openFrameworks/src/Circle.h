@@ -6,10 +6,10 @@ struct Circle
 	glm::vec2 center;
 	float radius;
 
-	void set(float xc, float yc, float r)
+	void set(glm::vec2& origin, float r)
 	{
-		center.x = xc;
-		center.y = yc;
+		center.x = origin.x;
+		center.y = origin.y;
 		radius = r;
 	}
 
@@ -22,7 +22,7 @@ struct Circle
 
 	void move(glm::vec2 direction)
 	{
-		this->center.x += direction.x;
-		this->center.y += direction.y;
+		center.x += direction.x;
+		center.y += direction.y;
 	}
 };

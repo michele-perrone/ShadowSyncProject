@@ -2,30 +2,32 @@
 #define NUMPARTICLES 1000
 #define P_LIFESPAN 200
 #define P_RADIUS 1
+#define SHADOW_RADIUS 2
 
 Shadow::Shadow(){
 
 }
 
-void Shadow::setup()
+void Shadow::setup(glm::vec2& origin)
 {
-	com_shadow.set(0, 0, 2);
+	shadow_origin = origin;
+	com_shadow.set(origin, SHADOW_RADIUS);
 	
 	for (int i = 0; i < 5; i++) { //add junctions of the shadow
 		Circle temp_junction;
-		temp_junction.set(i * 5 + 20, i * 5 + 10, 2); //in a random position
+		temp_junction.set(origin * i * 5, SHADOW_RADIUS); //in a random position
 		shadow_junctions.push_back(temp_junction);
 	}
 	//setup of the 2D particle systems 
 	ParticleSystem2D com_particleSystem;
-	com_particleSystem.setup(this->getOrigin(), NUMPARTICLES, P_RADIUS, P_LIFESPAN);
+	com_particleSystem.setup(this->getOrigin(), NUMPARTICLES, P_RADIUS, P_LIFESPAN); //passing shadow_origin by ref
 	particle_systems_2d.push_back(com_particleSystem);
 
 }
 
 glm::vec2& Shadow::getOrigin()
 {
-	return com_shadow.center;
+	return shadow_origin;
 }
 
 void Shadow::draw()
@@ -51,14 +53,18 @@ void Shadow::move(float x_dir, float y_dir)
 	//test setup, just multiply 100x
 	//com.setGlobalPosition(x_dir * 100, y_dir * 100, Z);
 	//c.set(com.getX(), com.getY(), RAD);
+
 	float moving_dir[] = { x_dir, y_dir };
 	glm::vec2 moving_v = glm::make_vec2(moving_dir);
+
 	//moving com
 	com_shadow.move(moving_v);
+	shadow_origin += moving_v;
+
 
 	for (int i = 0; i < particle_systems_2d.size(); i++)
 	{
-		particle_systems_2d[i].moveOrigin(x_dir, y_dir);
+		particle_systems_2d[i].moveOrigin(shadow_origin);
 	}
 
 }

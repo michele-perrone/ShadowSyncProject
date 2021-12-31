@@ -31,15 +31,17 @@ void ofApp::setup()
     wall_material.setShininess(0.01);
 
     //body, test particle system setup
-    body.setup();
-    body.move(100, 40, z_body); //moving com --> moves all body
+    //body.setup();
+    //body.move(100, 40, z_body); //moving com --> moves all body
 
     // OSC
     //osc_receiver.setup(PORT);
 
     //Shadow 
-    shadow.setup();
-    shadow.move(50,50);
+    float shadow_origin[] = { 50, 50 };
+    glm::vec2 shadow_vOrigin = glm::make_vec2(shadow_origin);
+    shadow.setup(shadow_vOrigin);
+    //shadow.move(50,50);
 }
 
 //--------------------------------------------------------------
@@ -63,9 +65,10 @@ void ofApp::update()
         }
     }*/  
    // body.move(0.5,0.5,0.1);
-    body.updateParticleSystems();
-    body.move(0.1, 0.1, 0.1);
+    //body.updateParticleSystems();
+    //body.move(0.1, 0.1, 0.1);
     shadow.updateParticleSystems();
+    shadow.move(0.2, 0);
 }
 
 //--------------------------------------------------------------
@@ -87,7 +90,7 @@ void ofApp::draw()
 
     ofDrawGrid(10, 20, true, true, true, true); //3D grid    
 
-    body.draw(); // The body takes now also care of the particle systems!
+    //body.draw(); // The body takes now also care of the particle systems!
    
     shadow.draw();
  

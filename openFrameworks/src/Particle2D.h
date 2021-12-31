@@ -10,7 +10,7 @@ public:
 	Particle2D();
 	void setup(glm::vec2& origin, float rad, float lifesp, glm::vec2 f);
 	void update();
-	void move_position(float x_sys_origin, float y_sys_origin);
+	void follow_system_origin(float x_sys_origin, float y_sys_origin);
 	void draw();
 	bool isDead();
 	float lifespan;
