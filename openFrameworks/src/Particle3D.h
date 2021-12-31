@@ -5,7 +5,7 @@ class Particle3D
 {
 public:
     Particle3D();
-    void setup(ofNode& origin, float rad, float lifesp, glm::vec3 f);
+    void setup(ofNode& origin, float radius, float lifespan, glm::vec3 force);
     void update();
     void draw();
     bool isDead();
@@ -15,4 +15,6 @@ private:
     glm::vec3 position, velocity, force;
     float radius;
     ofSpherePrimitive myParticle;
+
+    float death_rate = ofRandom(1, 5);
 };

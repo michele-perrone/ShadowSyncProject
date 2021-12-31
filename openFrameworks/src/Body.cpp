@@ -31,6 +31,11 @@ void Body::setup()
     particle_systems.push_back(com_particleSystem);
 }
 
+ofNode& Body::getOrigin()
+{
+    return com;
+}
+
 void Body::draw()
 {
 	com.draw(); //not in same loop just for having a different (white, default) color for com
@@ -52,20 +57,16 @@ void Body::move(float x_dir, float y_dir, float z_dir)
     com.move(x_dir, y_dir, z_dir);
 
     //... and also the particle sources move
-    for(int i; i < particle_systems.size(); i++)
+    for(int i = 0; i < particle_systems.size(); i++)
     {
         particle_systems[i].moveOrigin(x_dir, y_dir, z_dir);
     }
 }
 
-ofNode& Body::getOrigin()
-{
-	return Body::com;
-}
 
 void Body::updateParticleSystems()
 {
-    for(int i; i < particle_systems.size(); i++)
+    for(int i = 0; i < particle_systems.size(); i++)
     {
         particle_systems[i].update();
     }

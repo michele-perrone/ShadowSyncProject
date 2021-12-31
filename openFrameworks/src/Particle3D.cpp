@@ -5,12 +5,12 @@ Particle3D::Particle3D(){
     radius = 0;
 }
 
-void Particle3D::setup(ofNode& origin, float rad, float lifesp, glm::vec3 f) 
+void Particle3D::setup(ofNode& origin, float radius, float lifespan, glm::vec3 force) 
 {
     position = origin.getPosition();
-    radius = rad;
-    lifespan = lifesp;
-    force = f;
+    this->radius = radius;
+    this->lifespan = lifespan;
+    this->force = force;
     myParticle.set(radius, 10);
     myParticle.setParent(origin);
 
@@ -20,6 +20,7 @@ void Particle3D::update() {
     position += velocity;
     velocity += force;
     myParticle.move(velocity);
+    lifespan -= this->death_rate;
    
 }
 
@@ -29,6 +30,6 @@ void Particle3D::draw() {
 }
 
 bool Particle3D::isDead() {
-   // return (this->lifespan <= 0);
-    return false;
+    return (this->lifespan <= 0);
+    //return false;
 }

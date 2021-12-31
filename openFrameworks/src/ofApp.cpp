@@ -38,14 +38,15 @@ void ofApp::setup()
     //osc_receiver.setup(PORT);
 
     //Shadow 
-    shadow.setup(0, 0);
+    shadow.setup();
+    shadow.move(50,50);
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
     //OSC
-    while (osc_receiver.hasWaitingMessages())
+    /*while (osc_receiver.hasWaitingMessages())
     {
         ofxOscMessage m;
         osc_receiver.getNextMessage(m);
@@ -60,9 +61,11 @@ void ofApp::update()
             std::cout << "data1 = " << data1 << std::endl;
             std::cout << "data2 = " << data2 << std::endl;
         }
-    }  
-
+    }*/  
+   // body.move(0.5,0.5,0.1);
     body.updateParticleSystems();
+    body.move(0.1, 0.1, 0.1);
+    shadow.updateParticleSystems();
 }
 
 //--------------------------------------------------------------
@@ -72,6 +75,7 @@ void ofApp::draw()
     cam.begin();
 
     ofBackground(142, 124, 200);
+    ofEnableAlphaBlending();
 
     floor_material.begin();
     plane_floor.draw();
@@ -85,18 +89,22 @@ void ofApp::draw()
 
     body.draw(); // The body takes now also care of the particle systems!
    
-    ofPushMatrix();
+    shadow.draw();
+ 
+
     //!application of the transformation
-    ofMultMatrix(mat); //this matrix multiplication allow us to see the circle
-    shadow.draw(); //dummy solution, otherwise not visible since its a 2D entity and gets covered by wall plane
-    ofPopMatrix();
+    // ofMultMatrix(mat); //this matrix multiplication allow us to see the circle
+    //shadow.draw(); //dummy solution, otherwise not visible since its a 2D entity and gets covered by wall plane
+    //ofPopMatrix();
     
     cam.end();
+
+
     
     //show FPS on screen
     stringstream ss;
     ss << "FPS: " << ofToString(ofGetFrameRate(), 0) << endl << endl;
-    ofDrawBitmapString(ss.str().c_str(), 20, 20);
+    ofDrawBitmapString(ss.str().c_str(), 10, 30);
 
     //UTILITY cam coordinates on screen (just for set it up)
     //glm::vec3 cam_pos = cam.getPosition();

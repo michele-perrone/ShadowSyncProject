@@ -34,9 +34,9 @@ void ParticleSystem::update()
         if (particles[i].isDead())
         {
             //delete dead particle
-            particles.erase(particles.begin()+i-1);
+            particles.erase(particles.begin()+i);
             //add new particle
-            //add new particle method (substitute in the dead one pos?)
+            addParticle();
         }
     }
 }
@@ -75,4 +75,18 @@ void ParticleSystem::moveDestination(int x_dir, int y_dir, int z_dir)
     destination.setPosition(current_pos.x + x_dir,
                             current_pos.y + y_dir,
                             current_pos.z + z_dir);
+}
+
+void ParticleSystem::addParticle()
+{
+    float force_mag = 0.01;
+    //create a new particle
+    Particle3D newParticle;
+    //assign to it a random force
+    float rand[] = { ofRandom(-force_mag, force_mag), ofRandom(-force_mag, force_mag), ofRandom(-force_mag, force_mag) };
+    glm::vec3 random_force = glm::make_vec3(rand);
+    //setup of the particle
+    newParticle.setup(origin, particleRadius, particleLifespan, random_force);
+    //push back to the end of the vector
+    particles.push_back(newParticle);
 }

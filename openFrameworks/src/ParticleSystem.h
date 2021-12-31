@@ -20,6 +20,7 @@ public:
     void moveOrigin(int x_dir, int y_dir, int z_dir);
     void setDestination(int x, int y, int z);
     void moveDestination(int x_dir, int y_dir, int z_dir);
+    void addParticle();
 
 private:
     int numParticles, particleRadius, particleLifespan;
