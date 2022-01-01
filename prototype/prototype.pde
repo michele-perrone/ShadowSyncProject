@@ -9,7 +9,7 @@ int rhX, rhY;
 int bodyX, bodyY;
 
 void setup(){
-  osc = new OscP5(this, 1998);
+  osc = new OscP5(this, 5511);
   osc.plug(this, "pose_handler", "/pose");
   //System.setProperty("jogl.disable.openglcore", "true");
   size(1000, 600);

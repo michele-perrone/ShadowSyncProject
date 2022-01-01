@@ -52,6 +52,7 @@ async def app_main():
     while True:
         await asyncio.sleep(0.00001)
         ret, img = cap.read()
+        img = cv2.flip(img, 1)
         if ret:
             img, pose = get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray)  # pose detection
             pose_sender(client_1, pose)

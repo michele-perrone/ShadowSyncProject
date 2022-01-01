@@ -2,6 +2,7 @@ import cv2  # image processing via openCv
 import mediapipe as mp  # pose estimation via mediapipe
 import json
 import os
+import platform
 
 
 def init_pose_estimation():
@@ -16,7 +17,11 @@ def init_pose_estimation():
     mpPose = mp.solutions.pose
     pose_cv = mpPose.Pose()  # with default params for detection and tracking tolerance (until detection confidence is high enough, it keeps tracking)
 
-    data = open('python\data\landmark.json')
+    os_name = platform.system()
+    if "Windows" in os_name:
+        data = open('python\data\landmark.json')
+    else:
+        data = open('data/landmark.json')
     pose = json.load(data)
     poseLandmarksArray = [x.upper() for x in pose]
 
@@ -58,13 +63,13 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
         cv2.circle(img, (int(pose["body"][0] * w), int(pose["body"][1] * h)), 8, (155, 155, 222),
                    cv2.FILLED)  # superimpose a circle to the landmarks
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(10) & 0xFF == ord('q'):
         return
 
     return img, pose
 
 
-def destroy_pose_estimator():
+def destroy_pose_estimator(cap):
     # When everything done, release
     # the video capture object
     cap.release()

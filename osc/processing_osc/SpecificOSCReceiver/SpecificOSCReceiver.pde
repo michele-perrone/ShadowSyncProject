@@ -2,7 +2,6 @@ import netP5.*;
 import oscP5.*;
 
 OscP5 osc;
-MyPoint p;
 float x, y, z;
 
 void setup(){
