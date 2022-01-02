@@ -47,6 +47,10 @@ def turnedOFF_handler(address, *args):
     if DEBUG==1:
         print(args[0], "is now", m.computer_online[1], m.computer_online[2])
 
+def pose_handler(address, *args):
+    # global_model.parameter...
+    print(f"{address}: {args}")
+
 # Default Handler
 def default_handler(address, *args):
     print(f"DEFAULT {address}: {args}")
@@ -55,6 +59,7 @@ dispatcher = Dispatcher()
 dispatcher.map("/pyUtil/ack", ack_handler)
 dispatcher.map("/pyUtil/turnedON", turnedON_handler)
 dispatcher.map("/pyUtil/turnedOFF", turnedOFF_handler)
+dispatcher.map("/pose", pose_handler)
 dispatcher.set_default_handler(default_handler)
 
 to_computer1 = SimpleUDPClient("192.168.130.2", 5510)
