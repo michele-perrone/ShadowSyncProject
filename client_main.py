@@ -34,7 +34,7 @@ def pose_sender(client, pose):
     #     pose['body'][0],
     #     pose['body'][1],
     #     ])
-    to_server.send_message("/pose", CLIENT_NUMBER, 2, 3, 4)
+    to_server.send_message("/pose", CLIENT_NUMBER)
 
 # Function that handles the areyouonline request and answers
 def ping_handler(address, *args):
