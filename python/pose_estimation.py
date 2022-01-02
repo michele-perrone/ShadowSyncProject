@@ -17,11 +17,14 @@ def init_pose_estimation():
     mpPose = mp.solutions.pose
     pose_cv = mpPose.Pose()  # with default params for detection and tracking tolerance (until detection confidence is high enough, it keeps tracking)
 
-    os_name = platform.system()
-    if "Windows" in os_name:
-        data = open('python\data\landmark.json')
-    else:
-        data = open('data/landmark.json')
+    # os_name = platform.system()
+    # if "Windows" in os_name:
+    #     data = open('python\data\landmark.json')
+    # else:
+    #     data = open('./data/landmark.json')
+
+    path = os.path.join(os.getcwd(), 'python', 'data', 'landmark.json')
+    data = open(path)
     pose = json.load(data)
     poseLandmarksArray = [x.upper() for x in pose]
 
