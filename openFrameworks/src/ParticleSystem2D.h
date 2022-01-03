@@ -14,10 +14,11 @@ public:
 	void moveDestination(int x_dir, int y_dir);
 	void addParticle();
 
+	void setAttractors(Circle* attractor);
+	vector <Circle*> attractors; //pointer to junctions - attractors
 private:
 	int numParticles, particleRadius, particleLifespan;
 	glm::vec2 origin_PS2D;
 	glm::vec2 destination;
-
 	vector <Particle2D> particles;
 };

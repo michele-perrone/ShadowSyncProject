@@ -29,9 +29,9 @@ void ParticleSystem2D::update()
 {
 	//update the particle system generated from / attracted to each junction
 	for (int i = particles.size() - 1; i >= 0; i--)
-	{
-		particles[i].update();
-		//particles[i].lifespan -= 0.5;
+    {
+        particles[i].update(this->attractors[0]);
+		
 		if (particles[i].isDead())
 		{
 			//delete dead particle
@@ -42,6 +42,7 @@ void ParticleSystem2D::update()
 	}
 
 }
+
 
 void ParticleSystem2D::draw()
 {
@@ -61,10 +62,6 @@ void ParticleSystem2D::moveOrigin(glm::vec2& newOrigin)
 {
 
 	origin_PS2D = newOrigin;
-	/*for (int i = particles.size() - 1; i >= 0; i--)
-	{
-		particles[i].follow_system_origin(origin.x, origin.y); //move the particles position to the new origin of the system
-	}*/
 	
 }
 
@@ -93,4 +90,10 @@ void ParticleSystem2D::addParticle() //QUI la (nuova) origine del PS deve essere
 	//push back to the end of the vector
 	particles.push_back(newParticle);
 	
+}
+
+void ParticleSystem2D::setAttractors(Circle* attractor)
+{
+	this->attractors.push_back(attractor);
+	std::cout << "ps2d attractor: " << attractor->center << std::endl;
 }

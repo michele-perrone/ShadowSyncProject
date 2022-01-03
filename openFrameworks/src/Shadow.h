@@ -21,4 +21,5 @@ private:
 	vector<Circle> shadow_junctions;
 	vector<ParticleSystem2D> particle_systems_2d;
 	glm::vec2 shadow_origin;
+	vector <Circle*> shadow_attractors; //should follow the defined attractor(that is a junction) position
 };
