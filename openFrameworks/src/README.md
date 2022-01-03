@@ -40,7 +40,7 @@ Nel dubbio, vedi la definizione della funzione.
 ## 2D case
 
 ```cpp
-shadow setup (vec2& origin) 
+shadow setup (vec2 origin) 
 	{
 	shadow_origin = origin;
 		ParticleSystem2D.setup (&shadowOrigin,...)
