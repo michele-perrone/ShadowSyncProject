@@ -21,7 +21,11 @@ void ofApp::update()
 
           std::cout << "data1 = " << data1 << std::endl;
           //std::cout << "data2 = " << data2 << std::endl;
+        } else {
+            cout << "Unknown message" << endl;´
         }
+
+
       }
 }
 
