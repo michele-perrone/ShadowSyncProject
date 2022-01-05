@@ -90,6 +90,18 @@ def ping_loop():
 
     time.sleep(1)
 
+def update_installation_phase():
+    if global_model.elapsed_time()<timedelta(seconds=10): 
+        global_model.blend = 0
+    elif global_model.elapsed_time()>timedelta(seconds=20): 
+        if global_model.elapsed_time()<timedelta(seconds=40): 
+            global_model.blend += 0.01
+        else:
+            global_model.blend = 1
+    
+    to_computer1.send_message("/ofxUtil/blend", global_model.blend)
+
+
 async def app_main():
   
     cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray = init_pose_estimation()
@@ -100,9 +112,7 @@ async def app_main():
         ping.setDaemon(True)
         ping.start()
         print_connection_status()
-        elapsed_time = global_model.elapsed_time()
-        if elapsed_time>timedelta(seconds=10): 
-            print(elapsed_time)
+        update_installation_phase()
 
         await asyncio.sleep(1)
 

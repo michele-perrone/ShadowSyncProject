@@ -9,6 +9,7 @@ class Model:
         self.start_time = datetime.now()
         self.computer_online = [0, 0, 0]
         self.ack = [0, 0, 0]
+        self.blend = 0
         self.pose1 = {
             "face": {
                 "_completely_detected": "1",
