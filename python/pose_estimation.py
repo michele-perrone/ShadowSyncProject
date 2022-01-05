@@ -10,7 +10,7 @@ def init_pose_estimation():
     # poseLandmarksArray = ["nose", "left_eye_inner", "left_eye", "left_eye_outer", "right_eye_inner", "right_eye", "right_eye_outer", "left_ear", "right_ear", "mouth_left", "mouth_right", "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist", "left_pinky", "right_pinky", "left_index", "right_index", "left_thumb", "right_thumb", "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle", "left_heel", "right_heel", "left_foot_index", "right_foot_index"]
 
     # obtain video/webcam
-    cap = cv2.VideoCapture(os.path.join(os.path.curdir, "../Videos", "cpac-video-test-2.mov"))
+    cap = cv2.VideoCapture(os.path.join(os.getcwd(), 'Videos', "robot_dance.mp4"))
     #cap = cv2.VideoCapture(0)
 
     mpDraw = mp.solutions.drawing_utils
@@ -37,7 +37,6 @@ def init_pose_estimation():
         print("Error opening video file")
     return cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray
 
-
 def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # conversion of the acquired img in RGB scale
     results = pose_cv.process(imgRGB)  # pose detection# print(results.pose_landmarks)
@@ -55,13 +54,11 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
                 pose[i] = [results.pose_landmarks.landmark[mpPose.PoseLandmark[upperI]].x,
                             results.pose_landmarks.landmark[mpPose.PoseLandmark[upperI]].y,
                             results.pose_landmarks.landmark[mpPose.PoseLandmark[upperI]].z]
-                if i == "right_thumb":
-                    print("z coord: ", pose[i][2]) #testing z coord estimation with right hand
+                # if i == "right_thumb":
+                #     print("z coord: ", pose[i][2]) #testing z coord estimation with right hand
             else:
                 pose[i] = [int((pose['left_shoulder'][0] + pose['right_shoulder'][0] + pose['left_hip'][0] + pose['right_hip'][0])) / 4,
                             int((pose['left_shoulder'][1] + pose['right_shoulder'][1] + pose['left_hip'][1] + pose['right_hip'][1])) / 4]
-        
-        
 
         cv2.circle(img, (int(pose["body"][0] * w), int(pose["body"][1] * h)), 8, (155, 155, 222),
                    cv2.FILLED)  # superimpose a circle to the landmarks

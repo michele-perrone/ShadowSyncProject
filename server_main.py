@@ -4,7 +4,7 @@ from pythonosc.udp_client import SimpleUDPClient
 import asyncio
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import builtins as __builtin__
 from model import Model
 from threading import Thread
@@ -100,7 +100,9 @@ async def app_main():
         ping.setDaemon(True)
         ping.start()
         print_connection_status()
-        print(pose)
+        elapsed_time = global_model.elapsed_time()
+        if elapsed_time>timedelta(seconds=10): 
+            print(elapsed_time)
 
         await asyncio.sleep(1)
 

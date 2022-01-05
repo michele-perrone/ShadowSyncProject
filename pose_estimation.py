@@ -41,6 +41,11 @@ def init_pose_estimation():
         print("Error opening video file")
     return cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray
 
+def wrap_pose(pose):
+
+    pose
+
+    return pose
 
 def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # conversion of the acquired img in RGB scale
@@ -72,6 +77,8 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
 
     if cv2.waitKey(10) & 0xFF == ord('q'):
         return
+
+    pose = wrap_pose(pose)
 
     return img, pose
 
