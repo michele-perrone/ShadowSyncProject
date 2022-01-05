@@ -6,8 +6,10 @@
 #include "Shadow.h"
 #include "Particle3D.h"
 #include "Particle2D.h"
+#include "globalmodel.h"
 
-#define PORT 1998
+#define PORT 5501
+//#define PORT 5502
 
 class ofApp : public ofBaseApp{
 	// default openFrameworks setup
@@ -47,7 +49,9 @@ class ofApp : public ofBaseApp{
 		
 		//OSC
 		ofxOscReceiver osc_receiver;
-		float data1, data2;
+        GlobalModel global_model;
+        std::vector<std::string> split(string address);
+        void handle_address(ofxOscMessage * m);
 
 		//2D shadow test
 		Shadow shadow;
