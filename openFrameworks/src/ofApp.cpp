@@ -250,6 +250,8 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.pose.mouth_right[0] = m->getArgAsFloat(0);
                 global_model.pose.mouth_right[1] = m->getArgAsFloat(1);
                 global_model.pose.mouth_right[2] = m->getArgAsFloat(2);
+            } else {
+                if (OSC_DEBUG) cout << " not recognized" << endl;
             }
         } else if (area == "body") {
             if(component=="_completely_detected") {
@@ -276,6 +278,8 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.pose.right_hip[0] = m->getArgAsFloat(0);
                 global_model.pose.right_hip[1] = m->getArgAsFloat(1);
                 global_model.pose.right_hip[2] = m->getArgAsFloat(2);
+            } else {
+                if (OSC_DEBUG) cout << "not recognized" << endl;
             }
         } else if (area == "left_arm") {
             if(component=="_completely_detected") {
@@ -306,6 +310,8 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.pose.left_thumb[0] = m->getArgAsFloat(0);
                 global_model.pose.left_thumb[1] = m->getArgAsFloat(1);
                 global_model.pose.left_thumb[2] = m->getArgAsFloat(2);
+            } else {
+                if (OSC_DEBUG) cout << "not recognized" << endl;
             }
         } else if (area == "right_arm") {
             if(component=="_completely_detected") {
@@ -336,6 +342,8 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.pose.right_thumb[0] = m->getArgAsFloat(0);
                 global_model.pose.right_thumb[1] = m->getArgAsFloat(1);
                 global_model.pose.right_thumb[2] = m->getArgAsFloat(2);
+            } else {
+                if (OSC_DEBUG) cout << "not recognized" << endl;
             }
         } else if (area == "left_leg") {
             if(component=="_completely_detected") {
@@ -362,6 +370,8 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.pose.left_foot_index[0] = m->getArgAsFloat(0);
                 global_model.pose.left_foot_index[1] = m->getArgAsFloat(1);
                 global_model.pose.left_foot_index[2] = m->getArgAsFloat(2);
+            } else {
+                if (OSC_DEBUG) cout << "not recognized" << endl;
             }
         } else if (area == "right_leg") {
             if(component=="_completely_detected") {
@@ -388,6 +398,8 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.pose.right_foot_index[0] = m->getArgAsFloat(0);
                 global_model.pose.right_foot_index[1] = m->getArgAsFloat(1);
                 global_model.pose.right_foot_index[2] = m->getArgAsFloat(2);
+            } else {
+                if (OSC_DEBUG) cout << "not recognized" << endl;
             }
         }
     } else if (type == "other_pose") {
@@ -531,6 +543,8 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.other_pose.right_thumb[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_thumb[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_thumb[2] = m->getArgAsFloat(2);
+            } else {
+
             }
         } else if (area == "left_leg") {
             if(component=="_completely_detected") {
@@ -588,6 +602,7 @@ void ofApp::handle_address(ofxOscMessage * m) {
     } else if (type == "ofxUtil") {
         if (OSC_DEBUG) cout << address << endl;
         if(area == "blend") {
+            // blend=0 is just shadow, blend=1 is all other pose
             global_model.blend = m->getArgAsFloat(0);
         }
     } else {

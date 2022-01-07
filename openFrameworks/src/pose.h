@@ -3,13 +3,14 @@
 
 #include <map>
 #include <string>
-
+#include <iostream>
+using namespace std;
 
 class Pose
 {
 public:
     Pose();
-
+    void print();
 
     bool face_completely_detected = true;
     bool body_completely_detected = true;

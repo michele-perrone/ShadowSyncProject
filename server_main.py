@@ -4,7 +4,7 @@ from pythonosc.udp_client import SimpleUDPClient
 import asyncio
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import builtins as __builtin__
 from model import Model
 from threading import Thread
@@ -90,8 +90,20 @@ def ping_loop():
 
     time.sleep(1)
 
+def update_installation_phase():
+    if global_model.elapsed_time()<timedelta(seconds=10):
+        global_model.blend = 0
+    elif global_model.elapsed_time()>timedelta(seconds=20):
+        if global_model.elapsed_time()<timedelta(seconds=40):
+            global_model.blend += 0.01
+        else:
+            global_model.blend = 1
+
+    to_computer1.send_message("/ofxUtil/blend", global_model.blend)
+
+
 async def app_main():
-  
+
     cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray = init_pose_estimation()
     while(True):
         if DEBUG==1:
@@ -100,15 +112,15 @@ async def app_main():
         ping.setDaemon(True)
         ping.start()
         print_connection_status()
-        print(pose)
+        update_installation_phase()
 
         await asyncio.sleep(1)
 
 async def init_main():
     server = AsyncIOOSCUDPServer(("127.0.1.1", listen_port), dispatcher, asyncio.get_event_loop())
-    transport, protocol = await server.create_serve_endpoint() 
-    await app_main() 
-    transport.close() 
+    transport, protocol = await server.create_serve_endpoint()
+    await app_main()
+    transport.close()
 
 
 asyncio.run(init_main())
