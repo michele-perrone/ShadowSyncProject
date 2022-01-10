@@ -3,7 +3,6 @@
 #define PL_Y 100  //the y plane dimension
 #define OSC_DEBUG 1 // Macro for verbose OSC reception
 
-
 //--------------------------------------------------------------
 void ofApp::setup()
 {
@@ -32,16 +31,15 @@ void ofApp::setup()
     wall_material.setShininess(0.01);
 
     //body, test particle system setup
-    //body.setup();
-    //body.move(100, 40, z_body); //moving com --> moves all body
+    body.setup(&global_model.pose);
 
     // OSC
     osc_receiver.setup(PORT);
 
     //Shadow
-    float shadow_origin[] = { 50, 50 };
-    glm::vec2 shadow_vOrigin = glm::make_vec2(shadow_origin);
-    shadow.setup(shadow_vOrigin);
+    //float shadow_origin[] = { 50, 50 };
+    //glm::vec2 shadow_vOrigin = glm::make_vec2(shadow_origin);
+    //shadow.setup(shadow_vOrigin);
     //shadow.move(50,50);
 }
 
@@ -56,11 +54,12 @@ void ofApp::update()
         if (OSC_DEBUG) cout << "Message Received : ";
         handle_address(&m); // Updates the global_model with the latest values arrived by osc
     }
-   // body.move(0.5,0.5,0.1);
+    body.move_centroid();
+    body.move_junctions();
+
     //body.updateParticleSystems();
-    //body.move(0.1, 0.1, 0.1);
-    shadow.updateParticleSystems();
-    shadow.move(0.2, 0);
+    //shadow.updateParticleSystems();
+    //shadow.move(0.2, 0);
 }
 
 //--------------------------------------------------------------
@@ -82,9 +81,9 @@ void ofApp::draw()
 
     ofDrawGrid(10, 20, true, true, true, true); //3D grid
 
-    //body.draw(); // The body takes now also care of the particle systems!
+    body.draw(); // The body takes now also care of the particle systems!
 
-    shadow.draw();
+    //shadow.draw();
 
 
     //!application of the transformation

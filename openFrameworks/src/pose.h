@@ -1,5 +1,7 @@
 #ifndef POSE_H
 #define POSE_H
+#define POSE_JUNCTIONS 33 //no centroids
+#define POSE_CENTROIDS 6
 
 #include <map>
 #include <string>
