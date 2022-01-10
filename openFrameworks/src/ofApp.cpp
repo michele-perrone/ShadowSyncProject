@@ -1,7 +1,7 @@
 #include "ofApp.h"
 #define PL_XZ 200 //the xz plane dimension
 #define PL_Y 100  //the y plane dimension
-#define OSC_DEBUG 1 // Macro for verbose OSC reception
+#define OSC_DEBUG 0 // Macro for verbose OSC reception
 
 //--------------------------------------------------------------
 void ofApp::setup()
@@ -290,23 +290,23 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.pose.left_arm_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.left_arm_centroid[1] = m->getArgAsFloat(1);
                 global_model.pose.left_arm_centroid[2] = m->getArgAsFloat(2);
-            } else if (component=="elbow") {
+            } else if (component=="left_elbow") {
                 global_model.pose.left_elbow[0] = m->getArgAsFloat(0);
                 global_model.pose.left_elbow[1] = m->getArgAsFloat(1);
                 global_model.pose.left_elbow[2] = m->getArgAsFloat(2);
-            } else if (component=="wrist") {
+            } else if (component=="left_wrist") {
                 global_model.pose.left_wrist[0] = m->getArgAsFloat(0);
                 global_model.pose.left_wrist[1] = m->getArgAsFloat(1);
                 global_model.pose.left_wrist[2] = m->getArgAsFloat(2);
-            } else if (component=="pinky") {
+            } else if (component=="left_pinky") {
                 global_model.pose.left_pinky[0] = m->getArgAsFloat(0);
                 global_model.pose.left_pinky[1] = m->getArgAsFloat(1);
                 global_model.pose.left_pinky[2] = m->getArgAsFloat(2);
-            } else if (component=="index") {
+            } else if (component=="left_index") {
                 global_model.pose.left_index[0] = m->getArgAsFloat(0);
                 global_model.pose.left_index[1] = m->getArgAsFloat(1);
                 global_model.pose.left_index[2] = m->getArgAsFloat(2);
-            } else if (component=="thumb") {
+            } else if (component=="left_thumb") {
                 global_model.pose.left_thumb[0] = m->getArgAsFloat(0);
                 global_model.pose.left_thumb[1] = m->getArgAsFloat(1);
                 global_model.pose.left_thumb[2] = m->getArgAsFloat(2);
@@ -322,23 +322,23 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.pose.right_arm_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.right_arm_centroid[1] = m->getArgAsFloat(1);
                 global_model.pose.right_arm_centroid[2] = m->getArgAsFloat(2);
-            } else if (component=="elbow") {
+            } else if (component=="right_elbow") {
                 global_model.pose.right_elbow[0] = m->getArgAsFloat(0);
                 global_model.pose.right_elbow[1] = m->getArgAsFloat(1);
                 global_model.pose.right_elbow[2] = m->getArgAsFloat(2);
-            } else if (component=="wrist") {
+            } else if (component=="right_wrist") {
                 global_model.pose.right_wrist[0] = m->getArgAsFloat(0);
                 global_model.pose.right_wrist[1] = m->getArgAsFloat(1);
                 global_model.pose.right_wrist[2] = m->getArgAsFloat(2);
-            } else if (component=="pinky") {
+            } else if (component=="right_pinky") {
                 global_model.pose.right_pinky[0] = m->getArgAsFloat(0);
                 global_model.pose.right_pinky[1] = m->getArgAsFloat(1);
                 global_model.pose.right_pinky[2] = m->getArgAsFloat(2);
-            } else if (component=="index") {
+            } else if (component=="right_index") {
                 global_model.pose.right_index[0] = m->getArgAsFloat(0);
                 global_model.pose.right_index[1] = m->getArgAsFloat(1);
                 global_model.pose.right_index[2] = m->getArgAsFloat(2);
-            } else if (component=="thumb") {
+            } else if (component=="right_thumb") {
                 global_model.pose.right_thumb[0] = m->getArgAsFloat(0);
                 global_model.pose.right_thumb[1] = m->getArgAsFloat(1);
                 global_model.pose.right_thumb[2] = m->getArgAsFloat(2);
@@ -354,19 +354,19 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.pose.left_leg_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.left_leg_centroid[1] = m->getArgAsFloat(1);
                 global_model.pose.left_leg_centroid[2] = m->getArgAsFloat(2);
-            } else if (component=="knee") {
+            } else if (component=="left_knee") {
                 global_model.pose.left_knee[0] = m->getArgAsFloat(0);
                 global_model.pose.left_knee[1] = m->getArgAsFloat(1);
                 global_model.pose.left_knee[2] = m->getArgAsFloat(2);
-            } else if (component=="ankle") {
+            } else if (component=="left_ankle") {
                 global_model.pose.left_ankle[0] = m->getArgAsFloat(0);
                 global_model.pose.left_ankle[1] = m->getArgAsFloat(1);
                 global_model.pose.left_ankle[2] = m->getArgAsFloat(2);
-            } else if (component=="heel") {
+            } else if (component=="left_heel") {
                 global_model.pose.left_heel[0] = m->getArgAsFloat(0);
                 global_model.pose.left_heel[1] = m->getArgAsFloat(1);
                 global_model.pose.left_heel[2] = m->getArgAsFloat(2);
-            } else if (component=="foot_index") {
+            } else if (component=="left_foot_index") {
                 global_model.pose.left_foot_index[0] = m->getArgAsFloat(0);
                 global_model.pose.left_foot_index[1] = m->getArgAsFloat(1);
                 global_model.pose.left_foot_index[2] = m->getArgAsFloat(2);
@@ -382,19 +382,19 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.pose.right_leg_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.right_leg_centroid[1] = m->getArgAsFloat(1);
                 global_model.pose.right_leg_centroid[2] = m->getArgAsFloat(2);
-            } else if (component=="knee") {
+            } else if (component=="right_knee") {
                 global_model.pose.right_knee[0] = m->getArgAsFloat(0);
                 global_model.pose.right_knee[1] = m->getArgAsFloat(1);
                 global_model.pose.right_knee[2] = m->getArgAsFloat(2);
-            } else if (component=="ankle") {
+            } else if (component=="right_ankle") {
                 global_model.pose.right_ankle[0] = m->getArgAsFloat(0);
                 global_model.pose.right_ankle[1] = m->getArgAsFloat(1);
                 global_model.pose.right_ankle[2] = m->getArgAsFloat(2);
-            } else if (component=="heel") {
+            } else if (component=="right_heel") {
                 global_model.pose.right_heel[0] = m->getArgAsFloat(0);
                 global_model.pose.right_heel[1] = m->getArgAsFloat(1);
                 global_model.pose.right_heel[2] = m->getArgAsFloat(2);
-            } else if (component=="foot_index") {
+            } else if (component=="right_foot_index") {
                 global_model.pose.right_foot_index[0] = m->getArgAsFloat(0);
                 global_model.pose.right_foot_index[1] = m->getArgAsFloat(1);
                 global_model.pose.right_foot_index[2] = m->getArgAsFloat(2);
@@ -493,23 +493,23 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.other_pose.left_arm_centroid[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_arm_centroid[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_arm_centroid[2] = m->getArgAsFloat(2);
-            } else if (component=="elbow") {
+            } else if (component=="left_elbow") {
                 global_model.other_pose.left_elbow[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_elbow[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_elbow[2] = m->getArgAsFloat(2);
-            } else if (component=="wrist") {
+            } else if (component=="left_wrist") {
                 global_model.other_pose.left_wrist[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_wrist[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_wrist[2] = m->getArgAsFloat(2);
-            } else if (component=="pinky") {
+            } else if (component=="left_pinky") {
                 global_model.other_pose.left_pinky[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_pinky[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_pinky[2] = m->getArgAsFloat(2);
-            } else if (component=="index") {
+            } else if (component=="left_index") {
                 global_model.other_pose.left_index[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_index[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_index[2] = m->getArgAsFloat(2);
-            } else if (component=="thumb") {
+            } else if (component=="left_thumb") {
                 global_model.other_pose.left_thumb[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_thumb[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_thumb[2] = m->getArgAsFloat(2);
@@ -523,23 +523,23 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.other_pose.right_arm_centroid[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_arm_centroid[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_arm_centroid[2] = m->getArgAsFloat(2);
-            } else if (component=="elbow") {
+            } else if (component=="right_elbow") {
                 global_model.other_pose.right_elbow[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_elbow[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_elbow[2] = m->getArgAsFloat(2);
-            } else if (component=="wrist") {
+            } else if (component=="right_wrist") {
                 global_model.other_pose.right_wrist[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_wrist[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_wrist[2] = m->getArgAsFloat(2);
-            } else if (component=="pinky") {
+            } else if (component=="right_pinky") {
                 global_model.other_pose.right_pinky[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_pinky[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_pinky[2] = m->getArgAsFloat(2);
-            } else if (component=="index") {
+            } else if (component=="right_index") {
                 global_model.pose.right_index[0] = m->getArgAsFloat(0);
                 global_model.pose.right_index[1] = m->getArgAsFloat(1);
                 global_model.pose.right_index[2] = m->getArgAsFloat(2);
-            } else if (component=="thumb") {
+            } else if (component=="right_thumb") {
                 global_model.other_pose.right_thumb[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_thumb[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_thumb[2] = m->getArgAsFloat(2);
@@ -555,19 +555,19 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.other_pose.left_leg_centroid[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_leg_centroid[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_leg_centroid[2] = m->getArgAsFloat(2);
-            } else if (component=="knee") {
+            } else if (component=="left_knee") {
                 global_model.other_pose.left_knee[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_knee[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_knee[2] = m->getArgAsFloat(2);
-            } else if (component=="ankle") {
+            } else if (component=="left_ankle") {
                 global_model.other_pose.left_ankle[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_ankle[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_ankle[2] = m->getArgAsFloat(2);
-            } else if (component=="heel") {
+            } else if (component=="left_heel") {
                 global_model.other_pose.left_heel[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_heel[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_heel[2] = m->getArgAsFloat(2);
-            } else if (component=="foot_index") {
+            } else if (component=="left_foot_index") {
                 global_model.other_pose.left_foot_index[0] = m->getArgAsFloat(0);
                 global_model.other_pose.left_foot_index[1] = m->getArgAsFloat(1);
                 global_model.other_pose.left_foot_index[2] = m->getArgAsFloat(2);
@@ -581,19 +581,19 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.other_pose.right_leg_centroid[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_leg_centroid[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_leg_centroid[2] = m->getArgAsFloat(2);
-            } else if (component=="knee") {
+            } else if (component=="right_knee") {
                 global_model.other_pose.right_knee[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_knee[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_knee[2] = m->getArgAsFloat(2);
-            } else if (component=="ankle") {
+            } else if (component=="right_ankle") {
                 global_model.other_pose.right_ankle[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_ankle[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_ankle[2] = m->getArgAsFloat(2);
-            } else if (component=="heel") {
+            } else if (component=="right_heel") {
                 global_model.other_pose.right_heel[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_heel[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_heel[2] = m->getArgAsFloat(2);
-            } else if (component=="foot_index") {
+            } else if (component=="right_foot_index") {
                 global_model.other_pose.right_foot_index[0] = m->getArgAsFloat(0);
                 global_model.other_pose.right_foot_index[1] = m->getArgAsFloat(1);
                 global_model.other_pose.right_foot_index[2] = m->getArgAsFloat(2);
