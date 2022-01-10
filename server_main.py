@@ -51,8 +51,18 @@ def turnedOFF_handler(address, *args):
         print(args[0], "is now", global_model.computer_online[1], global_model.computer_online[2])
 
 def pose_handler(address, *args):
-    global_model
-    # print(f"{address}: {args}")
+    component = address[5:].split('/')
+    if args[0]==1:
+        # Pose comes from client 1 and has to be sent to 1 as pose and to 2 as other_pose
+        args = args[1:]
+        to_computer1.send_message(address, args)
+        to_computer2.send_message('/other_pose' + address[5:], args)
+
+    elif args[0]==2:
+        # Pose comes from client 1 and has to be sent to 2 as pose and to 1 as other_pose
+        args = args[1:]
+        to_computer1.send_message('/other_pose' + address[5:], args)
+        to_computer2.send_message(address, args)
 
 # Default Handler
 def default_handler(address, *args):
@@ -62,7 +72,7 @@ dispatcher = Dispatcher()
 dispatcher.map("/pyUtil/ack", ack_handler)
 dispatcher.map("/pyUtil/turnedON", turnedON_handler)
 dispatcher.map("/pyUtil/turnedOFF", turnedOFF_handler)
-dispatcher.map("/pose", pose_handler)
+dispatcher.map("/pose/*", pose_handler)
 dispatcher.set_default_handler(default_handler)
 
 to_computer1 = SimpleUDPClient("192.168.1.21", 5510)

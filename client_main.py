@@ -21,20 +21,17 @@ def ack():
 
 # Pose sender
 def pose_sender(client, pose):
-    #client.send_message("/pose", [pose['left_shoulder'], pose['right_shoulder']])   # Send float message
-    # client.send_message("/pose", [
-    #     pose['left_shoulder'][0],
-    #     pose['left_shoulder'][1],
-    #     pose['right_shoulder'][0],
-    #     pose['right_shoulder'][1],
-    #     pose['left_hip'][0],
-    #     pose['left_hip'][1],
-    #     pose['right_hip'][0],
-    #     pose['right_hip'][1],
-    #     pose['body'][0],
-    #     pose['body'][1],
-    #     ])
-    to_server.send_message("/pose", CLIENT_NUMBER)
+    for i in pose:
+        for j in pose[i]:
+            address = "/pose/" + i + "/" + j  # example: address = /pose/face/_centroid[ ... ]
+            coordinates = [CLIENT_NUMBER]
+            for index in range(len(pose[i][j])):
+                coordinates.append(pose[i][j][index])
+            if (j == "right_shoulder"):
+                print(coordinates)
+            client.send_message(address,
+                                coordinates
+                                )
 
 # Function that handles the areyouonline request and answers
 def ping_handler(address, *args):
