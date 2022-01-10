@@ -34,7 +34,7 @@ void ofApp::setup()
     body.setup(&global_model.pose);
 
     // OSC
-    osc_receiver.setup(PORT);
+    osc_receiver.setup(PORT); // It is 5501 or 5502
 
     //Shadow
     //float shadow_origin[] = { 50, 50 };
@@ -54,6 +54,7 @@ void ofApp::update()
         if (OSC_DEBUG) cout << "Message Received : ";
         handle_address(&m); // Updates the global_model with the latest values arrived by osc
     }
+    global_model.pose.print();
     body.move_centroid();
     body.move_junctions();
 
@@ -190,7 +191,7 @@ void ofApp::handle_address(ofxOscMessage * m) {
     string type = address_component.at(0);
     string area = address_component.at(1);
     string component = address_component.at(2);
-    string sub_component = address_component.at(3);
+    //string sub_component = address_component.at(3);
 
 //    if (OSC_DEBUG) cout << "Separated address: " << "-" << type << "-" << area << "-" << component << "-" << sub_component << "-" << endl;
 
@@ -198,9 +199,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
         if (OSC_DEBUG) cout << address << endl;
         if(area == "face") {
             if(component=="_completely_detected") {
-                global_model.pose.face_completely_detected = m->getArgAsBool(0);
+                //global_model.pose.face_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                global_model.pose.face_absent = m->getArgAsBool(0);
+                //global_model.pose.face_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.face_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.face_centroid[1] = m->getArgAsFloat(1);
@@ -254,9 +255,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         } else if (area == "body") {
             if(component=="_completely_detected") {
-                global_model.pose.body_completely_detected = m->getArgAsBool(0);
+                //global_model.pose.body_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                global_model.pose.body_absent = m->getArgAsBool(0);
+                //global_model.pose.body_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.body_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.body_centroid[1] = m->getArgAsFloat(1);
@@ -282,9 +283,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         } else if (area == "left_arm") {
             if(component=="_completely_detected") {
-                global_model.pose.left_arm_completely_detected = m->getArgAsBool(0);
+                //global_model.pose.left_arm_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                global_model.pose.left_arm_absent = m->getArgAsBool(0);
+                //global_model.pose.left_arm_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.left_arm_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.left_arm_centroid[1] = m->getArgAsFloat(1);
@@ -314,9 +315,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         } else if (area == "right_arm") {
             if(component=="_completely_detected") {
-                global_model.pose.right_arm_completely_detected = m->getArgAsBool(0);
+                //global_model.pose.right_arm_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                global_model.pose.right_arm_absent = m->getArgAsBool(0);
+                //global_model.pose.right_arm_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.right_arm_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.right_arm_centroid[1] = m->getArgAsFloat(1);
@@ -346,9 +347,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         } else if (area == "left_leg") {
             if(component=="_completely_detected") {
-                global_model.pose.left_leg_completely_detected = m->getArgAsBool(0);
+                //global_model.pose.left_leg_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                global_model.pose.left_leg_absent = m->getArgAsBool(0);
+                //global_model.pose.left_leg_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.left_leg_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.left_leg_centroid[1] = m->getArgAsFloat(1);
@@ -374,9 +375,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         } else if (area == "right_leg") {
             if(component=="_completely_detected") {
-                global_model.pose.right_leg_completely_detected = m->getArgAsBool(0);
+                //global_model.pose.right_leg_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                global_model.pose.right_leg_absent = m->getArgAsBool(0);
+                //global_model.pose.right_leg_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.right_leg_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.right_leg_centroid[1] = m->getArgAsFloat(1);

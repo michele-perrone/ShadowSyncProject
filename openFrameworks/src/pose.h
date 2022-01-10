@@ -22,12 +22,12 @@ public:
     bool right_leg_completely_detected = true;
 
 
-    bool face_absent = true;
-    bool body_absent = true;
-    bool left_arm_absent = true;
-    bool right_arm_absent = true;
-    bool left_leg_absent = true;
-    bool right_leg_absent = true;
+    bool face_absent = false;
+    bool body_absent = false;
+    bool left_arm_absent = false;
+    bool right_arm_absent = false;
+    bool left_leg_absent = false;
+    bool right_leg_absent = false;
 
 
     float face_centroid[3] = {0.0, 0.0, 0.0};
