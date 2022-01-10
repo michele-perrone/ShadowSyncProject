@@ -39,7 +39,7 @@ s.close()
 send_ip_1 = personal_ip
 # send_ip_2 = "192.168.168.127"
 my_ip = "127.0.0.1"
-send_port = 5511
+send_port = 5501
 listen_port = 1999
 client_1 = SimpleUDPClient(send_ip_1, send_port)  # Create client
 # client_2 = SimpleUDPClient(send_ip_2, send_port)
