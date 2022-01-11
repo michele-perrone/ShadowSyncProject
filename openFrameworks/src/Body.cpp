@@ -3,7 +3,7 @@
 #define P_LIFESPAN 200
 #define P_RADIUS 1
 #define SCALE_FACTOR 150
-#define TRASL_VECTOR {0, -1.5, -0.5}
+#define TRASL_VECTOR {0, -0.9, -0.5}
 #define SCALE_VECTOR {1, -1, -1}
 
 
@@ -73,7 +73,11 @@ void Body::move_centroid(float x_dir, float y_dir, float z_dir)
 
 void Body::move_centroid()
 {
-    com.setGlobalPosition(SCALE_FACTOR * glm::make_vec3(pose->body_centroid));
+    glm::vec3 scale_vec(SCALE_VECTOR);
+    scale_vec *= SCALE_FACTOR;
+    glm::vec3 trasl_vec(TRASL_VECTOR);
+    com.setGlobalPosition(scale_vec * (trasl_vec + glm::make_vec3(pose->body_centroid)));
+
 }
 
 void Body::move_junctions()

@@ -32,7 +32,7 @@ void ofApp::setup()
 
     //body, test particle system setup
     body.setup(&global_model.pose);
-
+    shadow.setup(&global_model.pose); //OTHER POSE is correct
     // OSC
     osc_receiver.setup(PORT); // It is 5501 or 5502
 
@@ -53,14 +53,19 @@ void ofApp::update()
         osc_receiver.getNextMessage(m);
         if (OSC_DEBUG) cout << "Message Received : ";
         handle_address(&m); // Updates the global_model with the latest values arrived by osc
+
     }
-    global_model.pose.print();
+    //global_model.pose.print();
     body.move_centroid();
     body.move_junctions();
 
+    shadow.move_centroid();
+    shadow.move_junctions();
     //body.updateParticleSystems();
-    //shadow.updateParticleSystems();
+    shadow.updateParticleSystems();
     //shadow.move(0.2, 0);
+    //global_model.pose.isInFrontOfCam();
+
 }
 
 //--------------------------------------------------------------
@@ -84,7 +89,7 @@ void ofApp::draw()
 
     body.draw(); // The body takes now also care of the particle systems!
 
-    //shadow.draw();
+    shadow.draw();
 
 
     //!application of the transformation
