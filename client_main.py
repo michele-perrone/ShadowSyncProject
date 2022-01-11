@@ -60,7 +60,7 @@ async def app_main():
 
     cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray = init_pose_estimation()
     while True:
-        await asyncio.sleep(0.00001)
+        await asyncio.sleep(0.01)
         ret, img = cap.read()
         img = cv2.flip(img, 1)
         if ret:

@@ -51,18 +51,15 @@ def turnedOFF_handler(address, *args):
         print(args[0], "is now", global_model.computer_online[1], global_model.computer_online[2])
 
 def pose_handler(address, *args):
-    # print('a')
     component = address[5:].split('/')
     if args[0]==1:
         # Pose comes from client 1 and has to be sent to 1 as pose and to 2 as other_pose
-        # print('b')
         args = args[1:]
         to_ofx1.send_message(address, args)
         to_ofx2.send_message('/other_pose' + address[5:], args)
 
     elif args[0]==2:
         # Pose comes from client 1 and has to be sent to 2 as pose and to 1 as other_pose
-        # print('c')
         args = args[1:]
         to_ofx1.send_message('/other_pose' + address[5:], args)
         to_ofx2.send_message(address, args)
@@ -78,36 +75,35 @@ dispatcher.map("/pyUtil/turnedOFF", turnedOFF_handler)
 dispatcher.map("/pose/*", pose_handler)
 dispatcher.set_default_handler(default_handler)
 
-to_computer1 = SimpleUDPClient("2.36.51.122", 5511)
-to_computer2 = SimpleUDPClient("84.220.58.163", 5502)
-to_ofx1 = SimpleUDPClient("2.36.51.122", 5501)
-to_ofx2 = SimpleUDPClient("84.220.58.163", 5502)
+ip_1 = "2.36.51.122"
+ip_2 = "84.220.58.163"
+
+to_py1 = SimpleUDPClient(ip_1, 5511)
+to_py2 = SimpleUDPClient(ip_2, 5522)
+to_ofx1 = SimpleUDPClient(ip_1, 5501)
+to_ofx2 = SimpleUDPClient(ip_2, 5502)
 
 listen_port = 1255
 to_me = SimpleUDPClient("127.0.0.1", listen_port)
 
 def update_installation_phase():
-    if global_model.elapsed_time()<timedelta(seconds=10):
-        global_model.blend = 0
-    elif global_model.elapsed_time()>timedelta(seconds=20):
-        if global_model.elapsed_time()<timedelta(seconds=40):
-            global_model.blend += 0.01
-        else:
-            global_model.blend = 1
+    # if global_model.elapsed_time()<timedelta(seconds=10):
+    #     global_model.blend = 0
+    # elif global_model.elapsed_time()>timedelta(seconds=20):
+    #     if global_model.elapsed_time()<timedelta(seconds=40):
+    #         global_model.blend += 0.01
+    #     else:
+    #         global_model.blend = 1
 
-    to_computer1.send_message("/ofxUtil/blend", global_model.blend)
+    global_model.blend+=1
+    to_ofx1.send_message("/ofxUtil/blend", float(global_model.blend))
+    to_ofx2.send_message("/ofxUtil/blend", float(global_model.blend))
 
 
 async def app_main():
 
     cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray = init_pose_estimation()
     while(True):
-        if DEBUG==1:
-            print("Starting ping thread")
-        # ping=Thread(target=ping_loop)
-        # ping.setDaemon(True)
-        # ping.start()
-
         if DEBUG==1:
             print("Ping")
 
@@ -121,9 +117,8 @@ async def app_main():
         else:
             global_model.ack[2] = 0
 
-        for i in range(100):
-            to_computer1.send_message("/pyUtil/ping", 0)
-            to_computer2.send_message("/pyUtil/ping", 0)
+        to_py1.send_message("/pyUtil/ping", 0)
+        to_py2.send_message("/pyUtil/ping", 0)
 
         print_connection_status()
         update_installation_phase()
