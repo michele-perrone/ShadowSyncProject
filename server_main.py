@@ -75,8 +75,8 @@ dispatcher.map("/pyUtil/turnedOFF", turnedOFF_handler)
 dispatcher.map("/pose/*", pose_handler)
 dispatcher.set_default_handler(default_handler)
 
-to_computer1 = SimpleUDPClient("192.168.1.21", 5510)
-to_computer2 = SimpleUDPClient("192.168.1.22", 5520)
+to_computer1 = SimpleUDPClient("2.36.51.122", 5511)
+to_computer2 = SimpleUDPClient("84.220.58.163", 5522)
 
 listen_port = 1255
 to_me = SimpleUDPClient("127.0.0.1", listen_port)

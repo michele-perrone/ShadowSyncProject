@@ -59,21 +59,23 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
             cv2.circle(img, (cx, cy), 5, (155, 155, 0))  # superimpose a circle to the landmarks
 
         for i in pose:
-            if i != "body":
-                upperI = i.upper()
-                pose[i] = [results.pose_landmarks.landmark[mpPose.PoseLandmark[upperI]].x,
-                            results.pose_landmarks.landmark[mpPose.PoseLandmark[upperI]].y,
-                            results.pose_landmarks.landmark[mpPose.PoseLandmark[upperI]].z]
-                # if i == "right_thumb":
-                    # print("z coord: ", pose[i][2]) #testing z coord estimation with right hand
-            else:
-                pose[i] = [int((pose['left_shoulder'][0] + pose['right_shoulder'][0] + pose['left_hip'][0] + pose['right_hip'][0])) / 4,
-                            int((pose['left_shoulder'][1] + pose['right_shoulder'][1] + pose['left_hip'][1] + pose['right_hip'][1])) / 4]
-        
-        
+            centroid = [0, 0, 0]
+            length = len(pose[i]) - 3
+            for j in pose[i]:
+                if not j.startswith('_'):
+                    upperJ = j.upper()
+                    pose[i][j] = [results.pose_landmarks.landmark[mpPose.PoseLandmark[upperJ]].x,
+                                  results.pose_landmarks.landmark[mpPose.PoseLandmark[upperJ]].y,
+                                  results.pose_landmarks.landmark[mpPose.PoseLandmark[upperJ]].z]
 
-        cv2.circle(img, (int(pose["body"][0] * w), int(pose["body"][1] * h)), 8, (155, 155, 222),
-                   cv2.FILLED)  # superimpose a circle to the landmarks
+                    if pose[i][j] == [0, 0, 0]:
+                        break
+                    centroid = [x + y for x, y in zip(centroid, pose[i][j])]
+
+            centroid = [x / length for x in centroid]
+
+            pose[i]['_centroid'] = centroid
+            print(i, pose[i]['_centroid'])
 
     if cv2.waitKey(10) & 0xFF == ord('q'):
         return

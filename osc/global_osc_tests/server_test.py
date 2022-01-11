@@ -56,11 +56,11 @@ dispatcher.map("/pyUtil/turnedON", turnedON_handler)
 dispatcher.map("/pyUtil/turnedOFF", turnedOFF_handler)
 dispatcher.set_default_handler(default_handler)
 
-computer1_ip = "192.168.1.21"
-computer2_ip = "192.168.1.22"
+computer1_ip = "2.36.51.122"
+computer2_ip = "84.220.58.163"
 # Server listens on 1255 and send back on 5511 for Computer1 and 5522 for Computer2
-computer1_port = 5510
-computer2_port = 5520
+computer1_port = 5511
+computer2_port = 5522
 listen_port = 1255
 to_computer1 = SimpleUDPClient(computer1_ip, computer1_port)
 to_computer2 = SimpleUDPClient(computer2_ip, computer2_port)
@@ -106,7 +106,7 @@ async def app_main():
         await asyncio.sleep(1)
 
 async def init_main():
-    server = AsyncIOOSCUDPServer(("127.0.1.1", listen_port), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer(("0.0.0.0", listen_port), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint() 
     await app_main() 
     transport.close() 
