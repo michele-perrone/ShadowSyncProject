@@ -8,16 +8,19 @@ import platform
 def init_pose_estimation():
     # array of all point
     # poseLandmarksArray = ["nose", "left_eye_inner", "left_eye", "left_eye_outer", "right_eye_inner", "right_eye", "right_eye_outer", "left_ear", "right_ear", "mouth_left", "mouth_right", "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist", "left_pinky", "right_pinky", "left_index", "right_index", "left_thumb", "right_thumb", "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle", "left_heel", "right_heel", "left_foot_index", "right_foot_index"]
-
+    os_name = platform.system()
     # obtain video/webcam
-    cap = cv2.VideoCapture(os.path.join(os.path.curdir, "../Videos", "cpac-video-test-2.mov"))
+    if "Windows" in os_name:
+       cap = cv2.VideoCapture(os.path.join(os.path.curdir, "Videos", "cpac-video-test-2.mov"))
+    else:
+        cap = cv2.VideoCapture(os.path.join(os.path.curdir, "../Videos", "cpac-video-test-2.mov"))
     # cap = cv2.VideoCapture(0)
 
     mpDraw = mp.solutions.drawing_utils
     mpPose = mp.solutions.pose
     pose_cv = mpPose.Pose()  # with default params for detection and tracking tolerance (until detection confidence is high enough, it keeps tracking)
 
-    os_name = platform.system()
+    
     if "Windows" in os_name:
         data = open('python\data\landmark.json')
     else:
