@@ -199,9 +199,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
         if (OSC_DEBUG) cout << address << endl;
         if(area == "face") {
             if(component=="_completely_detected") {
-                //global_model.pose.face_completely_detected = m->getArgAsBool(0);
+                global_model.pose.face_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                //global_model.pose.face_absent = m->getArgAsBool(0);
+                global_model.pose.face_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.face_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.face_centroid[1] = m->getArgAsFloat(1);
@@ -255,9 +255,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         } else if (area == "body") {
             if(component=="_completely_detected") {
-                //global_model.pose.body_completely_detected = m->getArgAsBool(0);
+                global_model.pose.body_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                //global_model.pose.body_absent = m->getArgAsBool(0);
+                global_model.pose.body_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.body_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.body_centroid[1] = m->getArgAsFloat(1);
@@ -283,9 +283,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         } else if (area == "left_arm") {
             if(component=="_completely_detected") {
-                //global_model.pose.left_arm_completely_detected = m->getArgAsBool(0);
+                global_model.pose.left_arm_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                //global_model.pose.left_arm_absent = m->getArgAsBool(0);
+                global_model.pose.left_arm_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.left_arm_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.left_arm_centroid[1] = m->getArgAsFloat(1);
@@ -315,9 +315,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         } else if (area == "right_arm") {
             if(component=="_completely_detected") {
-                //global_model.pose.right_arm_completely_detected = m->getArgAsBool(0);
+                global_model.pose.right_arm_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                //global_model.pose.right_arm_absent = m->getArgAsBool(0);
+                global_model.pose.right_arm_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.right_arm_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.right_arm_centroid[1] = m->getArgAsFloat(1);
@@ -347,9 +347,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         } else if (area == "left_leg") {
             if(component=="_completely_detected") {
-                //global_model.pose.left_leg_completely_detected = m->getArgAsBool(0);
+                global_model.pose.left_leg_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                //global_model.pose.left_leg_absent = m->getArgAsBool(0);
+                global_model.pose.left_leg_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.left_leg_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.left_leg_centroid[1] = m->getArgAsFloat(1);
@@ -375,9 +375,9 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         } else if (area == "right_leg") {
             if(component=="_completely_detected") {
-                //global_model.pose.right_leg_completely_detected = m->getArgAsBool(0);
+                global_model.pose.right_leg_completely_detected = m->getArgAsBool(0);
             } else if (component=="_absent") {
-                //global_model.pose.right_leg_absent = m->getArgAsBool(0);
+                global_model.pose.right_leg_absent = m->getArgAsBool(0);
             } else if (component=="_centroid") {
                 global_model.pose.right_leg_centroid[0] = m->getArgAsFloat(0);
                 global_model.pose.right_leg_centroid[1] = m->getArgAsFloat(1);
