@@ -23,12 +23,12 @@ def init_pose_estimation():
 
     os_name = platform.system()
     if "Windows" in os_name:
-        data = open('python\data\landmark.json')
+        data = open('landmark.json')
     else:
-        data = open('./data/landmark.json')
+        data = open('landmark.json')
 
-    path = os.path.join(os.getcwd(), 'python', 'data', 'landmark.json')
-    data = open(path)
+    #path = os.path.join(os.getcwd(), 'python', 'data', 'landmark.json')
+    #data = open(path)
     pose = json.load(data)
     poseLandmarksArray = [x.upper() for x in pose]
 
