@@ -56,7 +56,7 @@ dispatcher.map("/pyUtil/turnedON", turnedON_handler)
 dispatcher.map("/pyUtil/turnedOFF", turnedOFF_handler)
 dispatcher.set_default_handler(default_handler)
 
-computer1_ip = "2.36.51.122"
+computer1_ip = "79.53.59.224"
 computer2_ip = "84.220.58.163"
 # Server listens on 1255 and send back on 5511 for Computer1 and 5522 for Computer2
 computer1_port = 5511
