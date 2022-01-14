@@ -6,6 +6,7 @@ struct Circle
 	glm::vec2 center;
 	float radius;
 
+
     void set(glm::vec2 origin, float r)
 	{
 		center.x = origin.x;
