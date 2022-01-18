@@ -73,7 +73,10 @@ def pose_handler(address, *args):
 
 def correlation_handler(address, *args):
     global_model.latest_correlation_value[args[0]] = args[1]
-    to_supercollider.send_message("/correlation", (global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2)
+    # # FINAL
+    # to_supercollider.send_message("/correlation", (global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2)
+    # PLACEHOLDER
+    to_supercollider.send_message("/correlation", [0, 0.5, 440*(global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2])
 
 # Default Handler
 def default_handler(address, *args):
