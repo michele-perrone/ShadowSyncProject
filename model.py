@@ -11,4 +11,5 @@ class Model:
         self.ack = [0, 0, 0]
         self.blend = 0
         self.has_started = 0
+        self.latest_correlation_value = [0, 0, 0]
         

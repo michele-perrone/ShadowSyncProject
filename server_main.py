@@ -71,6 +71,10 @@ def pose_handler(address, *args):
         to_ofx1.send_message('/other_pose' + address[5:], args)
         to_ofx2.send_message(address, args)
 
+def correlation_handler(address, *args):
+    global_model.latest_correlation_value[args[0]] = args[1]
+    to_supercollider.send_message("/correlation", (global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2)
+
 # Default Handler
 def default_handler(address, *args):
     print(f"DEFAULT {address}: {args}")
@@ -80,6 +84,7 @@ dispatcher.map("/pyUtil/ack", ack_handler)
 dispatcher.map("/pyUtil/turnedON", turnedON_handler)
 dispatcher.map("/pyUtil/turnedOFF", turnedOFF_handler)
 dispatcher.map("/pose/*", pose_handler)
+dispatcher.map("/ofxUtil/correlation", correlation_handler)
 dispatcher.set_default_handler(default_handler)
 
 ip_1 = "2.36.51.122"
@@ -90,8 +95,11 @@ to_py2 = SimpleUDPClient(ip_2, 5522)
 to_ofx1 = SimpleUDPClient(ip_1, 5501)
 to_ofx2 = SimpleUDPClient(ip_2, 5502)
 
+my_ip = "127.0.0.1"
 listen_port = 1255
-to_me = SimpleUDPClient("127.0.0.1", listen_port)
+supercollider_port = 5555
+to_me = SimpleUDPClient(my_ip, listen_port)
+to_supercollider = SimpleUDPClient(my_ip, supercollider_port)
 
 def update_installation_phase():
     if DEBUG:
