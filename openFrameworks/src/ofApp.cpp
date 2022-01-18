@@ -11,7 +11,7 @@ void ofApp::setup()
 
     ofEnableDepthTest(); //you can't see through objects (es. wall)
 
-    cam.setPosition(ofVec3f(157, 52, 363)); //camera positioning and heading configuration
+    cam.setPosition(ofVec3f(157, 52, 263)); //camera positioning and heading configuration
     cam.lookAt(ofVec3f(PL_XZ/2, PL_Y/2, 0));
     //!definition of the transformation
     mat.rotate(90, 0, 0, 1);    //with this two commands, we are combining two "high-abstraction level" matrix transformations
@@ -30,17 +30,11 @@ void ofApp::setup()
     wall_material.setDiffuseColor(ofFloatColor::white);
     wall_material.setShininess(0.01);
 
-    //body, test particle system setup
+    //body, shadow setup
     body.setup(&global_model.pose);
-
+    shadow.setup(&global_model.pose); //OTHER POSE is correct
     // OSC
     osc_receiver.setup(PORT); // It is 5501 or 5502
-
-    //Shadow
-    //float shadow_origin[] = { 50, 50 };
-    //glm::vec2 shadow_vOrigin = glm::make_vec2(shadow_origin);
-    //shadow.setup(shadow_vOrigin);
-    //shadow.move(50,50);
 }
 
 //--------------------------------------------------------------
@@ -53,14 +47,24 @@ void ofApp::update()
         osc_receiver.getNextMessage(m);
         if (OSC_DEBUG) cout << "Message Received : ";
         handle_address(&m); // Updates the global_model with the latest values arrived by osc
+
     }
-    global_model.pose.print();
+
+    //3D Body
     body.move_centroid();
     body.move_junctions();
+    body.updateParticleSystems();
 
-    //body.updateParticleSystems();
-    //shadow.updateParticleSystems();
-    //shadow.move(0.2, 0);
+    //2D Shadow
+    shadow.getCentroidsPositions(); //not updated centroids position
+    shadow.moveCentroids();
+    shadow.moveJunctions();
+    //check if the pose is moving
+    //std::cout << "Is face centroid moving? " << shadow.isCentroidMoving(0) << std::endl;
+    shadow.updateParticleSystems();
+    //global_model.pose.isInFrontOfCam();
+    shadow.updateSysMaxVals(ms, mf);
+    //shadow.updateAttractors();
 }
 
 //--------------------------------------------------------------
@@ -80,11 +84,10 @@ void ofApp::draw()
     plane_wall.draw();
     wall_material.end();
 
-    ofDrawGrid(10, 20, true, true, true, true); //3D grid
+    //ofDrawGrid(10, 20, true, true, true, true); //3D grid
 
-    body.draw(); // The body takes now also care of the particle systems!
-
-    //shadow.draw();
+    body.draw();
+    shadow.draw();
 
 
     //!application of the transformation
@@ -99,17 +102,51 @@ void ofApp::draw()
     //show FPS on screen
     stringstream ss;
     ss << "FPS: " << ofToString(ofGetFrameRate(), 0) << endl << endl;
-    ofDrawBitmapString(ss.str().c_str(), 10, 30);
+    //ofDrawBitmapString(ss.str().c_str(), 10, 30);
 
     //UTILITY cam coordinates on screen (just for set it up)
     //glm::vec3 cam_pos = cam.getPosition();
     //stringstream cp;
     //cp << "cam x, y, z coordinates: " << ofToString(cam_pos.x) << ", " << ofToString(cam_pos.y) << ", " << ofToString(cam_pos.z) << endl << endl;
     //ofDrawBitmapString(cp.str().c_str(), 50, 50);
+
+    
+    ss << "MAX_SPEED: "<< ms << ", MAX_FORCE: "<< mf<< endl;
+    ofDrawBitmapString(ss.str().c_str(), 10, 30);
+
+
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    switch (key)
+    {
+    case 'a':
+        mf -= 0.001;
+        break;
+    case 'd':
+        mf += 0.001;
+        break;
+    case 's':
+        ms -= 0.001;
+        break;
+    case 'w':
+        ms += 0.001;
+        break;
+
+    case 'A':
+        mf -= 0.05;
+        break;
+    case 'D':
+        mf += 0.05;
+        break;
+    case 'S':
+        ms -= 0.05;
+        break;
+    case 'W':
+        ms += 0.05;
+        break;
+    }
 
 }
 

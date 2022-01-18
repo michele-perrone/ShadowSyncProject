@@ -14,6 +14,8 @@ public:
 	void moveDestination(int x_dir, int y_dir);
 	void addParticle();
 
+	void updateParticleMaxVals(float ms, float mf);
+
 	void setAttractors(Circle* attractor);
 	vector <Circle*> attractors; //pointer to junctions - attractors
 private:

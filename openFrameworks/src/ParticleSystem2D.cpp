@@ -1,5 +1,5 @@
 #include "ParticleSystem2D.h"
-
+#define INIT_FORCE_MAG 0.001
 //======================= 2D particle system =======
 
 void ParticleSystem2D::setup(glm::vec2& shadowOrigin, int numParticles, int particleRadius, int particleLifespan)
@@ -9,14 +9,14 @@ void ParticleSystem2D::setup(glm::vec2& shadowOrigin, int numParticles, int part
 	this->particleRadius = particleRadius;
 	this->particleLifespan = particleLifespan;
 
-	float force_mag = 0.01;
+	//float force_mag = 0.001;
 	//particle system testing
 	for (int j = 0; j < numParticles; j++)
 	{
 		//create a new particle
 		Particle2D newParticle;
 		//assign to it a random force
-		float rand[] = { ofRandom(-force_mag, force_mag), ofRandom(-force_mag, force_mag) };
+		float rand[] = { ofRandom(-INIT_FORCE_MAG, INIT_FORCE_MAG), ofRandom(-INIT_FORCE_MAG, INIT_FORCE_MAG) };
 		glm::vec2 random_force = glm::make_vec2(rand);
 		//setup of the particle
 		newParticle.setup(origin_PS2D, particleRadius, particleLifespan, random_force); //passing origin to the particle by ref 
@@ -30,8 +30,7 @@ void ParticleSystem2D::update()
 	//update the particle system generated from / attracted to each junction
 	for (int i = particles.size() - 1; i >= 0; i--)
     {
-        particles[i].update(this->attractors[0]);
-		
+        particles[i].update(this->attractors[0]); //hp: only ONE attractor for each ps
 		if (particles[i].isDead())
 		{
 			//delete dead particle
@@ -43,6 +42,14 @@ void ParticleSystem2D::update()
 
 }
 
+void ParticleSystem2D::updateParticleMaxVals(float ms, float mf)
+{
+	for (int i = particles.size() - 1; i >= 0; i--)
+	{
+		particles[i].setMaxStuff(ms, mf);
+	}
+
+}
 
 void ParticleSystem2D::draw()
 {
@@ -79,11 +86,11 @@ void ParticleSystem2D::moveDestination(int x_dir, int y_dir)
 
 void ParticleSystem2D::addParticle() //QUI la (nuova) origine del PS deve essere passata alla particella
 {
-	float force_mag = 0.01;
+	
 	//create a new particle
 	Particle2D newParticle;
 	//assign to it a random force
-	float rand[] = { ofRandom(-force_mag, force_mag), ofRandom(-force_mag, force_mag) };
+	float rand[] = { ofRandom(-INIT_FORCE_MAG, INIT_FORCE_MAG), ofRandom(-INIT_FORCE_MAG, INIT_FORCE_MAG) };
 	glm::vec2 random_force = glm::make_vec2(rand);
 	//setup of the particle
 	newParticle.setup(origin_PS2D, particleRadius, particleLifespan, random_force); //passing origin by ref
@@ -95,5 +102,4 @@ void ParticleSystem2D::addParticle() //QUI la (nuova) origine del PS deve essere
 void ParticleSystem2D::setAttractors(Circle* attractor)
 {
 	this->attractors.push_back(attractor);
-	std::cout << "ps2d attractor: " << attractor->center << std::endl;
 }

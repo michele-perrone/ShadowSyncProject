@@ -3,7 +3,7 @@
 #define P_LIFESPAN 200
 #define P_RADIUS 1
 #define SCALE_FACTOR 150
-#define TRASL_VECTOR {0, -1.5, -0.5}
+#define TRASL_VECTOR {0, -0.9, -0.5}
 #define SCALE_VECTOR {1, -1, -1}
 
 
@@ -33,9 +33,9 @@ void Body::setup(Pose* pose_body)
     */
     // Create all the particle systems and store them inside the vector.
     // (For now, we have just one particle system located a the center of mass)
-    /*ParticleSystem com_particleSystem;
+    ParticleSystem com_particleSystem;
     com_particleSystem.setup(this->getOrigin(), NUMPARTICLES, P_RADIUS, P_LIFESPAN);
-    particle_systems.push_back(com_particleSystem);*/
+    particle_systems.push_back(com_particleSystem);
 }
 
 ofNode& Body::getOrigin()
@@ -52,10 +52,10 @@ void Body::draw()
 		body_junctions[i].draw();
     material.end();
 
-    /*for (int i = 0; i < particle_systems.size(); i++)
+    for (int i = 0; i < particle_systems.size(); i++)
     {
         particle_systems[i].draw();
-    }*/
+    }
 }
 
 //moves the entire body rigidly
@@ -65,15 +65,22 @@ void Body::move_centroid(float x_dir, float y_dir, float z_dir)
     com.move(x_dir, y_dir, z_dir);
 
     //... and also the particle sources move
-    /*for (int i = 0; i < particle_systems.size(); i++)
+    for (int i = 0; i < particle_systems.size(); i++)
     {
         particle_systems[i].moveOrigin(x_dir, y_dir, z_dir);
-    }*/
+    }
 }
 
 void Body::move_centroid()
 {
-    com.setGlobalPosition(SCALE_FACTOR * glm::make_vec3(pose->body_centroid));
+    glm::vec3 scale_vec(SCALE_VECTOR);
+    scale_vec *= SCALE_FACTOR;
+    glm::vec3 trasl_vec(TRASL_VECTOR);
+    com.setGlobalPosition(scale_vec * (trasl_vec + glm::make_vec3(pose->body_centroid)));
+    for (int i = 0; i < particle_systems.size(); i++)
+    {
+        particle_systems[i].setOrigin(com.getGlobalPosition().x, com.getGlobalPosition().y, com.getGlobalPosition().z);
+    }
 }
 
 void Body::move_junctions()

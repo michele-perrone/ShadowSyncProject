@@ -81,6 +81,14 @@ public:
     float right_foot_index[3] = {0.0, 0.0, 0.0};
     float right_knee[3] = {0.0, 0.0, 0.0};
     float right_ankle[3] = {0.0, 0.0, 0.0};
+
+    void isInFrontOfCam()
+    {
+        if (left_shoulder[0] > right_shoulder[0])
+            std::cout << "in front" << std::endl;
+        else
+            std::cout << "turned around" << std::endl;
+    }
 };
 
 #endif // POSE_H

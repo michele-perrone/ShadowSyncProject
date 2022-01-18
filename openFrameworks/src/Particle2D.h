@@ -15,8 +15,14 @@ public:
 	float lifespan;
     void update(Circle * attractor);
 
+	//here just for convenience
+	float shadow_ps_max_speed = 0;
+	float shadow_ps_max_force = 0;
+
+	void setMaxStuff(float ms, float mf);
+
 private:
-	glm::vec2 position, velocity, force;
+	glm::vec2 position, velocity, force, target, distance;
 	float radius;
 	Circle my2dParticle; //counterpart of ofSpherePrimitive
 	ofColor my2dParticleColor;

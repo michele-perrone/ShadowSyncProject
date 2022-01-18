@@ -6,6 +6,7 @@ struct Circle
 	glm::vec2 center;
 	float radius;
 
+
     void set(glm::vec2 origin, float r)
 	{
 		center.x = origin.x;
@@ -24,5 +25,23 @@ struct Circle
 	{
 		center.x += direction.x;
 		center.y += direction.y;
+	}
+
+	void setGloabalPosition(glm::vec2 position, float r)
+	{
+		center.x = position.x;
+		center.y = position.y;
+		radius = r;
+	}
+
+	void setGlobalPosition(glm::vec2 position)
+	{
+		center.x = position.x;
+		center.y = position.y;
+	}
+
+	void setRadius(float r)
+	{
+		radius = r;
 	}
 };

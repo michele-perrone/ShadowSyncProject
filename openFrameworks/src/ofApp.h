@@ -1,11 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Body.h"
 #include "ofxOsc.h"
 #include "Shadow.h"
-#include "Particle3D.h"
-#include "Particle2D.h"
+#include "Body.h"
 #include "globalmodel.h"
 
 #define PORT 5501
@@ -44,7 +42,6 @@ class ofApp : public ofBaseApp{
 		ofMaterial floor_material;
 		ofMaterial wall_material;
 
-		Body body;
 		float z_body = 120; //dummy value until we have 3D coords from osc
 		
 		//OSC
@@ -53,6 +50,11 @@ class ofApp : public ofBaseApp{
         std::vector<std::string> split(string address);
         void handle_address(ofxOscMessage * m);
 
-		//2D shadow test
+		//3D body
+		Body body;
+
+		//2D shadow 
 		Shadow shadow;
+		float ms = 0.054; //tuned by hand
+		float mf = 0.046;
 };
