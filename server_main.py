@@ -4,10 +4,11 @@ from pythonosc.udp_client import SimpleUDPClient
 import asyncio
 import sys
 import time
+import keyboard
+from threading import Thread
 from datetime import datetime, timedelta
 import builtins as __builtin__
 from model import Model
-from threading import Thread
 
 from pose_estimation import init_pose_estimation
 from pose_estimation import get_body_position
@@ -23,12 +24,18 @@ def print_connection_status(*args, sep = ' '):
     now = datetime.now()
     timestamp = datetime.timestamp(now)
     readable_timestamp = datetime.fromtimestamp(timestamp)
-    print('\r')
     print('[%s] Computer 1: ' % readable_timestamp, end='')
     print('\033[92mONLINE\033[0m' if global_model.computer_online[1]==1 else '\033[91mOFFLINE\033[0m', end='')
     print(' | Computer 2: ', end='')
-    print('\033[92mONLINE\033[0m' if global_model.computer_online[2]==1 else '\033[91mOFFLINE\033[0m', flush=True)
+    print('\033[92mONLINE\033[0m' if global_model.computer_online[2]==1 else '\033[91mOFFLINE\033[0m', flush=True, end='\r\r')
 
+
+def debug_print(message):
+    spaces = ' '
+    for i in range(70-len(message)):
+        spaces += ' '
+        
+    print(message, spaces)
 
 #################
 # OSC RECEIVERS #
@@ -87,25 +94,27 @@ listen_port = 1255
 to_me = SimpleUDPClient("127.0.0.1", listen_port)
 
 def update_installation_phase():
-    # if global_model.elapsed_time()<timedelta(seconds=10):
-    #     global_model.blend = 0
-    # elif global_model.elapsed_time()>timedelta(seconds=20):
-    #     if global_model.elapsed_time()<timedelta(seconds=40):
-    #         global_model.blend += 0.01
-    #     else:
-    #         global_model.blend = 1
-
-    global_model.blend+=1
+    if DEBUG:
+        debug_print('Sending blends.')
     to_ofx1.send_message("/ofxUtil/blend", float(global_model.blend))
     to_ofx2.send_message("/ofxUtil/blend", float(global_model.blend))
 
+def start_blend_sequence():
+    global_model.blend = 0
+    update_installation_phase()
+    time.sleep(20)
+    global_model.blend = 0.5
+    update_installation_phase()
+    time.sleep(20)
+    global_model.blend = 1
+    update_installation_phase()
 
 async def app_main():
 
     cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray = init_pose_estimation()
     while(True):
         if DEBUG==1:
-            print("Ping")
+            debug_print('Ping')
 
         if global_model.ack[1]==0:
             global_model.computer_online[1] = 0
@@ -121,7 +130,15 @@ async def app_main():
         to_py2.send_message("/pyUtil/ping", 0)
 
         print_connection_status()
-        update_installation_phase()
+
+        if global_model.has_started == 0 and keyboard.is_pressed('ctrl+w'):
+            global_model.has_started = 1
+            blend_sequence = Thread(target=start_blend_sequence, daemon=True)
+            # blend_sequence.setDaemon(True)
+            blend_sequence.start()
+
+        if keyboard.is_pressed('ctrl+q'):
+            break
 
         await asyncio.sleep(1)
 

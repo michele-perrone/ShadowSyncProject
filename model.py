@@ -10,4 +10,5 @@ class Model:
         self.computer_online = [0, 0, 0]
         self.ack = [0, 0, 0]
         self.blend = 0
+        self.has_started = 0
         
