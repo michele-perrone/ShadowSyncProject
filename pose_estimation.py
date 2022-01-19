@@ -1,7 +1,3 @@
-############################################################################################################
-# POSE ESTIMATION AS OF 2 JAN 2022 @ 13:30
-############################################################################################################
-
 import cv2  # image processing via openCv
 import mediapipe as mp  # pose estimation via mediapipe
 import json
@@ -12,23 +8,26 @@ import platform
 def init_pose_estimation():
     # array of all point
     # poseLandmarksArray = ["nose", "left_eye_inner", "left_eye", "left_eye_outer", "right_eye_inner", "right_eye", "right_eye_outer", "left_ear", "right_ear", "mouth_left", "mouth_right", "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist", "left_pinky", "right_pinky", "left_index", "right_index", "left_thumb", "right_thumb", "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle", "left_heel", "right_heel", "left_foot_index", "right_foot_index"]
-
+    os_name = platform.system()
     # obtain video/webcam
-    cap = cv2.VideoCapture(os.path.join(os.path.curdir, "Videos", "cpac-video-test-2.mov"))
-    #cap = cv2.VideoCapture(0)
+    if "Windows" in os_name:
+       cap = cv2.VideoCapture(os.path.join(os.path.curdir, "Videos", "cpac-video-test-2.mov"))
+    else:
+        cap = cv2.VideoCapture(os.path.join(os.path.curdir, "Videos", "cpac-video-test-2.mov"))
+    # cap = cv2.VideoCapture(0)
 
     mpDraw = mp.solutions.drawing_utils
     mpPose = mp.solutions.pose
     pose_cv = mpPose.Pose()  # with default params for detection and tracking tolerance (until detection confidence is high enough, it keeps tracking)
 
-    os_name = platform.system()
+    
     if "Windows" in os_name:
         data = open('landmark.json')
     else:
         data = open('landmark.json')
 
-    #path = os.path.join(os.getcwd(), 'python', 'data', 'landmark.json')
-    #data = open(path)
+    # path = os.path.join(os.getcwd(), 'python', 'data', 'landmark.json')
+    # data = open(path)
     pose = json.load(data)
     poseLandmarksArray = [x.upper() for x in pose]
 
@@ -41,11 +40,6 @@ def init_pose_estimation():
         print("Error opening video file")
     return cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray
 
-def wrap_pose(pose):
-
-    pose
-
-    return pose
 
 def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # conversion of the acquired img in RGB scale
@@ -79,8 +73,6 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
 
     if cv2.waitKey(10) & 0xFF == ord('q'):
         return
-
-    pose = wrap_pose(pose)
 
     return img, pose
 
