@@ -19,12 +19,11 @@ CLIENT_NUMBER = 2
 def ack():
     to_server.send_message("/pyUtil/ack", CLIENT_NUMBER)
 
-# Pose sender
 def pose_sender(client, pose):
     for i in pose:
         for j in pose[i]:
-            address = "/pose/" + i + "/" + j  # example: address = /pose/face/_centroid[ ... ]
-            coordinates = [CLIENT_NUMBER]
+            address = "/other_pose/" + i + "/" + j  # example: address = /pose/face/_centroid[ ... ]
+            coordinates = []
             for index in range(len(pose[i][j])):
                 coordinates.append(pose[i][j][index])
             if (j == "right_shoulder"):
@@ -53,7 +52,7 @@ if CLIENT_NUMBER==1:
 elif CLIENT_NUMBER==2:
     listen_port = 5522
 
-to_server = SimpleUDPClient("192.168.130.225", 1255)
+to_server = SimpleUDPClient("79.53.59.224", 5501)
 to_me = SimpleUDPClient("127.0.1.1", listen_port)
 
 async def app_main():

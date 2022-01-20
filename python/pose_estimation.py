@@ -13,7 +13,7 @@ def init_pose_estimation():
     if "Windows" in os_name:
        cap = cv2.VideoCapture(os.path.join(os.path.curdir, "Videos", "cpac-video-test-2.mov"))
     else:
-        cap = cv2.VideoCapture(os.path.join(os.path.curdir, "../Videos", "cpac-video-test-2.mov"))
+        cap = cv2.VideoCapture("/home/magiwanders/OneDrive/MusicEngineering/projects/cpac/Shadow_sync_project/Videos/cpac-video-test-2.mov")
     # cap = cv2.VideoCapture(0)
 
     mpDraw = mp.solutions.drawing_utils
@@ -24,7 +24,7 @@ def init_pose_estimation():
     if "Windows" in os_name:
         data = open('python\data\landmark.json')
     else:
-        data = open('./data/landmark.json')
+        data = open('landmark.json')
 
     # path = os.path.join(os.getcwd(), 'python', 'data', 'landmark.json')
     # data = open(path)

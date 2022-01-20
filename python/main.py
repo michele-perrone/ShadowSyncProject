@@ -48,6 +48,7 @@ client_self = SimpleUDPClient(my_ip, send_port)
 
 # 9 PUT CODE FOR THE REST OF THE PROJECT IN app_main()
 async def app_main():
+    print("post")
     cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray = init_pose_estimation()
     while True:
         await asyncio.sleep(0.00001)
