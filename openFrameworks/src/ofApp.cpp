@@ -51,19 +51,21 @@ void ofApp::update()
     }
 
     //3D Body
-    body.move_centroid();
-    body.move_junctions();
+    //body.getCentroidsPositions(); //not updated centroids positions
+    body.moveCentroids();
+    body.moveJunctions();
     body.updateParticleSystems();
+    body.updateSysMaxVals(bd_ms, bd_mf);
 
     //2D Shadow
-    shadow.getCentroidsPositions(); //not updated centroids position
+    //shadow.getCentroidsPositions(); //not updated centroids position
     shadow.moveCentroids();
     shadow.moveJunctions();
     //check if the pose is moving
     //std::cout << "Is face centroid moving? " << shadow.isCentroidMoving(0) << std::endl;
     shadow.updateParticleSystems();
     //global_model.pose.isInFrontOfCam();
-    shadow.updateSysMaxVals(ms, mf);
+    shadow.updateSysMaxVals(sh_ms, sh_mf);
     //shadow.updateAttractors();
 }
 
@@ -110,8 +112,8 @@ void ofApp::draw()
     //cp << "cam x, y, z coordinates: " << ofToString(cam_pos.x) << ", " << ofToString(cam_pos.y) << ", " << ofToString(cam_pos.z) << endl << endl;
     //ofDrawBitmapString(cp.str().c_str(), 50, 50);
 
-    
-    ss << "MAX_SPEED: "<< ms << ", MAX_FORCE: "<< mf<< endl;
+    ss << "BODY MAX_SPEED: " << bd_ms << ", MAX_FORCE: " << bd_mf << endl;
+    ss << "SHADOW MAX_SPEED: "<< sh_ms << ", MAX_FORCE: "<< sh_mf<< endl;
     ofDrawBitmapString(ss.str().c_str(), 10, 30);
 
 
@@ -121,30 +123,57 @@ void ofApp::draw()
 void ofApp::keyPressed(int key){
     switch (key)
     {
+    //shadow max force, speed
     case 'a':
-        mf -= 0.001;
+        sh_mf -= 0.001;
         break;
     case 'd':
-        mf += 0.001;
+        sh_mf += 0.001;
         break;
     case 's':
-        ms -= 0.001;
+        sh_ms -= 0.001;
         break;
     case 'w':
-        ms += 0.001;
+        sh_ms += 0.001;
         break;
 
     case 'A':
-        mf -= 0.05;
+        sh_mf -= 0.05;
         break;
     case 'D':
-        mf += 0.05;
+        sh_mf += 0.05;
         break;
     case 'S':
-        ms -= 0.05;
+        sh_ms -= 0.05;
         break;
     case 'W':
-        ms += 0.05;
+        sh_ms += 0.05;
+        break;
+    //body max force, speed
+    case 'j':
+        bd_mf -= 0.001;
+        break;
+    case 'l':
+        bd_mf += 0.001;
+        break;
+    case 'k':
+        bd_ms -= 0.001;
+        break;
+    case 'i':
+        bd_ms += 0.001;
+        break;
+
+    case 'J':
+        bd_mf -= 0.05;
+        break;
+    case 'L':
+        bd_mf += 0.05;
+        break;
+    case 'K':
+        bd_ms -= 0.05;
+        break;
+    case 'I':
+        bd_ms += 0.05;
         break;
     }
 

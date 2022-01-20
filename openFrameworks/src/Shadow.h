@@ -21,7 +21,6 @@ public:
 	void updateSysMaxVals(float ms, float mf);
 
 private:
-	Circle com_shadow; //cointains the shadow sys origin
 	vector<Circle> shadow_junctions;
 	vector<ParticleSystem2D> particle_systems_2d;
 	glm::vec2 shadow_origin;

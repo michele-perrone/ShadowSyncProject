@@ -52,9 +52,11 @@ class ofApp : public ofBaseApp{
 
 		//3D body
 		Body body;
+		float bd_ms = 0.05;
+		float bd_mf = 0.04;
 
 		//2D shadow 
 		Shadow shadow;
-		float ms = 0.054; //tuned by hand
-		float mf = 0.046;
+		float sh_ms = 0.054; 
+		float sh_mf = 0.046;
 };

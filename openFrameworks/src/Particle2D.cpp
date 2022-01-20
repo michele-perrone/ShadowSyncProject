@@ -14,7 +14,7 @@ void Particle2D::setup(glm::vec2& origin, float radius, float lifespan, glm::vec
 	this->lifespan = lifespan;
 	this->force = force;
 	my2dParticle.set(origin, radius); 
-	my2dParticleColor = ofFloatColor::black; //rn setup manually
+	my2dParticleColor = ofColor::black; 
 
 }
 
@@ -63,13 +63,6 @@ void Particle2D::update(Circle * attractor)
     lifespan -= death_rate;
 
     force *= 0;
-
-    // Damp the particle when it's near the attractor
-    //float damping = 1.3;
-    //if (d_mag < 25)
-    //{
-    //    velocity /= damping;
-    //}
 }
 
 

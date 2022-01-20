@@ -20,7 +20,6 @@ void ParticleSystem2D::setup(glm::vec2& shadowOrigin, int numParticles, int part
 		glm::vec2 random_force = glm::make_vec2(rand);
 		//setup of the particle
 		newParticle.setup(origin_PS2D, particleRadius, particleLifespan, random_force); //passing origin to the particle by ref 
-		//push back to the end of the vector
 		particles.push_back(newParticle);
 	}
 }
@@ -58,12 +57,12 @@ void ParticleSystem2D::draw()
 		particles[i].draw();
 	}
 }
-
+/*
 void ParticleSystem2D::setOrigin(int x, int y)
 {
 	origin_PS2D.x = x;
 	origin_PS2D.y = y;
-}
+}*/
 
 void ParticleSystem2D::moveOrigin(glm::vec2& newOrigin)
 {
@@ -72,6 +71,7 @@ void ParticleSystem2D::moveOrigin(glm::vec2& newOrigin)
 	
 }
 
+/*
 void ParticleSystem2D::setDestination(int x, int y)
 {
 	destination.x = x;
@@ -83,6 +83,7 @@ void ParticleSystem2D::moveDestination(int x_dir, int y_dir)
 	destination.x += x_dir;
 	destination.y += y_dir;
 }
+*/
 
 void ParticleSystem2D::addParticle() //QUI la (nuova) origine del PS deve essere passata alla particella
 {

@@ -6,14 +6,13 @@
 #define SCALE_FACTOR 150
 #define TRASL_VECTOR {0.5, -0.9}
 #define SCALE_VECTOR {1, -1}
-#define NUM_ATTRACTORS 6
 
 
 void Shadow::setup(Pose* pose_shadow)
 {
 	pose = pose_shadow;
-	sys_origin = pose->body_centroid; //pointer
-	shadow_origin = glm::make_vec2(sys_origin);
+	//sys_origin = pose->body_centroid; //pointer
+	//shadow_origin = glm::make_vec2(sys_origin);
 
 	//CENTROIDS are the first "POSE_CENTROID_NUM" JUNCTIONS
 	for (int i = 0; i < POSE_JUNCTIONS + POSE_CENTROID_NUM; i++)

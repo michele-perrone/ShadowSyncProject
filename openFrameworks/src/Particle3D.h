@@ -5,16 +5,23 @@ class Particle3D
 {
 public:
     Particle3D();
-    void setup(ofNode& origin, float radius, float lifespan, glm::vec3 force);
+    void setup(glm::vec3& origin, float radius, float lifespan, glm::vec3 force);
     void update();
     void draw();
     bool isDead();
     float lifespan;
+    void update(ofSpherePrimitive* attractor);
+
+    float body_ps_max_speed = 0;
+    float body_ps_max_force = 0;
+
+    void setMaxStuff(float ms, float mf);
 
 private:
-    glm::vec3 position, velocity, force;
+    glm::vec3 position, velocity, force, target, distance;
     float radius;
     ofSpherePrimitive myParticle;
-
+    ofColor my3dParticleColor;
     float death_rate = ofRandom(1, 5);
+    ofMaterial p_material;
 };

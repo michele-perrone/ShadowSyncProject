@@ -12,21 +12,25 @@
 class ParticleSystem
 {
 public:
-    void setup(ofNode& origin, int numParticles, int particleRadius, int particleLifespan);
+    void setup(glm::vec3& origin, int numParticles, int particleRadius, int particleLifespan);
     void update();
     void draw();
     void setMaterial(ofMaterial& material);
     void setOrigin(int x, int y, int z);
-    void moveOrigin(int x_dir, int y_dir, int z_dir);
+    void moveOrigin(glm::vec3& newOrigin);
     void setDestination(int x, int y, int z);
     void moveDestination(int x_dir, int y_dir, int z_dir);
     void addParticle();
 
+    void updateParticleMaxVals(float ms, float mf);
+
+    void setAttractors(ofSpherePrimitive* attractor);
+    vector <ofSpherePrimitive*> attractors; //pointer to junctions - attractors
+
 private:
     int numParticles, particleRadius, particleLifespan;
-    ofMaterial material;
-    ofNode origin;
-    ofNode destination;
-
+    glm::vec3 origin_PS;
+    glm::vec3 destination;
     vector <Particle3D> particles;
+    ofColor ps_color;
 };
