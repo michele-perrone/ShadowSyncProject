@@ -12,12 +12,12 @@
 class ParticleSystem
 {
 public:
-    void setup(glm::vec3& origin, int numParticles, int particleRadius, int particleLifespan);
+    void setup(glm::vec3 origin, int numParticles, int particleRadius, int particleLifespan);
     void update();
     void draw();
     void setMaterial(ofMaterial& material);
     void setOrigin(int x, int y, int z);
-    void moveOrigin(glm::vec3& newOrigin);
+    void moveOrigin(glm::vec3 newOrigin);
     void setDestination(int x, int y, int z);
     void moveDestination(int x_dir, int y_dir, int z_dir);
     void addParticle();

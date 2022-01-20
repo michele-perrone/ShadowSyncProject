@@ -1,7 +1,7 @@
 #include "ParticleSystem.h"
 #define INIT_FORCE_MAG 0.001
 
-void ParticleSystem::setup(glm::vec3& origin, int numParticles, int particleRadius, int particleLifespan)
+void ParticleSystem::setup(glm::vec3 origin, int numParticles, int particleRadius, int particleLifespan)
 {
     this->origin_PS = origin;
     this->numParticles = numParticles;
@@ -57,7 +57,7 @@ void ParticleSystem::draw()
 }
 
 
-void ParticleSystem::moveOrigin(glm::vec3& newOrigin)
+void ParticleSystem::moveOrigin(glm::vec3 newOrigin)
 {
     origin_PS = newOrigin;
 }
