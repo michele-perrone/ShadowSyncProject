@@ -45,7 +45,7 @@ def ping_handler(address, *args):
 def start_handler(address, *args):
     if DEBUG==1:
         print("Start received, beginning...")
-    m.START = 1
+    global_model.START = 1
 
 # Default Handler
 def default_handler(address, *args):
@@ -70,7 +70,7 @@ async def app_main():
 
     while True:
         await asyncio.sleep(1)
-        if m.START==1:
+        if global_model.START==1:
             print("LETS START BICCIS")
             while True:
                 await asyncio.sleep(0.000001)
