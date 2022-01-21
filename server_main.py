@@ -136,10 +136,10 @@ async def app_main():
             blend_sequence.start()
             
             debug_print("Checking if all computers are online in order to start.")
-            if m.computer_online[1]==1 and m.computer_online[2]==1:
+            if global_model.computer_online[1]==1 and global_model.computer_online[2]==1:
                 debug_print("START!")
-                to_computer1.send_message("/pyUtil/start", 0)
-                to_computer2.send_message("/pyUtil/start", 0)
+                to_py1.send_message("/pyUtil/start", 0)
+                to_py2.send_message("/pyUtil/start", 0)
             else:
                 debug_print("Not all computers are online!")
 
