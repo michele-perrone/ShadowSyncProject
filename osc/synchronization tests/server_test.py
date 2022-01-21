@@ -20,9 +20,9 @@ def print_connection_status():
     timestamp = datetime.timestamp(now)
     readable_timestamp = datetime.fromtimestamp(timestamp)
     print('[%s] Computer 1: ' % readable_timestamp, end='')
-    print('\033[92mONLINE\033[0m' if global_model.computer_online[1]==1 else '\033[91mOFFLINE\033[0m', end='')
+    print('\033[92mONLINE\033[0m' if m.computer_online[1]==1 else '\033[91mOFFLINE\033[0m', end='')
     print(' | Computer 2: ', end='')
-    print('\033[92mONLINE\033[0m' if global_model.computer_online[2]==1 else '\033[91mOFFLINE\033[0m', flush=True, end='\r\r')
+    print('\033[92mONLINE\033[0m' if m.computer_online[2]==1 else '\033[91mOFFLINE\033[0m', flush=True, end='\r\r')
 
 
 # Function that handles the areyouonline request and answers
@@ -74,7 +74,7 @@ async def app_main():
 
         print_connection_status()
 
-        if global_model.has_started == 0 and keyboard.is_pressed('ctrl+w'):
+        if keyboard.is_pressed('ctrl+w'):
             # global_model.has_started = 1
             # blend_sequence = Thread(target=start_blend_sequence, daemon=True)
             # # blend_sequence.setDaemon(True)
