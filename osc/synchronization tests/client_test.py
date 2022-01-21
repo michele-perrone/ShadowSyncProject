@@ -32,7 +32,7 @@ def default_handler(address, *args):
 
 dispatcher = Dispatcher()
 dispatcher.map("/pyUtil/ping", ping_handler)
-dispatcher.map("/pyUtil/start", start_time_handler)
+dispatcher.map("/pyUtil/start", start_handler)
 dispatcher.set_default_handler(default_handler)
 
 server_ip = "192.168.207.225"
