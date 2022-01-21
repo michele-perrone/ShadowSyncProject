@@ -25,15 +25,25 @@ def print_connection_status():
     print('\033[92mONLINE\033[0m' if m.computer_online[2]==1 else '\033[91mOFFLINE\033[0m', flush=True, end='\r\r')
 
 
+def debug_print(message):
+    spaces = ' '
+    for i in range(70-len(message)):
+        spaces += ' '
+        
+    print(message, spaces)
+
 # Function that handles the areyouonline request and answers
 def ack_handler(address, *args):
-    print(args[0], "ack received")
+
+    message = "ack received from " + str(args[0])
+
+    debug_print(message)
     m.ack[args[0]] = 1
     m.computer_online[args[0]] = 1
 
 # Default Handler
 def default_handler(address, *args):
-    print(f"DEFAULT {address}: {args}")
+    debug_print(f"DEFAULT {address}: {args}")
 
 dispatcher = Dispatcher()
 dispatcher.map("/pyUtil/ack", ack_handler)
@@ -57,7 +67,7 @@ def ping_loop():
 async def app_main():
 
     for i in range(100):
-        print("Ping")
+        debug_print("Ping")
 
         if m.ack[1]==0:
             m.computer_online[1] = 0
@@ -79,9 +89,13 @@ async def app_main():
             # blend_sequence = Thread(target=start_blend_sequence, daemon=True)
             # # blend_sequence.setDaemon(True)
             # blend_sequence.start()
+            debug_print("Checking if all computers are online")
             if m.computer_online[1]==1 and m.computer_online[2]==1:
+                debug_print("Sending starts!")
                 to_computer1.send_message("/pyUtil/start", 0)
                 to_computer2.send_message("/pyUtil/start", 0)
+            else:
+                debug_print("Not all computers are online")
 
         if keyboard.is_pressed('ctrl+q'):
             break

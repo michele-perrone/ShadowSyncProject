@@ -10,7 +10,6 @@ CLIENT_NUMBER = 1
 DEBUG=1
 
 awake_time = datetime.timestamp(datetime.now())
-START = 0
 
 # Function that answers to the areyouonline request
 def ack():
@@ -19,14 +18,14 @@ def ack():
 # Function that handles the areyouonline request and answers
 def ping_handler(address, *args):
     if DEBUG==1:
-        print("Ping Received, answering with my awake time...")
+        print("Ping Received, answering...")
     ack()
 
 # Function that handles the areyouonline request and answers
 def start_handler(address, *args):
     if DEBUG==1:
         print("Start received, beginning...")
-    start_time = 1
+    m.START = 1
 
 # Default Handler
 def default_handler(address, *args):
@@ -57,7 +56,7 @@ async def app_main():
 
     while True:
         await asyncio.sleep(1)
-        if START==1:
+        if m.START==1:
             print("LETS START BICCIS")
         else:
             print("No indication on when to start ")
