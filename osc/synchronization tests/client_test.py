@@ -7,6 +7,8 @@ from datetime import datetime, timedelta
 CLIENT_NUMBER = 1
 # CLIENT_NUMBER = 2
 
+m = Model()
+
 DEBUG=1
 
 awake_time = datetime.timestamp(datetime.now())
