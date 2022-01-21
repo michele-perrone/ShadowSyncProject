@@ -69,8 +69,8 @@ async def app_main():
         else:
             m.ack[2] = 0
 
-        to_computer1.send_message("/pyUtil/areyouonline", 0)
-        to_computer2.send_message("/pyUtil/areyouonline", 0)
+        to_computer1.send_message("/pyUtil/ping", 0)
+        to_computer2.send_message("/pyUtil/ping", 0)
 
         print_connection_status()
 
