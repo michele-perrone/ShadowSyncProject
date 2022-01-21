@@ -47,16 +47,6 @@ def ack_handler(address, *args):
     global_model.ack[args[0]] = 1
     global_model.computer_online[args[0]] = 1
 
-def turnedON_handler(address, *args):
-    global_model.computer_online[args[0]] = 1
-    if DEBUG==1:
-        print(args[0], "is now", global_model.computer_online[1], global_model.computer_online[2])
-
-def turnedOFF_handler(address, *args):
-    global_model.computer_online[args[0]] = 0
-    if DEBUG==1:
-        print(args[0], "is now", global_model.computer_online[1], global_model.computer_online[2])
-
 def pose_handler(address, *args):
     component = address[5:].split('/')
     if args[0]==1:
@@ -84,14 +74,12 @@ def default_handler(address, *args):
 
 dispatcher = Dispatcher()
 dispatcher.map("/pyUtil/ack", ack_handler)
-dispatcher.map("/pyUtil/turnedON", turnedON_handler)
-dispatcher.map("/pyUtil/turnedOFF", turnedOFF_handler)
 dispatcher.map("/pose/*", pose_handler)
 dispatcher.map("/ofxUtil/correlation", correlation_handler)
 dispatcher.set_default_handler(default_handler)
 
-ip_1 = "2.36.51.122"
-ip_2 = "84.220.58.163"
+ip_1 = "192.168.207.2"
+ip_2 = "192.168.207.213"
 
 to_py1 = SimpleUDPClient(ip_1, 5511)
 to_py2 = SimpleUDPClient(ip_2, 5522)
@@ -145,8 +133,15 @@ async def app_main():
         if global_model.has_started == 0 and keyboard.is_pressed('ctrl+w'):
             global_model.has_started = 1
             blend_sequence = Thread(target=start_blend_sequence, daemon=True)
-            # blend_sequence.setDaemon(True)
             blend_sequence.start()
+            
+            debug_print("Checking if all computers are online in order to start.")
+            if m.computer_online[1]==1 and m.computer_online[2]==1:
+                debug_print("START!")
+                to_computer1.send_message("/pyUtil/start", 0)
+                to_computer2.send_message("/pyUtil/start", 0)
+            else:
+                debug_print("Not all computers are online!")
 
         if keyboard.is_pressed('ctrl+q'):
             break

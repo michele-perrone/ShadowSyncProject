@@ -59,11 +59,6 @@ to_computer1 = SimpleUDPClient(computer1_ip, computer1_port)
 to_computer2 = SimpleUDPClient(computer2_ip, computer2_port)
 to_me = SimpleUDPClient("127.0.1.1", listen_port)
 
-def ping_loop():
-
-
-    time.sleep(1)
-
 async def app_main():
 
     for i in range(100):
@@ -85,10 +80,6 @@ async def app_main():
         print_connection_status()
 
         if keyboard.is_pressed('ctrl+w'):
-            # global_model.has_started = 1
-            # blend_sequence = Thread(target=start_blend_sequence, daemon=True)
-            # # blend_sequence.setDaemon(True)
-            # blend_sequence.start()
             debug_print("Checking if all computers are online")
             if m.computer_online[1]==1 and m.computer_online[2]==1:
                 debug_print("Sending starts!")

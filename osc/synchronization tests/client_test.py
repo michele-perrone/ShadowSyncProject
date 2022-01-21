@@ -55,8 +55,6 @@ to_me = SimpleUDPClient(my_ip, listen_port)
 
 async def app_main():
 
-    now = datetime.timestamp(datetime.now())
-
     while True:
         await asyncio.sleep(1)
         if m.START==1:
