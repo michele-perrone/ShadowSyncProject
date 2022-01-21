@@ -52,8 +52,8 @@ class ofApp : public ofBaseApp{
 
 		//3D body
 		Body body;
-		float bd_ms = 0.05;
-		float bd_mf = 0.04;
+		float bd_ms = 0.5;
+		float bd_mf = 1.5;
 
 		//2D shadow 
 		Shadow shadow;

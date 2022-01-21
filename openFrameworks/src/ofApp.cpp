@@ -52,8 +52,8 @@ void ofApp::update()
 
     //3D Body
     //body.getCentroidsPositions(); //not updated centroids positions
-    body.moveCentroids();
     body.moveJunctions();
+    body.moveCentroids();
     body.updateParticleSystems();
     body.updateSysMaxVals(bd_ms, bd_mf);
 

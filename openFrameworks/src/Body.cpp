@@ -1,5 +1,5 @@
 #include "Body.h"
-#define NUMPARTICLES 100
+#define NUMPARTICLES 30
 #define P_LIFESPAN 200
 #define P_RADIUS 1
 #define BODY_RADIUS 2

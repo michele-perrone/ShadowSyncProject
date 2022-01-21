@@ -1,5 +1,5 @@
 #include "Particle3D.h"
-
+#define RANDOM_FORCE_MAG 2
 Particle3D::Particle3D()
 {
 }
@@ -13,6 +13,7 @@ void Particle3D::setup(glm::vec3& origin, float radius, float lifespan, glm::vec
     this->lifespan = lifespan;
     this->force = force;
     myParticle.set(radius, 10);
+    myParticle.setGlobalPosition(position); //set ofSphere position 
 
     //color setup
     ofColor p_color = ofColor::aquamarine;
@@ -46,6 +47,10 @@ void Particle3D::update(ofSpherePrimitive * attractor)
     float limit_steer = (glm::length(steer) / body_ps_max_force);
     steer.x = steer.x / limit_steer;
     steer.y = steer.y / limit_steer;
+    //ADDING RANDOMNESS
+    float rand[] = { ofRandom(-RANDOM_FORCE_MAG, RANDOM_FORCE_MAG), ofRandom(-RANDOM_FORCE_MAG , RANDOM_FORCE_MAG) , ofRandom(-RANDOM_FORCE_MAG, RANDOM_FORCE_MAG) };
+    glm::vec3 random_force = glm::make_vec3(rand);
+    steer += random_force;
     //applyforce(steer);
     force += steer;
 
@@ -56,18 +61,18 @@ void Particle3D::update(ofSpherePrimitive * attractor)
 
     position += velocity;
     myParticle.move(velocity);
+    //myParticle.setGlobalPosition(position);
     lifespan -= death_rate;
 
     force *= 0;
 
-    my3dParticleColor = (my3dParticleColor, lifespan); //updating color alpha
+    my3dParticleColor = (my3dParticleColor, -lifespan); //updating color alpha
     p_material.setDiffuseColor(my3dParticleColor);
 
 }
 
 void Particle3D::draw() 
 {
-    myParticle.setGlobalPosition(position); //lol
     p_material.begin();
     myParticle.draw();
     p_material.end();
@@ -81,7 +86,6 @@ bool Particle3D::isDead()
 
 void Particle3D::setMaxStuff(float ms, float mf)
 {
-    body_ps_max_force += mf;
-    body_ps_max_speed += ms;
-
+    body_ps_max_force = mf;
+    body_ps_max_speed = ms;
 }

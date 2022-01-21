@@ -1,5 +1,5 @@
 #include "ParticleSystem.h"
-#define INIT_FORCE_MAG 0.001
+#define INIT_FORCE_MAG 1
 
 void ParticleSystem::setup(glm::vec3 origin, int numParticles, int particleRadius, int particleLifespan)
 {

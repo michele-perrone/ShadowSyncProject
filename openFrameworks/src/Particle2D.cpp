@@ -107,7 +107,7 @@ bool Particle2D::isDead()
 
 void Particle2D::setMaxStuff(float ms, float mf)
 {
-    shadow_ps_max_force += mf;
-    shadow_ps_max_speed += ms;
+    shadow_ps_max_force = mf;
+    shadow_ps_max_speed = ms;
 
 }
