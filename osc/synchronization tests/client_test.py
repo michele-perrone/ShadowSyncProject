@@ -3,6 +3,7 @@ from pythonosc.dispatcher import Dispatcher
 from pythonosc.udp_client import SimpleUDPClient
 import asyncio
 from datetime import datetime, timedelta
+from model import Model
 
 CLIENT_NUMBER = 1
 # CLIENT_NUMBER = 2
