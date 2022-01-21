@@ -65,7 +65,7 @@ async def init_main():
     server = AsyncIOOSCUDPServer(("0.0.0.0", listen_port), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()
 
-    await app_main()
+    await app_main() 
 
     transport.close()
 
