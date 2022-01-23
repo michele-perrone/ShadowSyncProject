@@ -13,3 +13,7 @@ osc/openframeworks_osc/SimpleOSCSender/config.make
 osc/openframeworks_osc/SimpleOSCSender/Makefile
 osc/openframeworks_osc/SimpleOSCSender/SimpleOSCSender.qbs
 osc/openframeworks_osc/SimpleOSCSender/SimpleOSCSender.qbs.user
+.DS_Store
+.idea/
+openFrameworks/.DS_Store
+openFrameworks/src/.DS_Store
