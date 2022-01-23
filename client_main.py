@@ -18,6 +18,9 @@ CLIENT_NUMBER = 2
 
 global_model = Model()
 
+# To bypass start signal
+# global_model.START = 1
+
 # Function that answers to the areyouonline request
 def ack():
     to_server.send_message("/pyUtil/ack", CLIENT_NUMBER)
@@ -26,7 +29,9 @@ def pose_sender(client, pose):
     for i in pose:
         for j in pose[i]:
             address = "/pose/" + i + "/" + j  # example: address = /pose/face/_centroid[ ... ]
-            coordinates = []
+            coordinates = [CLIENT_NUMBER]
+            # IF USED TO COMMUNICATE DIRECTLY WITH ofx
+            # coordinates = []
             for index in range(len(pose[i][j])):
                 coordinates.append(pose[i][j][index])
             # if (j == "right_shoulder"):
@@ -61,7 +66,7 @@ if CLIENT_NUMBER==1:
 elif CLIENT_NUMBER==2:
     listen_port = 5522
 
-to_server = SimpleUDPClient("192.168.207.225", 1255)
+to_server = SimpleUDPClient("127.0.1.1", 5501)
 to_me = SimpleUDPClient("127.0.1.1", listen_port)
 
 async def app_main():

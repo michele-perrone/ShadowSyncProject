@@ -49,16 +49,19 @@ def ack_handler(address, *args):
 
 def pose_handler(address, *args):
     component = address[5:].split('/')
+    print("pose arrived", args[0])
     if args[0]==1:
         # Pose comes from client 1 and has to be sent to 1 as pose and to 2 as other_pose
         args = args[1:]
         to_ofx1.send_message(address, args)
+        to_test_ofx.send_message(address, args)
         to_ofx2.send_message('/other_pose' + address[5:], args)
 
     elif args[0]==2:
         # Pose comes from client 1 and has to be sent to 2 as pose and to 1 as other_pose
         args = args[1:]
         to_ofx1.send_message('/other_pose' + address[5:], args)
+        to_test_ofx.send_message('/other_pose' + address[5:], args)
         to_ofx2.send_message(address, args)
 
 def correlation_handler(address, *args):
@@ -78,13 +81,16 @@ dispatcher.map("/pose/*", pose_handler)
 dispatcher.map("/ofxUtil/correlation", correlation_handler)
 dispatcher.set_default_handler(default_handler)
 
-ip_1 = "192.168.207.2"
-ip_2 = "192.168.207.213"
+ip_1 = "192.168.28.1"
+ip_2 = "192.168.28.213"
 
 to_py1 = SimpleUDPClient(ip_1, 5511)
 to_py2 = SimpleUDPClient(ip_2, 5522)
 to_ofx1 = SimpleUDPClient(ip_1, 5501)
 to_ofx2 = SimpleUDPClient(ip_2, 5502)
+
+# UNCOMMENT ONLY FOR SINGLE FRONTEND ON SERVER FOR TESTING
+to_test_ofx = SimpleUDPClient("127.0.0.1", 5501)
 
 my_ip = "127.0.0.1"
 listen_port = 1255
@@ -137,6 +143,12 @@ async def app_main():
             
             debug_print("Checking if all computers are online in order to start.")
             if global_model.computer_online[1]==1 and global_model.computer_online[2]==1:
+                debug_print("3...")
+                await asyncio.sleep(1)
+                debug_print("2...")
+                await asyncio.sleep(1)
+                debug_print("1...")
+                await asyncio.sleep(1)
                 debug_print("START!")
                 to_py1.send_message("/pyUtil/start", 0)
                 to_py2.send_message("/pyUtil/start", 0)
