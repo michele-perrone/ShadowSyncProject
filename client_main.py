@@ -12,6 +12,7 @@ from pose_estimation import init_pose_estimation
 from pose_estimation import get_body_position
 
 DEBUG = 0
+DEMO_MODE = 0
 
 #CLIENT_NUMBER = 1
 CLIENT_NUMBER = 2
@@ -19,7 +20,8 @@ CLIENT_NUMBER = 2
 global_model = Model()
 
 # To bypass start signal
-# global_model.START = 1
+if DEMO_MODE==1:
+    global_model.START = 1
 
 # Function that answers to the areyouonline request
 def ack():
@@ -31,7 +33,8 @@ def pose_sender(client, pose):
             address = "/pose/" + i + "/" + j  # example: address = /pose/face/_centroid[ ... ]
             coordinates = [CLIENT_NUMBER]
             # IF USED TO COMMUNICATE DIRECTLY WITH ofx
-            # coordinates = []
+            if DEMO_MODE==1:
+                coordinates = []
             for index in range(len(pose[i][j])):
                 coordinates.append(pose[i][j][index])
             # if (j == "right_shoulder"):

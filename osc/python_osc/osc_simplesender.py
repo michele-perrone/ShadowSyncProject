@@ -1,9 +1,10 @@
-from pythonosc.udp_client import SimpleUDPClient
+from pythonosc.udp_client import SimpleUDPClient, SimpleTCPClient
 
 ip = "localhost"
 port = 1255
 
 client = SimpleUDPClient(ip, port)  # Create client
+client_tcp = SimpleTCPClient(ip, port)
 
 address = ['fhu', 'fhduh', 'fhfhfhfhf']
 
