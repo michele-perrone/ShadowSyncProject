@@ -52,11 +52,13 @@ void ofApp::update()
 
     //3D Body
     //body.getCentroidsPositions(); //not updated centroids positions
+    body.savePastCentroidsPositions();
     body.moveJunctions();
     body.moveCentroids();
     body.updateParticleSystems();
     body.updateSysMaxVals(bd_ms, bd_mf);
 
+        
     //2D Shadow
     //shadow.getCentroidsPositions(); //not updated centroids position
     shadow.moveCentroids();

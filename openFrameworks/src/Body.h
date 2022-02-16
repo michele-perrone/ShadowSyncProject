@@ -14,14 +14,19 @@ public:
 
     void updateParticleSystems();
 
-	void getCentroidsPositions();
+	void savePastCentroidsPositions();
 	bool isCentroidMoving(int idx_centroid);
+	bool areCentroidMoving();
 
 	void updateSysMaxVals(float ms, float mf);
+	int setupEmitter(int i);
+	void setupAttractor(int i, int j);
+	void EmitterAttractorSetup();
 	
 private:
     vector <ofSpherePrimitive> body_junctions;
-    vector <ParticleSystem> particle_systems;
+    vector <ParticleSystem> particle_systems;	//movement
+	vector <ParticleSystem> particle_systems_nm; //non movevement
 	glm::vec3 body_origin;
 	float* sys_origin;
 	vector <ofSpherePrimitive*> body_attractors;
@@ -29,4 +34,6 @@ private:
 	ofSpherePrimitive past_pose_centroids[POSE_CENTROID_NUM];
 	ofMaterial j_material;
 	ofMaterial c_material;
+	int isCentroidMovingFlag10Frames = 0;
+
 };

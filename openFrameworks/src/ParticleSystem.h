@@ -21,9 +21,8 @@ public:
     void setDestination(int x, int y, int z);
     void moveDestination(int x_dir, int y_dir, int z_dir);
     void addParticle();
-
+    void decay();
     void updateParticleMaxVals(float ms, float mf);
-
     void setAttractors(ofSpherePrimitive* attractor);
     vector <ofSpherePrimitive*> attractors; //pointer to junctions - attractors
 
