@@ -25,7 +25,7 @@ public:
     void updateParticleMaxVals(float ms, float mf);
     void setAttractors(ofSpherePrimitive* attractor);
     vector <ofSpherePrimitive*> attractors; //pointer to junctions - attractors
-
+    int origin_idx_in_body_junction_domain;
 private:
     int numParticles, particleRadius, particleLifespan;
     glm::vec3 origin_PS;

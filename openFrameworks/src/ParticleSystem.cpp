@@ -36,7 +36,7 @@ void ParticleSystem::update()
             //add new particle
             addParticle();
         }
-        particles[i].update(this->attractors[0]); //hp: only ONE attractor for each ps
+       particles[i].update(this->attractors[0]); //hp: only ONE attractor for each ps
     }
 }
 
@@ -44,8 +44,10 @@ void ParticleSystem::decay() //update only the remaining particles, util everyon
 {
     for (int i = particles.size() - 1; i >= 0; i--)
     {
-        if(particles[i].isDead() == false)
+        if (particles[i].isDead() == false)
+        {
             particles[i].update(this->attractors[0]); //hp: only ONE attractor for each ps
+        }
     }
 
 }

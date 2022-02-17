@@ -1,5 +1,6 @@
 #include "Body.h"
 #define NUMPARTICLES 30
+#define NUMPARTICLESNM 15
 #define P_LIFESPAN 200
 #define P_RADIUS 1
 #define BODY_RADIUS 2
@@ -30,9 +31,13 @@ void Body::setup(Pose* pose_body)
         particle_systems.push_back(temp_ps);
 
         //attractor setting: with this config, each ps it itself its attractor
-        ofSpherePrimitive* temp_attractor = &(body_junctions[i]);
-        body_attractors.push_back(temp_attractor);
-        particle_systems[i].setAttractors(body_attractors[i]);
+        //ofSpherePrimitive* temp_attractor = &(body_junctions[i]);
+        //body_attractors.push_back(temp_attractor);
+        //particle_systems[i].setAttractors(body_attractors[i]);
+
+        //testing: do not use body_attractors
+        particle_systems[i].setAttractors(&(body_junctions[i])); //ps attracted by itself, pose moving 
+
     }
     
     EmitterAttractorSetup();
@@ -71,7 +76,7 @@ void Body::moveCentroids()
       //  std::cout << "Move centroids: " << body_junctions[i].getGlobalPosition() << std::endl;
     }
     for (int j = 0; j < particle_systems_nm.size(); j++)
-        particle_systems_nm[j].moveOrigin(body_junctions[j].getGlobalPosition());
+        particle_systems_nm[j].moveOrigin(body_junctions[particle_systems_nm[j].origin_idx_in_body_junction_domain].getGlobalPosition());
 }
 
 
@@ -209,54 +214,35 @@ void Body::moveJunctions()
 void Body::EmitterAttractorSetup()
 {
 //remember: the first 6 body_junctions are = centroids
-//head
-    int ps_idx = setupEmitter(NOSE);
-    setupAttractor(RIGHT_EAR, ps_idx);
-    setupAttractor(LEFT_EAR, ps_idx);
+    //head
+    //setupEA(NOSE, LEFT_EAR);
+    //setupEA(NOSE, RIGHT_EAR);
     //chest
-    ps_idx = setupEmitter(BODY_CENTROID - POSE_CENTROID_NUM);
-    setupAttractor(LEFT_SHOULDER, ps_idx);
-    setupAttractor(RIGHT_SHOULDER, ps_idx);
-    setupAttractor(LEFT_HIP, ps_idx);
-    setupAttractor(RIGHT_HIP, ps_idx);
+    setupEA(BODY_CENTROID - POSE_CENTROID_NUM, LEFT_SHOULDER);
+    setupEA(BODY_CENTROID - POSE_CENTROID_NUM, RIGHT_SHOULDER);
+    setupEA(BODY_CENTROID - POSE_CENTROID_NUM, LEFT_HIP);
+    setupEA(BODY_CENTROID - POSE_CENTROID_NUM, RIGHT_HIP);
 
     //left arm
-    ps_idx = setupEmitter(LEFT_ELBOW);
-    setupAttractor(LEFT_SHOULDER, ps_idx);
-    setupAttractor(LEFT_WRIST, ps_idx);
-    setupAttractor(LEFT_INDEX, ps_idx);
+    
 
     //right arm
-    ps_idx = setupEmitter(RIGHT_ELBOW);
-    setupAttractor(RIGHT_SHOULDER, ps_idx);
-    setupAttractor(RIGHT_WRIST, ps_idx);
-    setupAttractor(RIGHT_INDEX, ps_idx);
+
 
     //left leg
-    ps_idx = setupEmitter(LEFT_KNEE);
-    setupAttractor(LEFT_HIP, ps_idx);
-    setupAttractor(LEFT_ANKLE, ps_idx);
-    setupAttractor(LEFT_FOOT_INDEX, ps_idx);
+
 
     //right leg
-    ps_idx = setupEmitter(RIGHT_KNEE);
-    setupAttractor(RIGHT_HIP, ps_idx);
-    setupAttractor(RIGHT_ANKLE, ps_idx);
-    setupAttractor(RIGHT_FOOT_INDEX, ps_idx);
+
 }
 
-int Body::setupEmitter(int i)
+
+void Body::setupEA(int e , int a)
 {
     ParticleSystem temp_ps;
-    temp_ps.setup(body_junctions[POSE_CENTROID_NUM + i].getGlobalPosition(), NUMPARTICLES, P_RADIUS, P_LIFESPAN);
+    temp_ps.setup(body_junctions[POSE_CENTROID_NUM + e].getGlobalPosition(), NUMPARTICLESNM, P_RADIUS, P_LIFESPAN);
     particle_systems_nm.push_back(temp_ps);
-    return (particle_systems_nm.size() - 1); //idx of the particle system associated with the i-th body junction
-}
-
-void Body::setupAttractor(int i, int j)
-{
-    ofSpherePrimitive* temp_attractor = &(body_junctions[POSE_CENTROID_NUM + i]);
-    body_attractors.push_back(temp_attractor);
-    particle_systems_nm[j].setAttractors(body_attractors[body_attractors.size()-1]);
+    particle_systems_nm[particle_systems_nm.size() - 1].origin_idx_in_body_junction_domain = POSE_CENTROID_NUM + e; //setup its origin, see moveCentroids()
+    particle_systems_nm[particle_systems_nm.size() - 1].setAttractors(&(body_junctions[POSE_CENTROID_NUM + a]));
 }
 
