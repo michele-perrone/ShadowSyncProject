@@ -47,6 +47,7 @@ void Body::setup(Pose* pose_body)
 
 void Body::draw()
 {
+    /*
     c_material.begin();
     for (int i = 0; i < POSE_CENTROID_NUM; i++)
         body_junctions[i].draw();
@@ -57,7 +58,7 @@ void Body::draw()
     for (int i = POSE_CENTROID_NUM; i < body_junctions.size(); i++)
         body_junctions[i].draw();
     j_material.end();
-
+    */
 
     for (int i = 0; i < particle_systems.size(); i++)
         particle_systems[i].draw();
@@ -120,7 +121,8 @@ void Body::updateParticleSystems()
     //for (int i = 0; i < POSE_CENTROID_NUM; i++)
     //    particle_systems[i].update();
     
-    if (areCentroidMoving()) //activate centroids PS, where EMI = ATT
+    //MOVING VS NON-MOVING POSE HP
+    /*if (areCentroidMoving()) //activate centroids PS, where EMI = ATT
     {
         std::cout << "centroid is moving" << std::endl;
         for (int i = 0; i < POSE_CENTROID_NUM; i++)
@@ -132,7 +134,7 @@ void Body::updateParticleSystems()
     }
     else    //activate other PS, where EMI != ATT
     {
-        std::cout << "centroid is NOT moving" << std::endl;
+        std::cout << "centroid is NOT moving" << std::endl;*/
         for (int j = 0; j < particle_systems_nm.size(); j++)
             particle_systems_nm[j].update();
         for (int i = 0; i < POSE_CENTROID_NUM; i++)
@@ -140,7 +142,7 @@ void Body::updateParticleSystems()
             particle_systems[i].decay();
         }
 
-    }
+    
         
 }
 
@@ -213,10 +215,11 @@ void Body::moveJunctions()
 
 void Body::EmitterAttractorSetup()
 {
-//remember: the first 6 body_junctions are = centroids
+//remember: the first 6 body_junctions are = centroids -> if A/E is a centroid, modify accordingly the idx
     //head
-    //setupEA(NOSE, LEFT_EAR);
-    //setupEA(NOSE, RIGHT_EAR);
+    setupEA(LEFT_EAR, RIGHT_EAR);
+    setupEA(NOSE, BODY_CENTROID - POSE_CENTROID_NUM);
+
     //chest
     setupEA(BODY_CENTROID - POSE_CENTROID_NUM, LEFT_SHOULDER);
     setupEA(BODY_CENTROID - POSE_CENTROID_NUM, RIGHT_SHOULDER);
@@ -224,16 +227,20 @@ void Body::EmitterAttractorSetup()
     setupEA(BODY_CENTROID - POSE_CENTROID_NUM, RIGHT_HIP);
 
     //left arm
+    setupEA(LEFT_SHOULDER, LEFT_ELBOW);
+    setupEA(LEFT_ELBOW, LEFT_WRIST);
     
-
     //right arm
-
+    setupEA(RIGHT_SHOULDER, RIGHT_ELBOW);
+    setupEA(RIGHT_ELBOW, RIGHT_WRIST);
 
     //left leg
-
+    setupEA(LEFT_HIP, LEFT_KNEE);
+    setupEA(LEFT_KNEE, LEFT_HEEL);
 
     //right leg
-
+    setupEA(RIGHT_HIP, RIGHT_KNEE);
+    setupEA(RIGHT_KNEE, RIGHT_HEEL);
 }
 
 
