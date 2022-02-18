@@ -29,7 +29,9 @@ public:
      * the two poses in the XY plane
      * @param Minimum value of the similarity factor
      * @param Maximum value of the similarity factor
-     * @return A similarity factor in the range [min, max]
+     * @return A similarity factor in the range [min, max],
+     * where min --> poses are completely identical,
+     * and   max --> poses are completely identical
      */
     float get_pose_similarity_xy(float min, float max);
 
@@ -38,7 +40,9 @@ public:
      * the two poses in the YZ plane
      * @param Minimum value of the similarity factor
      * @param Maximum value of the similarity factor
-     * @return A similarity factor in the range [min, max]
+     * @return A similarity factor in the range [min, max],
+     * where min --> poses are completely identical,
+     * and   max --> poses are completely identical
      */
     float get_pose_similarity_yz(float min, float max);
 
