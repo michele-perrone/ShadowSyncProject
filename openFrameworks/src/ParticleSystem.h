@@ -23,8 +23,7 @@ public:
     void addParticle();
     void decay();
     void updateParticleMaxVals(float ms, float mf);
-    void setAttractors(ofSpherePrimitive* attractor);
-    vector <ofSpherePrimitive*> attractors; //pointer to junctions - attractors
+    void setAttractor(ofSpherePrimitive* attractor);
     int origin_idx_in_body_junction_domain;
 private:
     int numParticles, particleRadius, particleLifespan;
@@ -32,4 +31,5 @@ private:
     glm::vec3 destination;
     vector <Particle3D> particles;
     ofColor ps_color;
+    ofSpherePrimitive* attractor;
 };

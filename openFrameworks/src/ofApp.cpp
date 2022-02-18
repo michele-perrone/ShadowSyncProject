@@ -58,17 +58,19 @@ void ofApp::update()
     body.updateParticleSystems();
     body.updateSysMaxVals(bd_ms, bd_mf);
 
-        
+    
     //2D Shadow
     //shadow.getCentroidsPositions(); //not updated centroids position
-    shadow.moveCentroids();
     shadow.moveJunctions();
+    shadow.moveCentroids();
+    shadow.updateParticleSystems();
+    shadow.updateSysMaxVals(sh_ms, sh_mf);
+
     //check if the pose is moving
     //std::cout << "Is face centroid moving? " << shadow.isCentroidMoving(0) << std::endl;
-    shadow.updateParticleSystems();
+    // 
     //global_model.pose.isInFrontOfCam();
-    shadow.updateSysMaxVals(sh_ms, sh_mf);
-    //shadow.updateAttractors();
+
 }
 
 //--------------------------------------------------------------

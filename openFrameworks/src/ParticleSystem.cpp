@@ -36,7 +36,7 @@ void ParticleSystem::update()
             //add new particle
             addParticle();
         }
-       particles[i].update(this->attractors[0]); //hp: only ONE attractor for each ps
+       particles[i].update(this->attractor); //hp: only ONE attractor for each ps
     }
 }
 
@@ -46,7 +46,7 @@ void ParticleSystem::decay() //update only the remaining particles, util everyon
     {
         if (particles[i].isDead() == false)
         {
-            particles[i].update(this->attractors[0]); //hp: only ONE attractor for each ps
+            particles[i].update(this->attractor); //hp: only ONE attractor for each ps
         }
     }
 
@@ -89,9 +89,9 @@ void ParticleSystem::addParticle()
     particles.push_back(newParticle);
 }
 
-void ParticleSystem::setAttractors(ofSpherePrimitive* attractor)
+void ParticleSystem::setAttractor(ofSpherePrimitive* attractor)
 {
-    this->attractors.push_back(attractor);
+    this->attractor = attractor;
 }
 
 

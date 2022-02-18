@@ -19,13 +19,15 @@ public:
 	bool isCentroidMoving(int idx_centroid);
 	
 	void updateSysMaxVals(float ms, float mf);
+	void EmitterAttractorSetup();
+	void setupEA(int e, int a);
 
 private:
 	vector<Circle> shadow_junctions;
 	vector<ParticleSystem2D> particle_systems_2d;
+	vector<ParticleSystem2D> particle_systems_2d_nm;
 	glm::vec2 shadow_origin;
 	float* sys_origin;
-	vector <Circle*> shadow_attractors; //should follow the defined attractor(that is a junction) position
 	Pose* pose;
 	Circle past_pose_centroids[POSE_CENTROID_NUM];
 };

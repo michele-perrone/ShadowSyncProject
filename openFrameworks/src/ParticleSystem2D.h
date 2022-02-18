@@ -13,14 +13,14 @@ public:
 	void setDestination(int x, int y);
 	void moveDestination(int x_dir, int y_dir);
 	void addParticle();
-
+	void decay();
 	void updateParticleMaxVals(float ms, float mf);
-
-	void setAttractors(Circle* attractor);
-	vector <Circle*> attractors; //pointer to junctions - attractors
+	void setAttractor(Circle* attractor);
+	int origin_idx_in_shadow_junction_domain;
 private:
 	int numParticles, particleRadius, particleLifespan;
 	glm::vec2 origin_PS2D;
 	glm::vec2 destination;
 	vector <Particle2D> particles;
+	Circle* attractor; //pointer to junctions - attractors
 };

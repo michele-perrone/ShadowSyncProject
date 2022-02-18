@@ -29,14 +29,7 @@ void Body::setup(Pose* pose_body)
         ParticleSystem temp_ps;
         temp_ps.setup(body_junctions[i].getGlobalPosition(), NUMPARTICLES, P_RADIUS, P_LIFESPAN);
         particle_systems.push_back(temp_ps);
-
-        //attractor setting: with this config, each ps it itself its attractor
-        //ofSpherePrimitive* temp_attractor = &(body_junctions[i]);
-        //body_attractors.push_back(temp_attractor);
-        //particle_systems[i].setAttractors(body_attractors[i]);
-
-        //testing: do not use body_attractors
-        particle_systems[i].setAttractors(&(body_junctions[i])); //ps attracted by itself, pose moving 
+        particle_systems[i].setAttractor(&(body_junctions[i])); //ps attracted by itself, pose moving 
 
     }
     
@@ -194,7 +187,7 @@ void Body::moveJunctions()
     body_junctions[23].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->left_thumb)));
     body_junctions[24].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->left_elbow)));
     body_junctions[25].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->left_wrist)));
-    //right harm
+    //right arm
     body_junctions[26].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->right_pinky)));
     body_junctions[27].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->right_index)));
     body_junctions[28].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->right_thumb)));
@@ -250,6 +243,6 @@ void Body::setupEA(int e , int a)
     temp_ps.setup(body_junctions[POSE_CENTROID_NUM + e].getGlobalPosition(), NUMPARTICLESNM, P_RADIUS, P_LIFESPAN);
     particle_systems_nm.push_back(temp_ps);
     particle_systems_nm[particle_systems_nm.size() - 1].origin_idx_in_body_junction_domain = POSE_CENTROID_NUM + e; //setup its origin, see moveCentroids()
-    particle_systems_nm[particle_systems_nm.size() - 1].setAttractors(&(body_junctions[POSE_CENTROID_NUM + a]));
+    particle_systems_nm[particle_systems_nm.size() - 1].setAttractor(&(body_junctions[POSE_CENTROID_NUM + a]));
 }
 

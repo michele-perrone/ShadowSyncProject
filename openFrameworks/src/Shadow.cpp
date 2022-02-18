@@ -1,5 +1,6 @@
 #include "Shadow.h"
-#define NUMPARTICLES 100
+#define NUMPARTICLES 30
+#define NUMPARTICLESNM 15
 #define P_LIFESPAN 50
 #define P_RADIUS 1
 #define SHADOW_RADIUS 0.5
@@ -30,11 +31,10 @@ void Shadow::setup(Pose* pose_shadow)
 		particle_systems_2d.push_back(temp_ps);
 
 		//attractor setting: with this config, each ps it itself its attractor
-		Circle* temp_attractor = &(shadow_junctions[i]); 
-		shadow_attractors.push_back(temp_attractor);
-		particle_systems_2d[i].setAttractors(shadow_attractors[i]);
+		particle_systems_2d[i].setAttractor(&(shadow_junctions[i]));
 	}
 
+	EmitterAttractorSetup();
 }
 
 
@@ -50,9 +50,14 @@ void Shadow::draw()
 	}
 	
 	
-	for (int j = 0; j < particle_systems_2d.size(); j++)
+	for (int i = 0; i < particle_systems_2d.size(); i++)
 	{
-		particle_systems_2d[j].draw();
+		particle_systems_2d[i].draw();
+	}
+
+	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
+	{
+		particle_systems_2d_nm[j].draw();
 	}
 	
 }
@@ -65,6 +70,11 @@ void Shadow::moveCentroids()
 		particle_systems_2d[i].moveOrigin(shadow_junctions[i].center); //each ps has its own centroid (which are the first CENTROID_NUM junctions)
 	}
 
+	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
+	{
+		particle_systems_2d_nm[j].moveOrigin(shadow_junctions[particle_systems_2d_nm[j].origin_idx_in_shadow_junction_domain].center);
+	}
+
 }
 
 void Shadow::getCentroidsPositions()
@@ -74,7 +84,7 @@ void Shadow::getCentroidsPositions()
 	past_pose_centroids[LEFT_ARM_CENTROID] = shadow_junctions[2];
 	past_pose_centroids[RIGHT_ARM_CENTROID] = shadow_junctions[3];
 	past_pose_centroids[LEFT_LEG_CENTROID] = shadow_junctions[4];
-	past_pose_centroids[RIGHT_ARM_CENTROID] = shadow_junctions[5];
+	past_pose_centroids[RIGHT_LEG_CENTROID] = shadow_junctions[5];
 }
 
 bool Shadow::isCentroidMoving(int idx_centroid)
@@ -89,14 +99,23 @@ bool Shadow::isCentroidMoving(int idx_centroid)
 
 void Shadow::updateParticleSystems()
 {
+	//for (int i = 0; i < particle_systems_2d.size(); i++)
+	//	particle_systems_2d[i].update();
+
+	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
+		particle_systems_2d_nm[j].update();
+
 	for (int i = 0; i < particle_systems_2d.size(); i++)
-		particle_systems_2d[i].update();
+		particle_systems_2d[i].decay();
 }
 
 void Shadow::updateSysMaxVals(float ms, float mf)
 {
 	for (int i = 0; i < particle_systems_2d.size(); i++)
 		particle_systems_2d[i].updateParticleMaxVals(ms, mf);
+
+	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
+		particle_systems_2d_nm[j].updateParticleMaxVals(ms, mf);
 }
 
 void Shadow::moveJunctions()
@@ -137,7 +156,7 @@ void Shadow::moveJunctions()
 	shadow_junctions[23].setGlobalPosition(scale_vec * (trasl_vec + glm::make_vec2(pose->left_thumb)));
 	shadow_junctions[24].setGlobalPosition(scale_vec * (trasl_vec + glm::make_vec2(pose->left_elbow)));
 	shadow_junctions[25].setGlobalPosition(scale_vec * (trasl_vec + glm::make_vec2(pose->left_wrist)));
-	//right harm
+	//right arm
 	shadow_junctions[26].setGlobalPosition(scale_vec * (trasl_vec + glm::make_vec2(pose->right_pinky)));
 	shadow_junctions[27].setGlobalPosition(scale_vec * (trasl_vec + glm::make_vec2(pose->right_index)));
 	shadow_junctions[28].setGlobalPosition(scale_vec * (trasl_vec + glm::make_vec2(pose->right_thumb)));
@@ -156,6 +175,47 @@ void Shadow::moveJunctions()
 
 }
 
+void Shadow::EmitterAttractorSetup()
+{
+	//remember: the first 6 body_junctions are = centroids -> if A/E is a centroid, modify accordingly the idx
+		//head
+	setupEA(LEFT_EAR, RIGHT_EAR);
+	setupEA(NOSE, BODY_CENTROID - POSE_CENTROID_NUM);
+
+	//chest
+	setupEA(BODY_CENTROID - POSE_CENTROID_NUM, LEFT_SHOULDER);
+	setupEA(BODY_CENTROID - POSE_CENTROID_NUM, RIGHT_SHOULDER);
+	setupEA(BODY_CENTROID - POSE_CENTROID_NUM, LEFT_HIP);
+	setupEA(BODY_CENTROID - POSE_CENTROID_NUM, RIGHT_HIP);
+
+	//left arm
+	setupEA(LEFT_SHOULDER, LEFT_ELBOW);
+	setupEA(LEFT_ELBOW, LEFT_WRIST);
+
+	//right arm
+	setupEA(RIGHT_SHOULDER, RIGHT_ELBOW);
+	setupEA(RIGHT_ELBOW, RIGHT_WRIST);
+
+	//left leg
+	setupEA(LEFT_HIP, LEFT_KNEE);
+	setupEA(LEFT_KNEE, LEFT_HEEL);
+
+	//right leg
+	setupEA(RIGHT_HIP, RIGHT_KNEE);
+	setupEA(RIGHT_KNEE, RIGHT_HEEL);
+}
+
+
+void Shadow::setupEA(int e, int a)
+{
+	ParticleSystem2D temp_ps;
+	temp_ps.setup(shadow_junctions[POSE_CENTROID_NUM + e].center, NUMPARTICLESNM, P_RADIUS, P_LIFESPAN);
+	particle_systems_2d_nm.push_back(temp_ps);
+	particle_systems_2d_nm[particle_systems_2d_nm.size() - 1].origin_idx_in_shadow_junction_domain = POSE_CENTROID_NUM + e; //setup its origin, see moveCentroids()
+	particle_systems_2d_nm[particle_systems_2d_nm.size() - 1].setAttractor(&(shadow_junctions[POSE_CENTROID_NUM + a]));
+
+
+}
 
 
 

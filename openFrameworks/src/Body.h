@@ -28,7 +28,6 @@ private:
 	vector <ParticleSystem> particle_systems_nm; //non movevement
 	glm::vec3 body_origin;
 	float* sys_origin;
-	//vector <ofSpherePrimitive*> body_attractors;
 	Pose* pose;
 	ofSpherePrimitive past_pose_centroids[POSE_CENTROID_NUM];
 	ofMaterial j_material;
