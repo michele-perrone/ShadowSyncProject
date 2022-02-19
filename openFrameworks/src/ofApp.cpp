@@ -34,13 +34,14 @@ void ofApp::setup()
     body.setup(&global_model.pose);
     shadow.setup(&global_model.pose); //OTHER POSE is correct
     // OSC
-    osc_receiver.setup(PORT); // It is 5501 or 5502
+    osc_receiver.setup(PORT_RECEIVER); // It is 5501 or 5502
+    osc_sender.setup("OFX Host", PORT_SENDER); // 1255
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
-    //OSC
+    // OSC - Receive the messages
     while (osc_receiver.hasWaitingMessages())
     {
         ofxOscMessage m;
@@ -49,6 +50,13 @@ void ofApp::update()
         handle_address(&m); // Updates the global_model with the latest values arrived by osc
 
     }
+
+    // OSC - Send the messages
+    ofxOscMessage message_to_send;
+    message_to_send.clear();
+    message_to_send.setAddress("/ofxUtil/correlation");
+    message_to_send.addFloatArg(global_model.get_pose_similarity_xy(0, 1));
+    osc_sender.sendMessage(message_to_send);
 
     //3D Body
     //body.getCentroidsPositions(); //not updated centroids positions
@@ -70,6 +78,7 @@ void ofApp::update()
     //std::cout << "Is face centroid moving? " << shadow.isCentroidMoving(0) << std::endl;
     // 
     //global_model.pose.isInFrontOfCam();
+
 
 }
 
