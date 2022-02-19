@@ -673,7 +673,7 @@ void ofApp::handle_address(ofxOscMessage * m) {
         if (OSC_DEBUG) cout << address << endl;
         if(area == "blend") {
             // blend=0 is just shadow, blend=1 is all other pose
-            global_model.blend = m->getArgAsFloat(0);
+            global_model.set_blend(m->getArgAsFloat(0));
         }
     } else {
         if (OSC_DEBUG) cout << "not recognized" << endl;

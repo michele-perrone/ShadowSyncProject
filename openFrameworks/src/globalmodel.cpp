@@ -13,14 +13,89 @@ GlobalModel::GlobalModel(Pose pose, Pose other_pose)
 
 void GlobalModel::print()
 {
-    std::cout << "#########################################################################################################" << endl;
-    std::cout << "#                                      CURRENT GLOBAL MODEL STATE                                       #" << endl;
-    std::cout << "#########################################################################################################" << endl;
-    std::cout << "blend = " << blend << endl;
-    std::cout << "Pose: " << endl;
+    std::cout << "####################################################################################" << std::endl;
+    std::cout << "#                          CURRENT GLOBAL MODEL STATE                              #" << std::endl;
+    std::cout << "####################################################################################" << std::endl;
+    std::cout << "blend = " << blend << std::endl;
+    std::cout << "Pose: " << std::endl;
     pose.print();
-    std::cout << "Other Pose: " << endl;
+    std::cout << "Other Pose: " << std::endl;
     other_pose.print();
+}
+
+float GlobalModel::get_blend()
+{
+    return this->blend;
+}
+
+void GlobalModel::set_blend(float blend)
+{
+    // Check the range. Should be [0,1]
+    if(blend < 0 || blend > 1)
+    {
+        std::cout << "The received value of blend (" << blend << ") is out of range!" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    else
+        this->blend = blend;
+
+    // 0 --> "other_pose" is a copy "pose".
+    // In other words: you (pose) are FULLY controlling your own shadow (other_pose).
+
+    // 1 --> "other_pose" and "pose" are fully distinct.
+    // In other words: you (pose) are NOT controlling you shadow (other_pose),
+    // because the other person's shadow is your shadow instead.
+
+    // The variable "blend" can be seen as a weighted-average coefficient
+    // between "pose" and "other_pose".
+    enum {X=0, Y=1, Z=2};
+    for(int i = X; i <= Z; i++)
+    {
+        other_pose.face_centroid[i] = (blend)*other_pose.face_centroid[i] + (1-blend)*pose.face_centroid[i];
+        other_pose.body_centroid[i] = (blend)*other_pose.body_centroid[i] + (1-blend)*pose.body_centroid[i];
+        other_pose.left_arm_centroid[i] = (blend)*other_pose.left_arm_centroid[i] + (1-blend)*pose.left_arm_centroid[i];
+        other_pose.right_arm_centroid[i] = (blend)*other_pose.right_arm_centroid[i] + (1-blend)*pose.right_arm_centroid[i];
+        other_pose.left_leg_centroid[i] = (blend)*other_pose.left_leg_centroid[i] + (1-blend)*pose.left_leg_centroid[i];
+        other_pose.right_leg_centroid[i] = (blend)*other_pose.right_leg_centroid[i] + (1-blend)*pose.right_leg_centroid[i];
+
+        other_pose.nose[i] = (blend)*other_pose.nose[i] + (1-blend)*pose.nose[i];
+        other_pose.left_eye_inner[i] = (blend)*other_pose.left_eye_inner[i] + (1-blend)*pose.left_eye_inner[i];
+        other_pose.left_eye_outer[i] = (blend)*other_pose.left_eye_outer[i] + (1-blend)*pose.left_eye_outer[i];
+        other_pose.right_eye_inner[i] = (blend)*other_pose.right_eye_inner[i] + (1-blend)*pose.right_eye_inner[i];
+        other_pose.right_eye[i] = (blend)*other_pose.right_eye[i] + (1-blend)*pose.right_eye[i];
+        other_pose.right_eye_outer[i] = (blend)*other_pose.right_eye_outer[i] + (1-blend)*pose.right_eye_outer[i];
+        other_pose.left_ear[i] = (blend)*other_pose.left_ear[i] + (1-blend)*pose.left_ear[i];
+        other_pose.right_ear[i] = (blend)*other_pose.right_ear[i] + (1-blend)*pose.right_ear[i];
+        other_pose.mouth_left[i] = (blend)*other_pose.mouth_left[i] + (1-blend)*pose.mouth_left[i];
+        other_pose.mouth_right[i] = (blend)*other_pose.mouth_right[i] + (1-blend)*pose.mouth_right[i];
+
+        other_pose.left_shoulder[i] = (blend)*other_pose.left_shoulder[i] + (1-blend)*pose.left_shoulder[i];
+        other_pose.right_shoulder[i] = (blend)*other_pose.right_shoulder[i] + (1-blend)*pose.right_shoulder[i];
+        other_pose.left_hip[i] = (blend)*other_pose.left_hip[i] + (1-blend)*pose.left_hip[i];
+        other_pose.right_hip[i] = (blend)*other_pose.right_hip[i] + (1-blend)*pose.right_hip[i];
+
+        other_pose.left_pinky[i] = (blend)*other_pose.left_pinky[i] + (1-blend)*pose.left_pinky[i];
+        other_pose.left_index[i] = (blend)*other_pose.left_index[i] + (1-blend)*pose.left_index[i];
+        other_pose.left_thumb[i] = (blend)*other_pose.left_thumb[i] + (1-blend)*pose.left_thumb[i];
+        other_pose.left_elbow[i] = (blend)*other_pose.left_elbow[i] + (1-blend)*pose.left_elbow[i];
+        other_pose.left_wrist[i] = (blend)*other_pose.left_wrist[i] + (1-blend)*pose.left_wrist[i];
+
+        other_pose.right_pinky[i] = (blend)*other_pose.right_pinky[i] + (1-blend)*pose.right_pinky[i];
+        other_pose.right_index[i] = (blend)*other_pose.right_index[i] + (1-blend)*pose.right_index[i];
+        other_pose.right_thumb[i] = (blend)*other_pose.right_thumb[i] + (1-blend)*pose.right_thumb[i];
+        other_pose.right_elbow[i] = (blend)*other_pose.right_elbow[i] + (1-blend)*pose.right_elbow[i];
+        other_pose.right_wrist[i] = (blend)*other_pose.right_wrist[i] + (1-blend)*pose.right_wrist[i];
+
+        other_pose.left_heel[i] = (blend)*other_pose.left_heel[i] + (1-blend)*pose.left_heel[i];
+        other_pose.left_foot_index[i] = (blend)*other_pose.left_foot_index[i] + (1-blend)*pose.left_foot_index[i];
+        other_pose.left_knee[i] = (blend)*other_pose.left_knee[i] + (1-blend)*pose.left_knee[i];
+        other_pose.left_ankle[i] = (blend)*other_pose.left_ankle[i] + (1-blend)*pose.left_ankle[i];
+
+        other_pose.right_heel[i] = (blend)*other_pose.right_heel[i] + (1-blend)*pose.right_heel[i];
+        other_pose.right_foot_index[i] = (blend)*other_pose.right_foot_index[i] + (1-blend)*pose.right_foot_index[i];
+        other_pose.right_knee[i] = (blend)*other_pose.right_knee[i] + (1-blend)*pose.right_knee[i];
+        other_pose.right_ankle[i] = (blend)*other_pose.right_ankle[i] + (1-blend)*pose.right_ankle[i];
+    }
 }
 
 float GlobalModel::get_pose_similarity_xy(float min, float max)
