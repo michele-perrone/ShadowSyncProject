@@ -683,6 +683,15 @@ void ofApp::handle_address(ofxOscMessage * m) {
         if(area == "blend") {
             // blend=0 is just shadow, blend=1 is all other pose
             global_model.set_blend(m->getArgAsFloat(0));
+        } else if (area == "startTutorial") {
+            cout << "Tutorial" << endl;
+            if (m->getArgAsFloat(0) == 1) {
+                cout << "Started" << endl;
+            } else if (m->getArgAsFloat(0) == 2) {
+                cout << "Phase 2" << endl;
+            }
+        } else if (area == "startForReal") {
+            cout << area << endl;
         }
     } else {
         if (OSC_DEBUG) cout << "not recognized" << endl;

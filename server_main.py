@@ -172,9 +172,22 @@ async def app_main():
             else:
                 debug_print("Not all computers are online!")
 
-        if keyboard.is_pressed('ctrl+t'):
+        # if keyboard.is_pressed('ctrl+t'):
+        #     debug_print("Starting Automated Tutorial")
+        #     start_tutorial_phase(1)
+
+        if keyboard.is_pressed('ctrl+shift+t+1'):
             debug_print("Starting Automated Tutorial")
             start_tutorial_phase(1)
+
+        if keyboard.is_pressed('ctrl+shift+t+2'):
+            debug_print("Starting Automated Tutorial")
+            start_tutorial_phase(2)
+
+        if keyboard.is_pressed('ctrl+shift+t+3'):
+            debug_print("Starting Automated Tutorial")
+            to_ofx1.send_message("/ofxUtil/startForReal", 0)
+            to_ofx2.send_message("/ofxUtil/startForReal", 0)
 
         if keyboard.is_pressed('ctrl+shift+w+1'):
             debug_print("Starting Installation Full Regime")
