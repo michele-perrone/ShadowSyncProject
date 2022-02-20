@@ -13,7 +13,7 @@ from model import Model
 from pose_estimation import init_pose_estimation
 from pose_estimation import get_body_position
 
-DEBUG = 1
+DEBUG = 0
 
 # STATUS
 global_model = Model()
@@ -50,29 +50,45 @@ def ack_handler(address, *args):
 def pose_handler(address, *args):
     component = address[5:].split('/')
     print("pose arrived", args[0])
+    args = args[1:]
     if args[0]==1:
         # Pose comes from client 1 and has to be sent to 1 as pose and to 2 as other_pose
-        args = args[1:]
+        
         to_ofx1.send_message(address, args)
-        to_test_ofx.send_message(address, args)
+        # to_test_ofx.send_message(address, args)
         to_ofx2.send_message('/other_pose' + address[5:], args)
 
     elif args[0]==2:
         # Pose comes from client 1 and has to be sent to 2 as pose and to 1 as other_pose
-        args = args[1:]
+        
         to_ofx1.send_message('/other_pose' + address[5:], args)
-        to_test_ofx.send_message('/other_pose' + address[5:], args)
+        # to_test_ofx.send_message('/other_pose' + address[5:], args)
         to_ofx2.send_message(address, args)
 
 def correlation_handler(address, *args):
     global_model.latest_correlation_value[args[0]] = args[1]
+
+    if global_model.installation_phase == 0:
+        to_supercollider1.send_message("/correlation", 0)
+        to_supercollider2.send_message("/correlation", 0)
+    elif global_model.installation_phase == 1 or global_model.installation_phase == 2:
+        if args[0]==1:
+            to_supercollider1.send_message("/correlation", args[1])
+        if args[0]==2:
+            to_supercollider2.send_message("/correlation", args[1])
+    elif global_model.installation_phase != 0 and global_model.installation_phase != 1 and global_model.installation_phase != 2:
+        total_correlation = (global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2
+        to_supercollider1.send_message("/correlation", total_correlation)
+        to_supercollider2.send_message("/correlation", total_correlation)
+
+
     # # FINAL
     # to_supercollider.send_message("/correlation", (global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2)
     # PLACEHOLDER
-    to_supercollider.send_message("/correlation", [0, 0.5, 440*(global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2])
+    
 
 def tutorial_handler(address, *args):
-    if args[1]>=3:
+    if args[1]>=2:
         if args[0]==1:
             to_ofx1.send_message("/ofxUtil/startForReal", 0)
         elif args[0]==2:
@@ -93,7 +109,7 @@ dispatcher.map("/ofxUtil/tutorialComplete", tutorial_handler)
 dispatcher.map("/ofxUtil/correlation", correlation_handler)
 dispatcher.set_default_handler(default_handler)
 
-ip_1 = "192.168.100.1"
+ip_1 = "79.31.208.230"
 ip_2 = "192.168.100.213"
 
 to_py1 = SimpleUDPClient(ip_1, 5511)
@@ -101,18 +117,21 @@ to_py2 = SimpleUDPClient(ip_2, 5522)
 to_ofx1 = SimpleUDPClient(ip_1, 5501)
 to_ofx2 = SimpleUDPClient(ip_2, 5502)
 
+supercollider_port = 5555
+to_supercollider1 = SimpleUDPClient(ip_1, supercollider_port)
+to_supercollider2 = SimpleUDPClient(ip_2, supercollider_port)
+
 # UNCOMMENT ONLY FOR SINGLE FRONTEND ON SERVER FOR TESTING
 to_test_ofx = SimpleUDPClient("127.0.0.1", 5501)
 
 my_ip = "127.0.0.1"
 listen_port = 1255
-supercollider_port = 5555
 to_me = SimpleUDPClient(my_ip, listen_port)
-to_supercollider = SimpleUDPClient(my_ip, supercollider_port)
 
 def start_tutorial_phase(n):
-    to_ofx1.send_message("/ofxUtil/startTutorial", 1)
-    to_ofx2.send_message("/ofxUtil/startTutorial", 1)
+    global_model.installation_phase = n
+    to_ofx1.send_message("/ofxUtil/startTutorial", n)
+    to_ofx2.send_message("/ofxUtil/startTutorial", n)
 
 
 def update_installation_phase():
@@ -153,6 +172,11 @@ async def app_main():
 
         print_connection_status()
 
+
+        global_model.blend = 0
+        for i in range(24):
+            update_installation_phase()
+
         if global_model.has_started == 0 and keyboard.is_pressed('ctrl+w'):
             # global_model.has_started = 1
             # blend_sequence = Thread(target=start_blend_sequence, daemon=True)
@@ -171,6 +195,8 @@ async def app_main():
                 to_py2.send_message("/pyUtil/start", 0)
             else:
                 debug_print("Not all computers are online!")
+                # to_py1.send_message("/pyUtil/start", 0)
+                # to_py2.send_message("/pyUtil/start", 0)
 
         # if keyboard.is_pressed('ctrl+t'):
         #     debug_print("Starting Automated Tutorial")

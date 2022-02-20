@@ -13,4 +13,5 @@ class Model:
         self.has_started = 0
         self.latest_correlation_value = [0, 0, 0]
         self.START = 0
+        self.installation_phase = 0
         

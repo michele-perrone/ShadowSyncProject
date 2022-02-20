@@ -55,7 +55,7 @@ def start_handler(address, *args):
         print("Start received, beginning...")
     global_model.START = 1
 
-def start_handler(address, *args):
+def stop_handler(address, *args):
     if DEBUG==1:
         print("Stop received, stopping...")
     global_model.START = -1
@@ -67,7 +67,7 @@ def default_handler(address, *args):
 dispatcher = Dispatcher()
 dispatcher.map("/pyUtil/ping", ping_handler)
 dispatcher.map("/pyUtil/start", start_handler)
-dispatcher.map("/pyUtil/stop", start_handler)
+dispatcher.map("/pyUtil/stop", stop_handler)
 dispatcher.set_default_handler(default_handler)
 
 if CLIENT_NUMBER==1:
