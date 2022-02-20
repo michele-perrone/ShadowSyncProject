@@ -39,12 +39,22 @@ async def app_main():
         correlation = random.uniform(0.0, 1.0)
         print(correlation)
 
-        if correlation <= 0.5:
-            value = [1, 2]
+        if correlation <= 0.2:
+            value = [1, 2, 1]
+            send(value)
+        elif 0.2 < correlation <= 0.4:
+            value = [1, 1, 1]
             send(value)
 
-        elif correlation > 0.5:
-            value = [1, 0.1]
+        elif 0.4 < correlation <= 0.6:
+            value = [1, 0.5, 1]
+            send(value)
+
+        elif 0.6 < correlation < 0.8:
+            value = [1, 0.1, 2]
+            send(value)
+        else:
+            value = [1, 0.05, 2]
             send(value)
         await asyncio.sleep(5)
     send(0)
