@@ -34,13 +34,14 @@ void ofApp::setup()
     body.setup(&global_model.pose);
     shadow.setup(&global_model.pose); //OTHER POSE is correct
     // OSC
-    osc_receiver.setup(PORT); // It is 5501 or 5502
+    osc_receiver.setup(PORT_RECEIVER); // It is 5501 or 5502
+    osc_sender.setup("OFX Host", PORT_SENDER); // 1255
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
-    //OSC
+    // OSC - Receive the messages
     while (osc_receiver.hasWaitingMessages())
     {
         ofxOscMessage m;
@@ -50,23 +51,35 @@ void ofApp::update()
 
     }
 
+    // OSC - Send the messages
+    ofxOscMessage message_to_send;
+    message_to_send.clear();
+    message_to_send.setAddress("/ofxUtil/correlation");
+    message_to_send.addFloatArg(global_model.get_pose_similarity_xy(0, 1));
+    osc_sender.sendMessage(message_to_send);
+
     //3D Body
     //body.getCentroidsPositions(); //not updated centroids positions
+    body.savePastCentroidsPositions();
     body.moveJunctions();
     body.moveCentroids();
     body.updateParticleSystems();
     body.updateSysMaxVals(bd_ms, bd_mf);
 
+    
     //2D Shadow
     //shadow.getCentroidsPositions(); //not updated centroids position
-    shadow.moveCentroids();
     shadow.moveJunctions();
+    shadow.moveCentroids();
+    shadow.updateParticleSystems();
+    shadow.updateSysMaxVals(sh_ms, sh_mf);
+
     //check if the pose is moving
     //std::cout << "Is face centroid moving? " << shadow.isCentroidMoving(0) << std::endl;
-    shadow.updateParticleSystems();
+    // 
     //global_model.pose.isInFrontOfCam();
-    shadow.updateSysMaxVals(sh_ms, sh_mf);
-    //shadow.updateAttractors();
+
+
 }
 
 //--------------------------------------------------------------
@@ -669,7 +682,16 @@ void ofApp::handle_address(ofxOscMessage * m) {
         if (OSC_DEBUG) cout << address << endl;
         if(area == "blend") {
             // blend=0 is just shadow, blend=1 is all other pose
-            global_model.blend = m->getArgAsFloat(0);
+            global_model.set_blend(m->getArgAsFloat(0));
+        } else if (area == "startTutorial") {
+            cout << "Tutorial" << endl;
+            if (m->getArgAsFloat(0) == 1) {
+                cout << "Started" << endl;
+            } else if (m->getArgAsFloat(0) == 2) {
+                cout << "Phase 2" << endl;
+            }
+        } else if (area == "startForReal") {
+            cout << area << endl;
         }
     } else {
         if (OSC_DEBUG) cout << "not recognized" << endl;

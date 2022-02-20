@@ -69,7 +69,7 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
             centroid = [x / length for x in centroid]
 
             pose[i]['_centroid'] = centroid
-            print(i, pose[i]['_centroid'])
+            # print(i, pose[i]['_centroid'])
 
     if cv2.waitKey(10) & 0xFF == ord('q'):
         return

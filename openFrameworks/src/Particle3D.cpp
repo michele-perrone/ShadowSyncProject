@@ -1,5 +1,5 @@
 #include "Particle3D.h"
-#define RANDOM_FORCE_MAG 2
+#define RANDOM_FORCE_MAG 1
 Particle3D::Particle3D()
 {
 }
@@ -80,7 +80,7 @@ void Particle3D::draw()
 
 bool Particle3D::isDead() 
 {
-    return (this->lifespan <= 0);
+    return (this->lifespan <= 6); //not to end black on decay cycle
     //return false;
 }
 

@@ -6,8 +6,10 @@
 #include "Body.h"
 #include "globalmodel.h"
 
-#define PORT 5501
-//#define PORT 5502
+#define PORT_RECEIVER 5501
+//#define PORT_RECEIVER 5502
+#define PORT_SENDER 1255
+
 
 class ofApp : public ofBaseApp{
 	// default openFrameworks setup
@@ -29,7 +31,9 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
 	
-		ofMatrix4x4 mat; //only way i found for moving around a mesh. In depth, every 3D transformation (rotation, translation, scaling) is performed by 4x4 matrices
+        ofMatrix4x4 mat; // Only way i found for moving around a mesh.
+                         // In depth, every 3D transformation (rotation, translation, scaling)
+                         // is performed by 4x4 matrices
 
 		ofLight light;
 		ofEasyCam cam;
@@ -40,12 +44,11 @@ class ofApp : public ofBaseApp{
 		ofPlanePrimitive plane_wall;
 
 		ofMaterial floor_material;
-		ofMaterial wall_material;
-
-		float z_body = 120; //dummy value until we have 3D coords from osc
+        ofMaterial wall_material;
 		
 		//OSC
 		ofxOscReceiver osc_receiver;
+        ofxOscSender   osc_sender;
         GlobalModel global_model;
         std::vector<std::string> split(string address);
         void handle_address(ofxOscMessage * m);

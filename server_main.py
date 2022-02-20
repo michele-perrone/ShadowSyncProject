@@ -71,6 +71,17 @@ def correlation_handler(address, *args):
     # PLACEHOLDER
     to_supercollider.send_message("/correlation", [0, 0.5, 440*(global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2])
 
+def tutorial_handler(address, *args):
+    if args[1]>=3:
+        if args[0]==1:
+            to_ofx1.send_message("/ofxUtil/startForReal", 0)
+        elif args[0]==2:
+            to_ofx2.send_message("/ofxUtil/startForReal", 0)
+    elif args[1]<=0:
+        return
+    else:
+        start_tutorial_phase(args[1]+1)
+
 # Default Handler
 def default_handler(address, *args):
     print(f"DEFAULT {address}: {args}")
@@ -78,11 +89,12 @@ def default_handler(address, *args):
 dispatcher = Dispatcher()
 dispatcher.map("/pyUtil/ack", ack_handler)
 dispatcher.map("/pose/*", pose_handler)
+dispatcher.map("/ofxUtil/tutorialComplete", tutorial_handler)
 dispatcher.map("/ofxUtil/correlation", correlation_handler)
 dispatcher.set_default_handler(default_handler)
 
-ip_1 = "192.168.28.1"
-ip_2 = "192.168.28.213"
+ip_1 = "192.168.100.1"
+ip_2 = "192.168.100.213"
 
 to_py1 = SimpleUDPClient(ip_1, 5511)
 to_py2 = SimpleUDPClient(ip_2, 5522)
@@ -98,13 +110,18 @@ supercollider_port = 5555
 to_me = SimpleUDPClient(my_ip, listen_port)
 to_supercollider = SimpleUDPClient(my_ip, supercollider_port)
 
+def start_tutorial_phase(n):
+    to_ofx1.send_message("/ofxUtil/startTutorial", 1)
+    to_ofx2.send_message("/ofxUtil/startTutorial", 1)
+
+
 def update_installation_phase():
     if DEBUG:
         debug_print('Sending blends.')
     to_ofx1.send_message("/ofxUtil/blend", float(global_model.blend))
     to_ofx2.send_message("/ofxUtil/blend", float(global_model.blend))
 
-def start_blend_sequence():
+def start_blend_sequence(): # INACTIVE
     global_model.blend = 0
     update_installation_phase()
     time.sleep(20)
@@ -137,9 +154,9 @@ async def app_main():
         print_connection_status()
 
         if global_model.has_started == 0 and keyboard.is_pressed('ctrl+w'):
-            global_model.has_started = 1
-            blend_sequence = Thread(target=start_blend_sequence, daemon=True)
-            blend_sequence.start()
+            # global_model.has_started = 1
+            # blend_sequence = Thread(target=start_blend_sequence, daemon=True)
+            # blend_sequence.start()
             
             debug_print("Checking if all computers are online in order to start.")
             if global_model.computer_online[1]==1 and global_model.computer_online[2]==1:
@@ -155,7 +172,34 @@ async def app_main():
             else:
                 debug_print("Not all computers are online!")
 
+        # if keyboard.is_pressed('ctrl+t'):
+        #     debug_print("Starting Automated Tutorial")
+        #     start_tutorial_phase(1)
+
+        if keyboard.is_pressed('ctrl+shift+t+1'):
+            debug_print("Starting Automated Tutorial")
+            start_tutorial_phase(1)
+
+        if keyboard.is_pressed('ctrl+shift+t+2'):
+            debug_print("Starting Automated Tutorial")
+            start_tutorial_phase(2)
+
+        if keyboard.is_pressed('ctrl+shift+t+3'):
+            debug_print("Starting Automated Tutorial")
+            to_ofx1.send_message("/ofxUtil/startForReal", 0)
+            to_ofx2.send_message("/ofxUtil/startForReal", 0)
+
+        if keyboard.is_pressed('ctrl+shift+w+1'):
+            debug_print("Starting Installation Full Regime")
+            to_ofx1.send_message("/ofxUtil/startForReal", 0)
+
+        if keyboard.is_pressed('ctrl+shift+w+2'):
+            debug_print("Starting Installation Full Regime")
+            to_ofx2.send_message("/ofxUtil/startForReal", 0)
+
         if keyboard.is_pressed('ctrl+q'):
+            to_py1.send_message("/pyUtil/stop", 0)
+            to_py2.send_message("/pyUtil/stop", 0)
             break
 
         await asyncio.sleep(1)

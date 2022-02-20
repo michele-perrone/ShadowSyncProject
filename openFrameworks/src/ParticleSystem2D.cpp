@@ -29,16 +29,27 @@ void ParticleSystem2D::update()
 	//update the particle system generated from / attracted to each junction
 	for (int i = particles.size() - 1; i >= 0; i--)
     {
-        particles[i].update(this->attractors[0]); //hp: only ONE attractor for each ps
 		if (particles[i].isDead())
 		{
 			//delete dead particle
-			particles.erase(particles.begin() + i );
+			particles.erase(particles.begin() + i);
 			//add new particle
 			addParticle();
 		}
+        particles[i].update(this->attractor); //hp: only ONE attractor for each ps
 	}
 
+}
+
+void ParticleSystem2D::decay()
+{
+	for (int i = particles.size() - 1; i >= 0; i--)
+	{
+		if (particles[i].isDead() == false)
+		{
+			particles[i].update(this->attractor); //hp: only ONE attractor for each ps
+		}
+	}
 }
 
 void ParticleSystem2D::updateParticleMaxVals(float ms, float mf)
@@ -54,7 +65,8 @@ void ParticleSystem2D::draw()
 {
 	for (int i = 0; i < particles.size(); i++)
 	{
-		particles[i].draw();
+		if(particles[i].isDead() == false)
+			particles[i].draw();
 	}
 }
 /*
@@ -100,7 +112,7 @@ void ParticleSystem2D::addParticle() //QUI la (nuova) origine del PS deve essere
 	
 }
 
-void ParticleSystem2D::setAttractors(Circle* attractor)
+void ParticleSystem2D::setAttractor(Circle* attractor)
 {
-	this->attractors.push_back(attractor);
+	this->attractor = attractor;
 }

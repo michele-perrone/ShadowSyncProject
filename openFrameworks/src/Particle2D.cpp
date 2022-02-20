@@ -101,7 +101,7 @@ void Particle2D::draw()
 
 bool Particle2D::isDead()
 {
-    return (this->lifespan <=0);
+    return (this->lifespan <=6);
     //return false;
 }
 

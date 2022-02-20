@@ -16,7 +16,7 @@ public:
     float body_ps_max_force = 0;
 
     void setMaxStuff(float ms, float mf);
-
+    bool dead = false;
 private:
     glm::vec3 position, velocity, force, target, distance;
     float radius;

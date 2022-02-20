@@ -26,6 +26,5 @@ private:
 	float radius;
 	Circle my2dParticle; //counterpart of ofSpherePrimitive
 	ofColor my2dParticleColor;
-
 	float death_rate = ofRandom(1,5);
 };

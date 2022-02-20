@@ -29,7 +29,6 @@ void ParticleSystem::update()
     //update the particle system generated from / attracted to each junction
     for (int i = particles.size()-1; i >= 0; i--)
     {
-        particles[i].update(this->attractors[0]); //hp: only ONE attractor for each ps
         if (particles[i].isDead())
         {
             //delete dead particle
@@ -37,7 +36,20 @@ void ParticleSystem::update()
             //add new particle
             addParticle();
         }
+       particles[i].update(this->attractor); //hp: only ONE attractor for each ps
     }
+}
+
+void ParticleSystem::decay() //update only the remaining particles, util everyone is dead
+{
+    for (int i = particles.size() - 1; i >= 0; i--)
+    {
+        if (particles[i].isDead() == false)
+        {
+            particles[i].update(this->attractor); //hp: only ONE attractor for each ps
+        }
+    }
+
 }
 
 void ParticleSystem::updateParticleMaxVals(float ms, float mf)
@@ -52,7 +64,8 @@ void ParticleSystem::draw()
 {
     for (int i = 0; i < particles.size(); i++)
     {
-        particles[i].draw();
+        if(particles[i].isDead()==false)
+            particles[i].draw();
     }
 }
 
@@ -76,7 +89,9 @@ void ParticleSystem::addParticle()
     particles.push_back(newParticle);
 }
 
-void ParticleSystem::setAttractors(ofSpherePrimitive* attractor)
+void ParticleSystem::setAttractor(ofSpherePrimitive* attractor)
 {
-    this->attractors.push_back(attractor);
+    this->attractor = attractor;
 }
+
+

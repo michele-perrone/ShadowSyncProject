@@ -21,16 +21,15 @@ public:
     void setDestination(int x, int y, int z);
     void moveDestination(int x_dir, int y_dir, int z_dir);
     void addParticle();
-
+    void decay();
     void updateParticleMaxVals(float ms, float mf);
-
-    void setAttractors(ofSpherePrimitive* attractor);
-    vector <ofSpherePrimitive*> attractors; //pointer to junctions - attractors
-
+    void setAttractor(ofSpherePrimitive* attractor);
+    int origin_idx_in_body_junction_domain;
 private:
     int numParticles, particleRadius, particleLifespan;
     glm::vec3 origin_PS;
     glm::vec3 destination;
     vector <Particle3D> particles;
     ofColor ps_color;
+    ofSpherePrimitive* attractor;
 };
