@@ -3,10 +3,16 @@
 #include <ofVec3f.h>
 
 GlobalModel::GlobalModel()
-{}
+{
+    installation_phase = 0;
+    blend = 0;
+}
 
 GlobalModel::GlobalModel(Pose pose, Pose other_pose)
 {
+    installation_phase = 0;
+    blend = 0;
+
     this->pose = pose;
     this->other_pose = other_pose;
 }
@@ -23,22 +29,8 @@ void GlobalModel::print()
     other_pose.print();
 }
 
-float GlobalModel::get_blend()
+void GlobalModel::update_blending()
 {
-    return this->blend;
-}
-
-void GlobalModel::set_blend(float blend)
-{
-    // Check the range. Should be [0,1]
-    if(blend < 0 || blend > 1)
-    {
-        std::cout << "The received value of blend (" << blend << ") is out of range!" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    else
-        this->blend = blend;
-
     // 0 --> "other_pose" is a copy "pose".
     // In other words: you (pose) are FULLY controlling your own shadow (other_pose).
 
@@ -215,7 +207,26 @@ float GlobalModel::get_pose_similarity(float min, float max, int PLANE)
 
     // To rescale into the desired range [min, max], we simply divide by "desired_range"
     // and then subtract "min".
-    float super_magic_number_that_tells_you_how_similar_the_poses_are = (total_diff/desired_range)-min;
+    float how_DISSIMILAR_the_poses_are = (total_diff/desired_range)-min;
+    float how_SIMILAR_the_poses_are = max-how_DISSIMILAR_the_poses_are;
 
-    return super_magic_number_that_tells_you_how_similar_the_poses_are;
+    return how_SIMILAR_the_poses_are;
 }
+
+bool GlobalModel::detect_same_pose(float min, float max, float threshold)
+{
+    if(get_pose_similarity_xy(min, max) > threshold)
+        return true;
+
+    return false;
+}
+
+
+
+
+
+
+
+
+
+

@@ -9,7 +9,7 @@ void ofApp::setup()
     light.setup();
     light.setPosition(200, 100, 400);
 
-    ofEnableDepthTest(); //you can't see through objects (es. wall)
+    ofEnableDepthTest(); //you can't see through objects (e.g. wall)
 
     cam.setPosition(ofVec3f(157, 52, 263)); //camera positioning and heading configuration
     cam.lookAt(ofVec3f(PL_XZ/2, PL_Y/2, 0));
@@ -24,18 +24,19 @@ void ofApp::setup()
     plane_wall.set(PL_XZ, PL_Y);
     plane_wall.move(PL_XZ/2, PL_Y/2, -1);
 
-    //material def
+    // Material definition
     floor_material.setDiffuseColor(ofFloatColor::darkGray);
     floor_material.setShininess(0.01);
     wall_material.setDiffuseColor(ofFloatColor::white);
     wall_material.setShininess(0.01);
 
-    //body, shadow setup
+    // Body and Shadow setup
     body.setup(&global_model.pose);
-    shadow.setup(&global_model.pose); //OTHER POSE is correct
-    // OSC
+    shadow.setup(&global_model.other_pose);
+
+    // OSC - Receiver and Sender
     osc_receiver.setup(PORT_RECEIVER); // It is 5501 or 5502
-    osc_sender.setup("OFX Host", PORT_SENDER); // 1255
+    osc_sender.setup("127.0.0.1", PORT_SENDER); // 1255
 }
 
 //--------------------------------------------------------------
@@ -48,7 +49,6 @@ void ofApp::update()
         osc_receiver.getNextMessage(m);
         if (OSC_DEBUG) cout << "Message Received : ";
         handle_address(&m); // Updates the global_model with the latest values arrived by osc
-
     }
 
     // OSC - Send the messages
@@ -68,6 +68,7 @@ void ofApp::update()
 
     
     //2D Shadow
+    global_model.update_blending();
     //shadow.getCentroidsPositions(); //not updated centroids position
     shadow.moveJunctions();
     shadow.moveCentroids();
@@ -481,7 +482,10 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 if (OSC_DEBUG) cout << "not recognized" << endl;
             }
         }
-    } else if (type == "other_pose") {
+    } else if (type == "other_pose"
+               && global_model.installation_phase != 0
+               && global_model.installation_phase != 1
+               && global_model.installation_phase != 2) {
         if (OSC_DEBUG) cout << address << endl;
         if(area == "face") {
             if(component=="_completely_detected") {
@@ -678,22 +682,74 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 global_model.other_pose.right_foot_index[2] = m->getArgAsFloat(2);
             }
         }
-    } else if (type == "ofxUtil") {
+    }
+    else if (type == "ofxUtil")
+    {
         if (OSC_DEBUG) cout << address << endl;
-        if(area == "blend") {
+        if(area == "blend"
+                && global_model.installation_phase != 0 // Blend is ignored in phase 0 ..
+                && global_model.installation_phase != 1 // ... 1 ...
+                && global_model.installation_phase != 2 // ... and 2
+                )
+        {
             // blend=0 is just shadow, blend=1 is all other pose
-            global_model.set_blend(m->getArgAsFloat(0));
-        } else if (area == "startTutorial") {
-            cout << "Tutorial" << endl;
-            if (m->getArgAsFloat(0) == 1) {
-                cout << "Started" << endl;
-            } else if (m->getArgAsFloat(0) == 2) {
-                cout << "Phase 2" << endl;
-            }
-        } else if (area == "startForReal") {
-            cout << area << endl;
+            global_model.blend = m->getArgAsFloat(0);
         }
-    } else {
+        else if (area == "startTutorial")
+        {
+            cout << area << endl;
+            // NOTE: the "installation_phase" value is received "una tantum" (i.e. not continuously)
+            //       when the installation switches from one phase to another.
+            global_model.installation_phase = m->getArgAsFloat(0);
+
+            if (global_model.installation_phase == 0)
+            {
+                // "other_pose" must mimick "pose".
+                // (this is equivalent to setting "blend" to zero)
+                global_model.blend = 0;
+
+                // (Remember that in this phase,
+                //  the "blend" parameter won't be received)
+            }
+            else if (global_model.installation_phase == 1)
+            {
+                cout << "Phase 1: tutorial started" << endl;
+
+                // 1. Save the last received "other_pose"
+                //    (nothing to do here)
+
+                // 2. Stop receiving other_pose
+                //    (nothing to do here)
+
+                // 3. Compare "pose" with "other_pose" and send the result via OSC
+                ofxOscMessage message_to_send;
+                message_to_send.clear();
+                message_to_send.setAddress("/ofxUtil/NAME_OF_MESSAGE");
+                message_to_send.addBoolArg(global_model.detect_same_pose(0, 1, 0.75));
+                osc_sender.sendMessage(message_to_send);
+            }
+            else if (global_model.installation_phase == 2)
+            {
+                cout << "Phase 2" << endl;
+
+                // 1. Copy "pose" into "other_pose"
+                // (this can be done by setting "blend" to zero)
+                global_model.blend = 0;
+
+                // other_pose viene "sbloccata" e subito ribloccata e comparo pose con other_pose
+            }
+        }
+        else if (area == "startForReal")
+        {
+            cout << area << endl;
+
+            // By setting "installation_phase" to 3, we start receiving
+            // and updating again "other_pose"
+            global_model.installation_phase = 3;
+        }
+    }
+    else
+    {
         if (OSC_DEBUG) cout << "not recognized" << endl;
     }
 
