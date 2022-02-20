@@ -2,15 +2,18 @@ from pythonosc.osc_server import AsyncIOOSCUDPServer
 from pythonosc.dispatcher import Dispatcher
 from pythonosc.udp_client import SimpleUDPClient
 import asyncio
+import random
 import sys
 import time
 from datetime import datetime
 import builtins as __builtin__
 from threading import Thread
 
+
 # Default Handler
 def default_handler(address, *args):
     print(f"DEFAULT {address}: {args}")
+
 
 dispatcher = Dispatcher()
 dispatcher.set_default_handler(default_handler)
@@ -21,21 +24,31 @@ supercollider_port = 5555
 to_me = SimpleUDPClient(my_ip, listen_port)
 to_supercollider = SimpleUDPClient(my_ip, supercollider_port)
 
-def send(correlation_value):
-    to_supercollider.send_message("/correlation", 100*correlation_value)
 
+def send(array):
+    to_supercollider.send_message("/correlation", array)
 
 async def app_main():
+    BPM = 90
+    value = [0, 0]  # play, midinote
+    midiNote = 60
 
-    value = 0
+    send("start")
 
-    for i in range(100):
-        value += 0.07
-        if value>1:
-            value = value-1
-        print('Sending', value)
-        await asyncio.sleep(1)
-        send(value)
+    for i in range(5):
+        correlation = random.uniform(0.0, 1.0)
+        print(correlation)
+
+        if correlation <= 0.5:
+            value = [1, 2]
+            send(value)
+
+        elif correlation > 0.5:
+            value = [1, 0.1]
+            send(value)
+        await asyncio.sleep(5)
+    send(0)
+
 
 async def init_main():
     server = AsyncIOOSCUDPServer(("0.0.0.0", listen_port), dispatcher, asyncio.get_event_loop())
