@@ -19,6 +19,18 @@ SynthDef(\sawpulse, { |out, freq = 440, gate = 0.5, plfofreq = 6, mw = 0, ffreq 
 
 p.play;
 p.stop;
+(
+p = PmonoArtic(
+	\sawpulse,
+	\dur, 2,
+	\freq, Pwhite(1,5) * 80,
+	\legato, Pwrand(#[0.5, 1.0], #[0.1, 0.9], inf)
+).play;
+)
+
+v = s.volume;
+v.mute;
+
 
 (
 OSCdef('OSCreceiver',
@@ -30,19 +42,20 @@ OSCdef('OSCreceiver',
 		[msg].postln;
 		pyPlay = msg[1];
 		pyDur = msg[2];
-		pySync = msg[3];
-		oldPyDur = pyDur;
+		oldPyDur = msg[3];
+		pySync = msg[4];
+
 
 		// Parse message
 		if(pyPlay == 1){
-
+			v.unmute;
 			if(oldPyDur != pyDur){
 				p.stop;
 				if(pySync == 1){
 					p = PmonoArtic(
 						\sawpulse,
 						\dur, pyDur,
-						\freq, Pwhite(1,5) * 80,
+						\freq, Pwhite(1,5) * 100,
 						\legato, Pwrand(#[0.5, 1.0], #[0.1, 0.9], inf)
 					).play;
 				};
@@ -50,10 +63,10 @@ OSCdef('OSCreceiver',
 					p = PmonoArtic(
 						\sawpulse,
 						\dur, pyDur,
-						\freq, Pwhite(1,8) * 300,
+						\freq, Pwhite(5,8) * 300,
 						\legato, Pwrand(#[0.5, 1.0], #[0.1, 0.9], inf)
 					).play;
-				};
+				}
 			};
 			oldPyDur = pyDur;
 
