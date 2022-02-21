@@ -52,7 +52,10 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
             cx, cy = int(lm.x * w), int(lm.y * h)  # pixel coords in the frame of the landmarks
             cv2.circle(img, (cx, cy), 5, (155, 155, 0))  # superimpose a circle to the landmarks
 
+
+
         for i in pose:
+            old_pose = pose
             centroid = [0, 0, 0]
             length = len(pose[i]) - 3
             for j in pose[i]:
@@ -63,7 +66,8 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
                                   results.pose_landmarks.landmark[mpPose.PoseLandmark[upperJ]].z]
 
                     if pose[i][j] == [0, 0, 0]:
-                        break
+                        pose[i][j] = old_pose[i][j]
+
                     centroid = [x + y for x, y in zip(centroid, pose[i][j])]
 
             centroid = [x / length for x in centroid]

@@ -11,18 +11,17 @@ def init_pose_estimation():
     os_name = platform.system()
     # obtain video/webcam
     if "Windows" in os_name:
-       cap = cv2.VideoCapture(os.path.join(os.path.curdir, "Videos", "cpac-video-test-2.mov"))
-    else:
         cap = cv2.VideoCapture(os.path.join(os.path.curdir, "Videos", "cpac-video-test-2.mov"))
+    else:
+        cap = cv2.VideoCapture("./cpac-video-test-2.mov")
     # cap = cv2.VideoCapture(0)
 
     mpDraw = mp.solutions.drawing_utils
     mpPose = mp.solutions.pose
     pose_cv = mpPose.Pose()  # with default params for detection and tracking tolerance (until detection confidence is high enough, it keeps tracking)
 
-    
     if "Windows" in os_name:
-        data = open('landmark.json')
+        data = open('python\data\landmark.json')
     else:
         data = open('landmark.json')
 
@@ -53,6 +52,7 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
             cv2.circle(img, (cx, cy), 5, (155, 155, 0))  # superimpose a circle to the landmarks
 
         for i in pose:
+            old_pose = pose
             centroid = [0, 0, 0]
             length = len(pose[i]) - 3
             for j in pose[i]:
@@ -63,13 +63,14 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
                                   results.pose_landmarks.landmark[mpPose.PoseLandmark[upperJ]].z]
 
                     if pose[i][j] == [0, 0, 0]:
-                        break
+                        pose[i][j] = old_pose[i][j]
+
                     centroid = [x + y for x, y in zip(centroid, pose[i][j])]
 
             centroid = [x / length for x in centroid]
 
             pose[i]['_centroid'] = centroid
-            print(i, pose[i]['_centroid'])
+            # print(i, pose[i]['_centroid'])
 
     if cv2.waitKey(10) & 0xFF == ord('q'):
         return
