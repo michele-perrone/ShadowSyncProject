@@ -13,7 +13,7 @@ from model import Model
 from pose_estimation import init_pose_estimation
 from pose_estimation import get_body_position
 
-DEBUG = 0
+DEBUG = 1
 
 # STATUS
 global_model = Model()
@@ -49,18 +49,18 @@ def ack_handler(address, *args):
 
 def pose_handler(address, *args):
     component = address[5:].split('/')
-    print("pose arrived", args[0])
-    args = args[1:]
+    # print("pose arrived", args[0])
+    
     if args[0]==1:
         # Pose comes from client 1 and has to be sent to 1 as pose and to 2 as other_pose
-        
+        args = args[1:]
         to_ofx1.send_message(address, args)
         # to_test_ofx.send_message(address, args)
         to_ofx2.send_message('/other_pose' + address[5:], args)
 
     elif args[0]==2:
         # Pose comes from client 1 and has to be sent to 2 as pose and to 1 as other_pose
-        
+        args = args[1:]
         to_ofx1.send_message('/other_pose' + address[5:], args)
         # to_test_ofx.send_message('/other_pose' + address[5:], args)
         to_ofx2.send_message(address, args)
@@ -68,18 +68,71 @@ def pose_handler(address, *args):
 def correlation_handler(address, *args):
     global_model.latest_correlation_value[args[0]] = args[1]
 
+    correlation = global_model.latest_correlation_value[args[0]]
+    print("Correlation: ", correlation)
+
     if global_model.installation_phase == 0:
         to_supercollider1.send_message("/correlation", 0)
         to_supercollider2.send_message("/correlation", 0)
     elif global_model.installation_phase == 1 or global_model.installation_phase == 2:
         if args[0]==1:
-            to_supercollider1.send_message("/correlation", args[1])
+            if correlation <= 0.2:
+                value = [1, 0.05, 2]
+                to_supercollider1.send_message("/correlation", value)
+            elif 0.2 < correlation <= 0.4:
+                value = [1, 0.1, 2]
+                to_supercollider1.send_message("/correlation", value)
+            elif 0.4 < correlation <= 0.6:
+                value = [1, 0.5, 1]
+                to_supercollider1.send_message("/correlation", value)
+            elif 0.6 < correlation < 0.8:
+                value = [1, 1, 1]
+                to_supercollider1.send_message("/correlation", value)
+            else:
+                value = [1, 2, 1]
+                to_supercollider1.send_message("/correlation", value)
         if args[0]==2:
-            to_supercollider2.send_message("/correlation", args[1])
+            if correlation <= 0.2:
+                value = [1, 0.05, 2]
+                to_supercollider2.send_message("/correlation", value)
+            elif 0.2 < correlation <= 0.4:
+                value = [1, 0.1, 2]
+                to_supercollider2.send_message("/correlation", value)
+            elif 0.4 < correlation <= 0.6:
+                value = [1, 0.5, 1]
+                to_supercollider2.send_message("/correlation", value)
+            elif 0.6 < correlation < 0.8:
+                value = [1, 1, 1]
+                to_supercollider2.send_message("/correlation", value)
+            else:
+                value = [1, 2, 1]
+                to_supercollider2.send_message("/correlation", value)
     elif global_model.installation_phase != 0 and global_model.installation_phase != 1 and global_model.installation_phase != 2:
-        total_correlation = (global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2
-        to_supercollider1.send_message("/correlation", total_correlation)
-        to_supercollider2.send_message("/correlation", total_correlation)
+        correlation = (global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2
+        if correlation <= 0.2:
+            value = [1, 0.05, 2]
+            to_supercollider1.send_message("/correlation", value)
+            to_supercollider2.send_message("/correlation", value)
+            
+        elif 0.2 < correlation <= 0.4:
+            value = [1, 0.1, 2]
+            to_supercollider1.send_message("/correlation", value)
+            to_supercollider2.send_message("/correlation", value)
+
+        elif 0.4 < correlation <= 0.6:
+            value = [1, 0.5, 1]
+            to_supercollider1.send_message("/correlation", value)
+            to_supercollider2.send_message("/correlation", value)
+
+        elif 0.6 < correlation < 0.8:
+            value = [1, 1, 1]
+            to_supercollider1.send_message("/correlation", value)
+            to_supercollider2.send_message("/correlation", value)
+        else:
+            
+            value = [1, 2, 1]
+            to_supercollider1.send_message("/correlation", value)
+            to_supercollider2.send_message("/correlation", value)
 
 
     # # FINAL
@@ -109,8 +162,8 @@ dispatcher.map("/ofxUtil/tutorialComplete", tutorial_handler)
 dispatcher.map("/ofxUtil/correlation", correlation_handler)
 dispatcher.set_default_handler(default_handler)
 
-ip_1 = "79.31.208.230"
-ip_2 = "192.168.100.213"
+ip_1 = "192.168.178.36"
+ip_2 = "192.168.178.117"
 
 to_py1 = SimpleUDPClient(ip_1, 5511)
 to_py2 = SimpleUDPClient(ip_2, 5522)
@@ -153,7 +206,12 @@ def start_blend_sequence(): # INACTIVE
 async def app_main():
 
     cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray = init_pose_estimation()
+
+    to_supercollider1.send_message("/correlation", "start")
+    to_supercollider2.send_message("/correlation", "start")
+
     while(True):
+
         if DEBUG==1:
             debug_print('Ping')
 
@@ -173,9 +231,10 @@ async def app_main():
         print_connection_status()
 
 
-        global_model.blend = 0
-        for i in range(24):
-            update_installation_phase()
+
+        # global_model.blend = 0
+        # for i in range(24):
+        #     update_installation_phase()
 
         if global_model.has_started == 0 and keyboard.is_pressed('ctrl+w'):
             # global_model.has_started = 1
@@ -229,6 +288,9 @@ async def app_main():
             break
 
         await asyncio.sleep(1)
+    
+    to_supercollider1.send_message("/correlation", 0)
+    to_supercollider2.send_message("/correlation", 0)
 
 async def init_main():
     server = AsyncIOOSCUDPServer(("0.0.0.0", listen_port), dispatcher, asyncio.get_event_loop())
