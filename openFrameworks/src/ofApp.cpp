@@ -58,6 +58,16 @@ void ofApp::update()
     message_to_send.addFloatArg(global_model.get_pose_similarity_xy(0, 1));
     osc_sender.sendMessage(message_to_send);
 
+    if( (global_model.installation_phase == 1 || global_model.installation_phase == 2)
+            && global_model.detect_same_pose(0, 1, 0.75))
+    {
+        message_to_send.clear();
+        message_to_send.setAddress("/ofxUtil/tutorialComplete");
+        message_to_send.addIntArg(CLIENT_NUMBER);
+        message_to_send.addIntArg(global_model.installation_phase);
+        osc_sender.sendMessage(message_to_send);
+    }
+
     //3D Body
     //body.getCentroidsPositions(); //not updated centroids positions
     body.savePastCentroidsPositions();
@@ -722,11 +732,7 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 //    (nothing to do here)
 
                 // 3. Compare "pose" with "other_pose" and send the result via OSC
-                ofxOscMessage message_to_send;
-                message_to_send.clear();
-                message_to_send.setAddress("/ofxUtil/NAME_OF_MESSAGE");
-                message_to_send.addBoolArg(global_model.detect_same_pose(0, 1, 0.75));
-                osc_sender.sendMessage(message_to_send);
+                //    (this is done in ofApp::update)
             }
             else if (global_model.installation_phase == 2)
             {
@@ -734,7 +740,7 @@ void ofApp::handle_address(ofxOscMessage * m) {
 
                 // 1. Copy "pose" into "other_pose"
                 // (this can be done by setting "blend" to zero)
-                global_model.blend = 0;
+                global_model.blend = 1;
 
                 // other_pose viene "sbloccata" e subito ribloccata e comparo pose con other_pose
             }
