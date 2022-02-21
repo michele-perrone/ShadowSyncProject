@@ -28,35 +28,42 @@ to_supercollider = SimpleUDPClient(my_ip, supercollider_port)
 def send(array):
     to_supercollider.send_message("/correlation", array)
 
+
+def correlation_controller(correlation, oldDur, dur):
+    if correlation <= 0.2:
+        value = [1, 0.05, oldDur, 2]
+        dur = 0.05
+    elif 0.2 < correlation <= 0.4:
+        value = [1, 0.1, oldDur, 2]
+        dur = 0.1
+    elif 0.4 < correlation <= 0.6:
+        value = [1, 0.5, oldDur, 1]
+        dur = 0.5
+    elif 0.6 < correlation < 0.8:
+        value = [1, 1, oldDur, 1]
+        dur = 1
+    else:
+        value = [1, 3, oldDur, 1]
+        dur = 3
+    oldDur = dur
+    return oldDur, dur, value
+
+
 async def app_main():
     BPM = 90
     value = [0, 0]  # play, midinote
     midiNote = 60
+    globalDur = 2
+    globalOldDur = 2
 
     send("start")
-
     for i in range(5):
         correlation = random.uniform(0.0, 1.0)
+
+        [globalOldDur, globalDur, value] = correlation_controller(correlation, globalOldDur, globalDur)
         print(correlation)
-
-        if correlation <= 0.2:
-            value = [1, 2, 1]
-            send(value)
-        elif 0.2 < correlation <= 0.4:
-            value = [1, 1, 1]
-            send(value)
-
-        elif 0.4 < correlation <= 0.6:
-            value = [1, 0.5, 1]
-            send(value)
-
-        elif 0.6 < correlation < 0.8:
-            value = [1, 0.1, 2]
-            send(value)
-        else:
-            value = [1, 0.05, 2]
-            send(value)
-        await asyncio.sleep(5)
+        send(value)
+        await asyncio.sleep(3)
     send(0)
 
 

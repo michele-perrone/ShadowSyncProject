@@ -18,52 +18,78 @@ DEBUG = 1
 # STATUS
 global_model = Model()
 
+
 # Print for status monitoring
-def print_connection_status(*args, sep = ' '):
+def print_connection_status(*args, sep=' '):
     # HOW TO IMPLEMENT END AND FLUSH?
     now = datetime.now()
     timestamp = datetime.timestamp(now)
     readable_timestamp = datetime.fromtimestamp(timestamp)
     print('[%s] Computer 1: ' % readable_timestamp, end='')
-    print('\033[92mONLINE\033[0m' if global_model.computer_online[1]==1 else '\033[91mOFFLINE\033[0m', end='')
+    print('\033[92mONLINE\033[0m' if global_model.computer_online[1] == 1 else '\033[91mOFFLINE\033[0m', end='')
     print(' | Computer 2: ', end='')
-    print('\033[92mONLINE\033[0m' if global_model.computer_online[2]==1 else '\033[91mOFFLINE\033[0m', flush=True, end='\r\r')
+    print('\033[92mONLINE\033[0m' if global_model.computer_online[2] == 1 else '\033[91mOFFLINE\033[0m', flush=True,
+          end='\r\r')
 
 
 def debug_print(message):
     spaces = ' '
-    for i in range(70-len(message)):
+    for i in range(70 - len(message)):
         spaces += ' '
-        
+
     print(message, spaces)
+
 
 #################
 # OSC RECEIVERS #
 #################
 
 def ack_handler(address, *args):
-    if DEBUG==1:
+    if DEBUG == 1:
         print(args[0], "Ack Received")
     global_model.ack[args[0]] = 1
     global_model.computer_online[args[0]] = 1
 
+
 def pose_handler(address, *args):
     component = address[5:].split('/')
     # print("pose arrived", args[0])
-    
-    if args[0]==1:
+
+    if args[0] == 1:
         # Pose comes from client 1 and has to be sent to 1 as pose and to 2 as other_pose
         args = args[1:]
         to_ofx1.send_message(address, args)
         # to_test_ofx.send_message(address, args)
         to_ofx2.send_message('/other_pose' + address[5:], args)
 
-    elif args[0]==2:
+    elif args[0] == 2:
         # Pose comes from client 1 and has to be sent to 2 as pose and to 1 as other_pose
         args = args[1:]
         to_ofx1.send_message('/other_pose' + address[5:], args)
         # to_test_ofx.send_message('/other_pose' + address[5:], args)
         to_ofx2.send_message(address, args)
+
+
+def correlation_controller(correlation, oldDur):
+    if correlation <= 0.2:
+        value = [1, 0.05, oldDur, 2]
+        global_model.dur = 0.05
+
+    elif 0.2 < correlation <= 0.4:
+        value = [1, 0.1, oldDur, 2]
+        global_model.dur = 0.1
+    elif 0.4 < correlation <= 0.6:
+        value = [1, 0.5, oldDur, 1]
+        global_model.dur = 0.5
+    elif 0.6 < correlation < 0.8:
+        value = [1, 1, oldDur, 1]
+        global_model.dur = 1
+    else:
+        value = [1, 3, oldDur, 1]
+        global_model.dur = 3
+    global_model.oldDur = global_model.dur
+    return value
+
 
 def correlation_handler(address, *args):
     global_model.latest_correlation_value[args[0]] = args[1]
@@ -75,85 +101,40 @@ def correlation_handler(address, *args):
         to_supercollider1.send_message("/correlation", 0)
         to_supercollider2.send_message("/correlation", 0)
     elif global_model.installation_phase == 1 or global_model.installation_phase == 2:
-        if args[0]==1:
-            if correlation <= 0.2:
-                value = [1, 0.05, 2]
-                to_supercollider1.send_message("/correlation", value)
-            elif 0.2 < correlation <= 0.4:
-                value = [1, 0.1, 2]
-                to_supercollider1.send_message("/correlation", value)
-            elif 0.4 < correlation <= 0.6:
-                value = [1, 0.5, 1]
-                to_supercollider1.send_message("/correlation", value)
-            elif 0.6 < correlation < 0.8:
-                value = [1, 1, 1]
-                to_supercollider1.send_message("/correlation", value)
-            else:
-                value = [1, 2, 1]
-                to_supercollider1.send_message("/correlation", value)
-        if args[0]==2:
-            if correlation <= 0.2:
-                value = [1, 0.05, 2]
-                to_supercollider2.send_message("/correlation", value)
-            elif 0.2 < correlation <= 0.4:
-                value = [1, 0.1, 2]
-                to_supercollider2.send_message("/correlation", value)
-            elif 0.4 < correlation <= 0.6:
-                value = [1, 0.5, 1]
-                to_supercollider2.send_message("/correlation", value)
-            elif 0.6 < correlation < 0.8:
-                value = [1, 1, 1]
-                to_supercollider2.send_message("/correlation", value)
-            else:
-                value = [1, 2, 1]
-                to_supercollider2.send_message("/correlation", value)
+
+        if args[0] == 1:
+            value = correlation_controller(correlation, global_model.oldDur)
+            to_supercollider1.send_message("/correlation", value)
+        if args[0] == 2:
+            value = correlation_controller(correlation, global_model.oldDur)
+            to_supercollider2.send_message("/correlation", value)
     elif global_model.installation_phase != 0 and global_model.installation_phase != 1 and global_model.installation_phase != 2:
-        correlation = (global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2
-        if correlation <= 0.2:
-            value = [1, 0.05, 2]
-            to_supercollider1.send_message("/correlation", value)
-            to_supercollider2.send_message("/correlation", value)
-            
-        elif 0.2 < correlation <= 0.4:
-            value = [1, 0.1, 2]
-            to_supercollider1.send_message("/correlation", value)
-            to_supercollider2.send_message("/correlation", value)
-
-        elif 0.4 < correlation <= 0.6:
-            value = [1, 0.5, 1]
-            to_supercollider1.send_message("/correlation", value)
-            to_supercollider2.send_message("/correlation", value)
-
-        elif 0.6 < correlation < 0.8:
-            value = [1, 1, 1]
-            to_supercollider1.send_message("/correlation", value)
-            to_supercollider2.send_message("/correlation", value)
-        else:
-            
-            value = [1, 2, 1]
-            to_supercollider1.send_message("/correlation", value)
-            to_supercollider2.send_message("/correlation", value)
-
+        correlation = (global_model.latest_correlation_value[1] + global_model.latest_correlation_value[2]) / 2
+        value = correlation_controller(correlation, global_model.oldDur)
+        to_supercollider1.send_message("/correlation", value)
+        to_supercollider2.send_message("/correlation", value)
 
     # # FINAL
     # to_supercollider.send_message("/correlation", (global_model.latest_correlation_value[1]+global_model.latest_correlation_value[2])/2)
     # PLACEHOLDER
-    
+
 
 def tutorial_handler(address, *args):
-    if args[1]>=2:
-        if args[0]==1:
+    if args[1] >= 2:
+        if args[0] == 1:
             to_ofx1.send_message("/ofxUtil/startForReal", 0)
-        elif args[0]==2:
+        elif args[0] == 2:
             to_ofx2.send_message("/ofxUtil/startForReal", 0)
-    elif args[1]<=0:
+    elif args[1] <= 0:
         return
     else:
-        start_tutorial_phase(args[1]+1)
+        start_tutorial_phase(args[1] + 1)
+
 
 # Default Handler
 def default_handler(address, *args):
     print(f"DEFAULT {address}: {args}")
+
 
 dispatcher = Dispatcher()
 dispatcher.map("/pyUtil/ack", ack_handler)
@@ -181,6 +162,7 @@ my_ip = "127.0.0.1"
 listen_port = 1255
 to_me = SimpleUDPClient(my_ip, listen_port)
 
+
 def start_tutorial_phase(n):
     global_model.installation_phase = n
     to_ofx1.send_message("/ofxUtil/startTutorial", n)
@@ -193,7 +175,8 @@ def update_installation_phase():
     to_ofx1.send_message("/ofxUtil/blend", float(global_model.blend))
     to_ofx2.send_message("/ofxUtil/blend", float(global_model.blend))
 
-def start_blend_sequence(): # INACTIVE
+
+def start_blend_sequence():  # INACTIVE
     global_model.blend = 0
     update_installation_phase()
     time.sleep(20)
@@ -203,24 +186,24 @@ def start_blend_sequence(): # INACTIVE
     global_model.blend = 1
     update_installation_phase()
 
-async def app_main():
 
+async def app_main():
     cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray = init_pose_estimation()
 
     to_supercollider1.send_message("/correlation", "start")
     to_supercollider2.send_message("/correlation", "start")
 
-    while(True):
+    while (True):
 
-        if DEBUG==1:
+        if DEBUG == 1:
             debug_print('Ping')
 
-        if global_model.ack[1]==0:
+        if global_model.ack[1] == 0:
             global_model.computer_online[1] = 0
         else:
             global_model.ack[1] = 0
 
-        if global_model.ack[2]==0:
+        if global_model.ack[2] == 0:
             global_model.computer_online[2] = 0
         else:
             global_model.ack[2] = 0
@@ -230,8 +213,6 @@ async def app_main():
 
         print_connection_status()
 
-
-
         # global_model.blend = 0
         # for i in range(24):
         #     update_installation_phase()
@@ -240,9 +221,9 @@ async def app_main():
             # global_model.has_started = 1
             # blend_sequence = Thread(target=start_blend_sequence, daemon=True)
             # blend_sequence.start()
-            
+
             debug_print("Checking if all computers are online in order to start.")
-            if global_model.computer_online[1]==1 and global_model.computer_online[2]==1:
+            if global_model.computer_online[1] == 1 and global_model.computer_online[2] == 1:
                 debug_print("3...")
                 await asyncio.sleep(1)
                 debug_print("2...")
@@ -288,9 +269,10 @@ async def app_main():
             break
 
         await asyncio.sleep(1)
-    
+
     to_supercollider1.send_message("/correlation", 0)
     to_supercollider2.send_message("/correlation", 0)
+
 
 async def init_main():
     server = AsyncIOOSCUDPServer(("0.0.0.0", listen_port), dispatcher, asyncio.get_event_loop())
