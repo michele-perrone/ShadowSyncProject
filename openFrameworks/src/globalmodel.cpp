@@ -154,31 +154,69 @@ float GlobalModel::get_pose_similarity(float min, float max, int PLANE)
     // - right arm and right leg (gamma)
     // - right leg and left leg (delta)
     // - left leg and left arm (theta)
-    float pose_alpha = pose_left_arm.angle(pose_face);
-    float pose_beta = pose_face.angle(pose_right_arm);
-    float pose_gamma = pose_right_arm.angle(pose_right_leg);
-    float pose_delta = pose_right_leg.angle(pose_left_leg);
-    float pose_theta = pose_left_leg.angle(pose_left_arm);
+    float pose_alpha = pose_left_arm.angle(pose_face)+180;
+    float pose_beta = pose_face.angle(pose_right_arm)+180;
+    float pose_gamma = pose_right_arm.angle(pose_right_leg)+180;
+    float pose_delta = pose_right_leg.angle(pose_left_leg)+180;
+    float pose_theta = pose_left_leg.angle(pose_left_arm)+180;
+    std::cout << "pose_alpha: " << pose_alpha << std::endl;
+    std::cout << "pose_beta: " << pose_beta << std::endl;
+    std::cout << "pose_gamma: " << pose_gamma << std::endl;
+    std::cout << "pose_delta: " << pose_delta << std::endl;
+    std::cout << "pose_theta: " << pose_theta << std::endl << std::endl;
 
     // We do the same thing for other_pose
-    ofVec2f other_pose_centroid_coordinates(pose.body_centroid[0], pose.body_centroid[1]);
+    ofVec3f other_pose_centroid_coordinates(other_pose.body_centroid[0],
+                                      other_pose.body_centroid[1],
+                                      other_pose.body_centroid[2]);
+    ofVec2f other_pose_left_arm;
+    ofVec2f other_pose_face;
+    ofVec2f other_pose_right_arm;
+    ofVec2f other_pose_right_leg;
+    ofVec2f other_pose_left_leg;
 
-    ofVec2f other_pose_left_arm(pose.left_arm_centroid[0]-other_pose_centroid_coordinates.x,
-                          pose.left_arm_centroid[1]-other_pose_centroid_coordinates.y);
-    ofVec2f other_pose_face(pose.face_centroid[0]-other_pose_centroid_coordinates.x,
-                      pose.face_centroid[1]-other_pose_centroid_coordinates.y);
-    ofVec2f other_pose_right_arm(pose.right_arm_centroid[0]-other_pose_centroid_coordinates.x,
-                           pose.right_arm_centroid[1]-other_pose_centroid_coordinates.y);
-    ofVec2f other_pose_right_leg(pose.right_leg_centroid[0]-other_pose_centroid_coordinates.x,
-                           pose.right_leg_centroid[1]-other_pose_centroid_coordinates.y);
-    ofVec2f other_pose_left_leg(pose.left_leg_centroid[0]-other_pose_centroid_coordinates.x,
-                          pose.left_leg_centroid[1]-other_pose_centroid_coordinates.y);
+    if(PLANE == XY_PLANE)
+    {
+        other_pose_left_arm = ofVec2f(other_pose.left_arm_centroid[0]-other_pose_centroid_coordinates.x,
+                              other_pose.left_arm_centroid[1]-other_pose_centroid_coordinates.y);
+        other_pose_face = ofVec2f(other_pose.face_centroid[0]-other_pose_centroid_coordinates.x,
+                          other_pose.face_centroid[1]-other_pose_centroid_coordinates.y);
+        other_pose_right_arm = ofVec2f(other_pose.right_arm_centroid[0]-other_pose_centroid_coordinates.x,
+                               other_pose.right_arm_centroid[1]-other_pose_centroid_coordinates.y);
+        other_pose_right_leg = ofVec2f(other_pose.right_leg_centroid[0]-other_pose_centroid_coordinates.x,
+                               other_pose.right_leg_centroid[1]-other_pose_centroid_coordinates.y);
+        other_pose_left_leg = ofVec2f(other_pose.left_leg_centroid[0]-other_pose_centroid_coordinates.x,
+                              other_pose.left_leg_centroid[1]-other_pose_centroid_coordinates.y);
+    }
+    else if(PLANE == YZ_PLANE)
+    {
+        other_pose_left_arm = ofVec2f(other_pose.left_arm_centroid[1]-other_pose_centroid_coordinates.y,
+                              other_pose.left_arm_centroid[2]-other_pose_centroid_coordinates.z);
+        other_pose_face = ofVec2f(other_pose.face_centroid[1]-other_pose_centroid_coordinates.y,
+                          other_pose.face_centroid[2]-other_pose_centroid_coordinates.z);
+        other_pose_right_arm = ofVec2f(other_pose.right_arm_centroid[1]-other_pose_centroid_coordinates.y,
+                               other_pose.right_arm_centroid[2]-other_pose_centroid_coordinates.z);
+        other_pose_right_leg = ofVec2f(other_pose.right_leg_centroid[1]-other_pose_centroid_coordinates.y,
+                               other_pose.right_leg_centroid[2]-other_pose_centroid_coordinates.z);
+        other_pose_left_leg = ofVec2f(other_pose.left_leg_centroid[1]-other_pose_centroid_coordinates.y,
+                              other_pose.left_leg_centroid[2]-other_pose_centroid_coordinates.z);
+    }
+    else
+    {
+        std::cout << "You specified an incorrect plane" << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
-    float other_pose_alpha = other_pose_left_arm.angle(other_pose_face);
-    float other_pose_beta = other_pose_face.angle(other_pose_right_arm);
-    float other_pose_gamma = other_pose_right_arm.angle(other_pose_right_leg);
-    float other_pose_delta = other_pose_right_leg.angle(other_pose_left_leg);
-    float other_pose_theta = other_pose_left_leg.angle(other_pose_left_arm);
+    float other_pose_alpha = other_pose_left_arm.angle(other_pose_face)+180;
+    float other_pose_beta = other_pose_face.angle(other_pose_right_arm)+180;
+    float other_pose_gamma = other_pose_right_arm.angle(other_pose_right_leg)+180;
+    float other_pose_delta = other_pose_right_leg.angle(other_pose_left_leg)+180;
+    float other_pose_theta = other_pose_left_leg.angle(other_pose_left_arm)+180;
+    std::cout << "other_pose_alpha: " << other_pose_alpha << std::endl;
+    std::cout << "other_pose_beta: " << other_pose_beta << std::endl;
+    std::cout << "other_pose_gamma: " << other_pose_gamma << std::endl;
+    std::cout << "other_pose_delta: " << other_pose_delta << std::endl;
+    std::cout << "other_pose_theta: " << other_pose_theta << std::endl << std::endl;
 
     // We then compare all the angles between pose and other_pose and spit out the magic number.
     // When the pose is identical, we expect the sum of the differences between the angles of
@@ -188,12 +226,19 @@ float GlobalModel::get_pose_similarity(float min, float max, int PLANE)
     float gamma_diff = abs(pose_gamma-other_pose_gamma);
     float delta_diff = abs(pose_delta-other_pose_delta);
     float theta_diff = abs(pose_theta-other_pose_theta);
+    std::cout << "alpha_diff: " << alpha_diff << std::endl;
+    std::cout << "beta_diff: " << beta_diff << std::endl;
+    std::cout << "gamma_diff: " << gamma_diff << std::endl;
+    std::cout << "delta_diff: " << delta_diff << std::endl;
+    std::cout << "theta_diff: " << theta_diff << std::endl;
 
     // It is quite obvious that the maximum absolute difference between two angles
-    // can be 180 degrees, since ofVec2f::angle return values in the range [-180, +180].
-    // So the sum of the five differences can be in the range [0, 5*180] --> [0, 900].
+    // can be 180 degrees, since ofVec2f::angle return values in the range [-180, +180]
+    // and we added 180 to each value to have the range [0, 360].
+    // So the sum of the five differences can be in the range [0, 5*360] --> [0, 1800].
     float total_diff = alpha_diff + beta_diff + gamma_diff + delta_diff + theta_diff;
-    float desired_range = 0; // If we want something else instead of [0, 900]
+    std::cout << "TOTAL_DIFF: " << total_diff << std::endl << std::endl;
+    float desired_range = 0; // If we want something else instead of [0, 1800]
     if(min < max)
     {
         desired_range = max-min;
@@ -207,8 +252,15 @@ float GlobalModel::get_pose_similarity(float min, float max, int PLANE)
 
     // To rescale into the desired range [min, max], we simply divide by "desired_range"
     // and then subtract "min".
-    float how_DISSIMILAR_the_poses_are = (total_diff/desired_range)-min;
+    float norm_factor = 500;
+    float how_DISSIMILAR_the_poses_are = (total_diff/(norm_factor/desired_range))+min;
     float how_SIMILAR_the_poses_are = max-how_DISSIMILAR_the_poses_are;
+
+    // Little safeguards
+    if (how_SIMILAR_the_poses_are < min)
+        how_SIMILAR_the_poses_are = min;
+    else if (how_SIMILAR_the_poses_are > max)
+        how_SIMILAR_the_poses_are = max;
 
     return how_SIMILAR_the_poses_are;
 }

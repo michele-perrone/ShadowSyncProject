@@ -36,7 +36,7 @@ void ofApp::setup()
 
     // OSC - Receiver and Sender
     osc_receiver.setup(PORT_RECEIVER); // It is 5501 or 5502
-    osc_sender.setup("127.0.0.1", PORT_SENDER); // 1255
+    osc_sender.setup("192.168.178.135", PORT_SENDER); // 1255
 }
 
 //--------------------------------------------------------------
@@ -55,12 +55,16 @@ void ofApp::update()
     ofxOscMessage message_to_send;
     message_to_send.clear();
     message_to_send.setAddress("/ofxUtil/correlation");
-    message_to_send.addFloatArg(global_model.get_pose_similarity_xy(0, 1));
+    message_to_send.addIntArg(CLIENT_NUMBER);
+    float correlation = global_model.get_pose_similarity_xy(0, 1);
+    std::cout << "CORRELATION: " << correlation << std::endl;
+    message_to_send.addFloatArg(correlation);
     osc_sender.sendMessage(message_to_send);
 
     if( (global_model.installation_phase == 1 || global_model.installation_phase == 2)
             && global_model.detect_same_pose(0, 1, 0.75))
     {
+        std::cout << "I'm at line 64" << std::endl;
         message_to_send.clear();
         message_to_send.setAddress("/ofxUtil/tutorialComplete");
         message_to_send.addIntArg(CLIENT_NUMBER);
