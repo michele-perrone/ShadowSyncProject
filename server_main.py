@@ -95,7 +95,14 @@ def correlation_handler(address, *args):
     global_model.latest_correlation_value[args[0]] = args[1]
 
     correlation = global_model.latest_correlation_value[args[0]]
-    print("Correlation: ", correlation)
+
+    if args[0]==1:
+        print("Correlation 1: ", correlation)
+    elif args[0]==2:
+        print("Correlation 2: --------->", correlation)
+
+    
+    print("MEDIA CORRELATION ----------------------------> ",  (global_model.latest_correlation_value[1] + global_model.latest_correlation_value[2]) / 2)
 
     if global_model.installation_phase == 0:
         to_supercollider1.send_message("/correlation", 0)
@@ -217,7 +224,7 @@ async def app_main():
         # for i in range(24):
         #     update_installation_phase()
 
-        if global_model.has_started == 0 and keyboard.is_pressed('ctrl+w'):
+        if global_model.has_started == 0 and keyboard.is_pressed('alt+w'):
             # global_model.has_started = 1
             # blend_sequence = Thread(target=start_blend_sequence, daemon=True)
             # blend_sequence.start()
@@ -242,28 +249,32 @@ async def app_main():
         #     debug_print("Starting Automated Tutorial")
         #     start_tutorial_phase(1)
 
-        if keyboard.is_pressed('ctrl+shift+t+1'):
+        if keyboard.is_pressed('alt+t+1'):
             debug_print("Starting Automated Tutorial")
             start_tutorial_phase(1)
 
-        if keyboard.is_pressed('ctrl+shift+t+2'):
+        if keyboard.is_pressed('alt+t+2'):
             debug_print("Starting Automated Tutorial")
             start_tutorial_phase(2)
 
-        if keyboard.is_pressed('ctrl+shift+t+3'):
+        if keyboard.is_pressed('alt+shift+s'):
             debug_print("Starting Automated Tutorial")
             to_ofx1.send_message("/ofxUtil/startForReal", 0)
             to_ofx2.send_message("/ofxUtil/startForReal", 0)
 
-        if keyboard.is_pressed('ctrl+shift+w+1'):
+        if keyboard.is_pressed('alt+c'):
+            to_supercollider1.send_message("/correlation", "start")
+            to_supercollider2.send_message("/correlation", "start")
+
+        if keyboard.is_pressed('alt+w+1'): # DA CAMBIARE
             debug_print("Starting Installation Full Regime")
             to_ofx1.send_message("/ofxUtil/startForReal", 0)
 
-        if keyboard.is_pressed('ctrl+shift+w+2'):
+        if keyboard.is_pressed('alt+w+2'):
             debug_print("Starting Installation Full Regime")
             to_ofx2.send_message("/ofxUtil/startForReal", 0)
 
-        if keyboard.is_pressed('ctrl+q'):
+        if keyboard.is_pressed('alt+q'):
             to_py1.send_message("/pyUtil/stop", 0)
             to_py2.send_message("/pyUtil/stop", 0)
             break

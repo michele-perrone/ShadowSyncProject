@@ -87,7 +87,7 @@ async def app_main():
         if global_model.START==1:
             print("LETS START BICCIS")
             while True:
-                await asyncio.sleep(0.000001)
+                await asyncio.sleep(0.01)
                 ret, img = cap.read()
                 img = cv2.flip(img, 1)
                 if ret:
