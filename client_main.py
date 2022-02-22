@@ -14,10 +14,11 @@ from pose_estimation import get_body_position
 DEBUG = 0
 DEMO_MODE = 0
 
-#CLIENT_NUMBER = 1
-CLIENT_NUMBER = 2
-
 global_model = Model()
+
+data = open('info.json')
+info = json.load(data)
+CLIENT_NUMBER = 1 if info["i_am"]=="1" else 2
 
 # To bypass start signal
 if DEMO_MODE==1:
@@ -75,7 +76,7 @@ if CLIENT_NUMBER==1:
 elif CLIENT_NUMBER==2:
     listen_port = 5522
 
-to_server = SimpleUDPClient("127.0.1.1", 5501)
+to_server = SimpleUDPClient(info["ip_server"], 1255)
 to_me = SimpleUDPClient("127.0.1.1", listen_port)
 
 async def app_main():

@@ -9,6 +9,7 @@ from threading import Thread
 from datetime import datetime, timedelta
 import builtins as __builtin__
 from model import Model
+import json
 
 from pose_estimation import init_pose_estimation
 from pose_estimation import get_body_position
@@ -17,6 +18,9 @@ DEBUG = 1
 
 # STATUS
 global_model = Model()
+
+data = open('info.json')
+info = json.load(data)
 
 
 # Print for status monitoring
@@ -148,17 +152,14 @@ dispatcher.map("/ofxUtil/tutorialComplete", tutorial_handler)
 dispatcher.map("/ofxUtil/correlation", correlation_handler)
 dispatcher.set_default_handler(default_handler)
 
-ip_1 = "192.168.178.36"
-ip_2 = "192.168.178.117"
-
-to_py1 = SimpleUDPClient(ip_1, 5511)
-to_py2 = SimpleUDPClient(ip_2, 5522)
-to_ofx1 = SimpleUDPClient(ip_1, 5501)
-to_ofx2 = SimpleUDPClient(ip_2, 5502)
+to_py1 = SimpleUDPClient(info["ip_client_1"], 5511)
+to_py2 = SimpleUDPClient(info["ip_client_2"], 5522)
+to_ofx1 = SimpleUDPClient(info["ip_client_1"], 5501)
+to_ofx2 = SimpleUDPClient(info["ip_client_2"], 5502)
 
 supercollider_port = 5555
-to_supercollider1 = SimpleUDPClient(ip_1, supercollider_port)
-to_supercollider2 = SimpleUDPClient(ip_2, supercollider_port)
+to_supercollider1 = SimpleUDPClient(info["ip_client_1"], supercollider_port)
+to_supercollider2 = SimpleUDPClient(info["ip_client_2"], supercollider_port)
 
 # UNCOMMENT ONLY FOR SINGLE FRONTEND ON SERVER FOR TESTING
 to_test_ofx = SimpleUDPClient("127.0.0.1", 5501)
