@@ -70,22 +70,21 @@ def pose_handler(address, *args):
         to_ofx2.send_message(address, args)
 
 
-def correlation_controller(correlation, oldDur):
+def correlation_controller(correlation):
     if correlation <= 0.2:
-        value = [1, 0.05, oldDur, 2]
+        value = [1, 0.05, global_model.oldDur, 2]
         global_model.dur = 0.05
-
     elif 0.2 < correlation <= 0.4:
-        value = [1, 0.1, oldDur, 2]
+        value = [1, 0.1, global_model.oldDur, 2]
         global_model.dur = 0.1
     elif 0.4 < correlation <= 0.6:
-        value = [1, 0.5, oldDur, 1]
+        value = [1, 0.5, global_model.oldDur, 1]
         global_model.dur = 0.5
     elif 0.6 < correlation < 0.8:
-        value = [1, 1, oldDur, 1]
+        value = [1, 1, global_model.oldDur, 1]
         global_model.dur = 1
     else:
-        value = [1, 3, oldDur, 1]
+        value = [1, 3, global_model.oldDur, 1]
         global_model.dur = 3
     global_model.oldDur = global_model.dur
     return value
@@ -101,16 +100,15 @@ def correlation_handler(address, *args):
         to_supercollider1.send_message("/correlation", 0)
         to_supercollider2.send_message("/correlation", 0)
     elif global_model.installation_phase == 1 or global_model.installation_phase == 2:
-
         if args[0] == 1:
-            value = correlation_controller(correlation, global_model.oldDur)
+            value = correlation_controller(correlation)
             to_supercollider1.send_message("/correlation", value)
         if args[0] == 2:
-            value = correlation_controller(correlation, global_model.oldDur)
+            value = correlation_controller(correlation)
             to_supercollider2.send_message("/correlation", value)
     elif global_model.installation_phase != 0 and global_model.installation_phase != 1 and global_model.installation_phase != 2:
         correlation = (global_model.latest_correlation_value[1] + global_model.latest_correlation_value[2]) / 2
-        value = correlation_controller(correlation, global_model.oldDur)
+        value = correlation_controller(correlation)
         to_supercollider1.send_message("/correlation", value)
         to_supercollider2.send_message("/correlation", value)
 
