@@ -53,13 +53,16 @@ void ofApp::update()
 
     // OSC - Send the messages
     ofxOscMessage message_to_send;
-    message_to_send.clear();
-    message_to_send.setAddress("/ofxUtil/correlation");
-    message_to_send.addIntArg(CLIENT_NUMBER);
-    float correlation = global_model.get_pose_similarity_xy(0, 1);
-    std::cout << "CORRELATION: " << correlation << std::endl;
-    message_to_send.addFloatArg(correlation);
-    osc_sender.sendMessage(message_to_send);
+    if(global_model.installation_phase > 0)
+    {
+        message_to_send.clear();
+        message_to_send.setAddress("/ofxUtil/correlation");
+        message_to_send.addIntArg(CLIENT_NUMBER);
+        float correlation = global_model.get_pose_similarity_xy(0, 1);
+        std::cout << "CORRELATION: " << correlation << std::endl;
+        message_to_send.addFloatArg(correlation);
+        osc_sender.sendMessage(message_to_send);
+    }
 
     if( (global_model.installation_phase == 1 || global_model.installation_phase == 2)
             && global_model.detect_same_pose(0, 1, 0.75))
