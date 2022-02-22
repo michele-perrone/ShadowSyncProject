@@ -35,7 +35,7 @@ void ofApp::setup()
     shadow.setup(&global_model.other_pose);
 
     // OSC - Receiver and Sender
-    osc_receiver.setup(PORT_RECEIVER); // It is 5501 or 5502
+    osc_receiver.setup(PORT_RECEIVER_BASE+global_model.i_am); // It is 5501 or 5502
     osc_sender.setup("192.168.178.135", PORT_SENDER); // 1255
 }
 
@@ -57,7 +57,7 @@ void ofApp::update()
     {
         message_to_send.clear();
         message_to_send.setAddress("/ofxUtil/correlation");
-        message_to_send.addIntArg(CLIENT_NUMBER);
+        message_to_send.addIntArg(global_model.i_am);
         float correlation = global_model.get_pose_similarity_xy(0, 1);
         std::cout << "CORRELATION: " << correlation << std::endl;
         message_to_send.addFloatArg(correlation);
@@ -70,7 +70,7 @@ void ofApp::update()
         std::cout << "I'm at line 64" << std::endl;
         message_to_send.clear();
         message_to_send.setAddress("/ofxUtil/tutorialComplete");
-        message_to_send.addIntArg(CLIENT_NUMBER);
+        message_to_send.addIntArg(global_model.i_am);
         message_to_send.addIntArg(global_model.installation_phase);
         osc_sender.sendMessage(message_to_send);
     }

@@ -3,6 +3,7 @@ from pythonosc.dispatcher import Dispatcher
 from pythonosc.udp_client import SimpleUDPClient
 import asyncio
 from model import Model
+import json
 
 import cv2  # image processing via openCv
 import mediapipe as mp  # pose estimation via mediapipe

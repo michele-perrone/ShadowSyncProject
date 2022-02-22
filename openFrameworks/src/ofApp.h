@@ -6,11 +6,7 @@
 #include "Body.h"
 #include "globalmodel.h"
 
-//#define CLIENT_NUMBER 1
-//#define PORT_RECEIVER 5501
-
-#define CLIENT_NUMBER 2
-#define PORT_RECEIVER 5502
+#define PORT_RECEIVER_BASE 5500
 
 #define PORT_SENDER 1255
 

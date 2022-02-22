@@ -256,8 +256,9 @@ async def app_main():
             debug_print("Starting Automated Tutorial")
             start_tutorial_phase(2)
 
-        if keyboard.is_pressed('alt+shift+s'):
+        if keyboard.is_pressed('alt+shift+w'):
             debug_print("Starting Automated Tutorial")
+            global_model.installation_phase = 3
             to_ofx1.send_message("/ofxUtil/startForReal", 0)
             to_ofx2.send_message("/ofxUtil/startForReal", 0)
 

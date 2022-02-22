@@ -24,6 +24,8 @@ public:
     // al momento in cui è stata impostata la fase 2
     // >3 --> no tutorial
     float installation_phase;
+    string ip_server;
+    int i_am;
 
     /**
      * @brief blend decides to which degree "other_pose"

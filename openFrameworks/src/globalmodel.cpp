@@ -2,10 +2,29 @@
 #include <ofVec2f.h>
 #include <ofVec3f.h>
 
+#include <json/value.h>
+#include <json/json.h>
+#include <fstream>
+
 GlobalModel::GlobalModel()
 {
     installation_phase = 0;
     blend = 0;
+
+    std::ifstream file_input("info.json");
+    Json::Reader reader;
+    Json::Value info;
+    reader.parse(file_input, info);
+    ip_server = info["ip_server"].toStyledString();
+
+    cout << ip_server << endl;
+
+    string i_am_string = info["i_am"].toStyledString();
+    i_am_string = i_am_string[1];
+    i_am = stoi(i_am_string);
+
+    cout << i_am << endl;
+
 }
 
 GlobalModel::GlobalModel(Pose pose, Pose other_pose)
