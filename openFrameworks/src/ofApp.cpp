@@ -25,7 +25,7 @@ void ofApp::setup()
 
     plane_floor.set(PL_XZ, PL_XZ); //original setup
     plane_floor.rotateDeg(270, 1, 0, 0); //by default, it is orthogonal to x axis, centered in origin
-    plane_floor.move(PL_XZ/2, 0, PL_XZ/2);
+    plane_floor.move(PL_XZ/2, 0, PL_XZ/2-1); //avoid misallignment with wall
 
     plane_wall.set(PL_XZ, PL_Y);
     plane_wall.move(PL_XZ/2, PL_Y/2, -1);
@@ -151,13 +151,18 @@ void ofApp::draw()
     //ofBackground(142, 124, 200);
     ofEnableAlphaBlending();
 
-    floor_material.begin();
+    ofPushStyle();
+    ofSetColor(255, 255, 255, 127);
+    //floor_material.begin();
     plane_floor.draw();
-    floor_material.end();
+    //floor_material.end();
 
-    wall_material.begin();
+    ofSetColor(125, 125, 125, 127);
+    //wall_material.begin();
     plane_wall.draw();
-    wall_material.end();
+    //wall_material.end();
+
+    ofPopStyle();
 
     //ofDrawGrid(10, 20, true, true, true, true); //3D grid
     if(draw_dummy)

@@ -5,8 +5,8 @@
 #define P_RADIUS 2
 #define BODY_RADIUS 2
 #define SCALE_FACTOR 150
-#define TRASL_VECTOR {0, -0.9, -0.5}
-#define SCALE_VECTOR {1, -1, -0.4}
+#define TRASL_VECTOR {0, -0.9, -1.5}
+#define SCALE_VECTOR {1, -1, -0.3}
 
 void Body::setup(Pose* pose_body)
 {
