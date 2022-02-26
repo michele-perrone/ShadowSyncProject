@@ -1,5 +1,5 @@
 #include "Particle2D.h"
-
+#define RANDOM_FORCE_MAG 1
 //======================= 2D Particle ===============
 
 Particle2D::Particle2D()
@@ -50,6 +50,10 @@ void Particle2D::update(Circle * attractor)
     float limit_steer = (glm::length(steer) / shadow_ps_max_force);
     steer.x = steer.x / limit_steer;
     steer.y = steer.y / limit_steer;
+    //ADDING RANDOMNESS
+    float rand[] = { ofRandom(-RANDOM_FORCE_MAG, RANDOM_FORCE_MAG), ofRandom(-RANDOM_FORCE_MAG , RANDOM_FORCE_MAG) };
+    glm::vec2 random_force = glm::make_vec2(rand);
+    steer += random_force;
     //applyforce(steer);
     force += steer;
 
@@ -96,7 +100,7 @@ void Particle2D::update(Circle * attractor)
 void Particle2D::draw()
 {
     //ofSetColor(my2dParticleColor, lifespan);
-    my2dParticle.draw(my2dParticleColor, lifespan + 50);
+    my2dParticle.draw(my2dParticleColor, lifespan + 150);
 }
 
 bool Particle2D::isDead()

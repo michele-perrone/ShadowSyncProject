@@ -3,6 +3,7 @@ import mediapipe as mp  # pose estimation via mediapipe
 import json
 import os
 import platform
+import keyboard
 
 
 def init_pose_estimation():
@@ -78,6 +79,10 @@ def get_body_position(img, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray):
     if cv2.waitKey(10) & 0xFF == ord('q'):
         return
 
+    
+    #filename = 'initialpose.json'
+    #writeToJSONFile('./', filename , pose)
+
     return img, pose
 
 
@@ -88,3 +93,9 @@ def destroy_pose_estimator(cap):
 
     # Closes all the frames
     cv2.destroyAllWindows()
+
+def writeToJSONFile(path, fileName, data):
+    filePathNameWExt = './' + path + '/' + fileName 
+    with open(filePathNameWExt, 'w') as fp:
+        json.dump(data, fp)
+

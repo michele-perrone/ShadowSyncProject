@@ -71,6 +71,7 @@ void GlobalModel::update_blending()
 
         other_pose.nose[i] = (blend)*other_pose.nose[i] + (1-blend)*pose.nose[i];
         other_pose.left_eye_inner[i] = (blend)*other_pose.left_eye_inner[i] + (1-blend)*pose.left_eye_inner[i];
+        other_pose.left_eye[i] = (blend)*other_pose.left_eye[i] + (1 - blend) * pose.left_eye[i];
         other_pose.left_eye_outer[i] = (blend)*other_pose.left_eye_outer[i] + (1-blend)*pose.left_eye_outer[i];
         other_pose.right_eye_inner[i] = (blend)*other_pose.right_eye_inner[i] + (1-blend)*pose.right_eye_inner[i];
         other_pose.right_eye[i] = (blend)*other_pose.right_eye[i] + (1-blend)*pose.right_eye[i];

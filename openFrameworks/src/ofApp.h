@@ -6,6 +6,11 @@
 #include "Body.h"
 #include "globalmodel.h"
 
+#include <json/value.h>
+#include <json/json.h>
+
+
+
 #define PORT_RECEIVER_BASE 5500
 
 #define PORT_SENDER 1255
@@ -58,8 +63,17 @@ class ofApp : public ofBaseApp{
 		float bd_ms = 0.5;
 		float bd_mf = 1.5;
 
+		Body dummy_body;
+		bool draw_dummy = true;
+		float bd_ms_dummy = 0.45;
+		float bd_mf_dummy = 0.45;
+
 		//2D shadow 
 		Shadow shadow;
-		float sh_ms = 0.054; 
-		float sh_mf = 0.046;
+		float sh_ms = 0.6; 
+		float sh_mf = 0.9;
+
+		//init
+		GlobalModel init_model;
+		void defineInitModel(Json::Value js);
 };

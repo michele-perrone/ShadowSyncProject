@@ -1,9 +1,9 @@
 #include "Shadow.h"
 #define NUMPARTICLES 30
-#define NUMPARTICLESNM 15
-#define P_LIFESPAN 50
-#define P_RADIUS 1
-#define SHADOW_RADIUS 0.5
+#define NUMPARTICLESNM 30
+#define P_LIFESPAN 200
+#define P_RADIUS 2
+#define SHADOW_RADIUS 1.5
 #define SCALE_FACTOR 150
 #define TRASL_VECTOR {0.5, -0.9}
 #define SCALE_VECTOR {1, -1}
@@ -48,12 +48,14 @@ void Shadow::draw()
 		else
 			shadow_junctions[i].draw(ofFloatColor::green, 200);//other junctions
 	}
+
+
 	
 	
-	for (int i = 0; i < particle_systems_2d.size(); i++)
+	/*for (int i = 0; i < particle_systems_2d.size(); i++)
 	{
 		particle_systems_2d[i].draw();
-	}
+	}*/
 
 	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
 	{
@@ -65,10 +67,10 @@ void Shadow::draw()
 void Shadow::moveCentroids()
 {
 
-	for (int i = 0; i < particle_systems_2d.size(); i++)
+	/*for (int i = 0; i < particle_systems_2d.size(); i++)
 	{
 		particle_systems_2d[i].moveOrigin(shadow_junctions[i].center); //each ps has its own centroid (which are the first CENTROID_NUM junctions)
-	}
+	}*/
 
 	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
 	{
@@ -105,8 +107,8 @@ void Shadow::updateParticleSystems()
 	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
 		particle_systems_2d_nm[j].update();
 
-	for (int i = 0; i < particle_systems_2d.size(); i++)
-		particle_systems_2d[i].decay();
+	/*for (int i = 0; i < particle_systems_2d.size(); i++)
+		particle_systems_2d[i].decay();*/
 }
 
 void Shadow::updateSysMaxVals(float ms, float mf)

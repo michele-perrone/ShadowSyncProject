@@ -3,6 +3,10 @@
 #define PL_Y 100  //the y plane dimension
 #define OSC_DEBUG 0 // Macro for verbose OSC reception
 
+
+#include <fstream>
+#include <string>
+
 //--------------------------------------------------------------
 void ofApp::setup()
 {
@@ -37,11 +41,29 @@ void ofApp::setup()
     // OSC - Receiver and Sender
     osc_receiver.setup(PORT_RECEIVER_BASE+global_model.i_am); // It is 5501 or 5502
     osc_sender.setup("192.168.178.135", PORT_SENDER); // 1255
+
+    //INITAL STATE POSE -while not receiving osc messages yet-
+    ifstream file("initialpose_1.json");
+    Json::Value initPoseJson;
+    Json::Reader reader;
+    reader.parse(file, initPoseJson);
+    //std::cout << "json data: " << initPoseJson << std::endl;
+    dummy_body.setup(&init_model.pose);
+    defineInitModel(initPoseJson);
+    
+    global_model.pose = init_model.pose; //when osc are received the body is generated where the dummy body was
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
+    if (osc_receiver.hasWaitingMessages() == false)
+    {
+        dummy_body.moveJunctions();
+        dummy_body.moveCentroids();
+        dummy_body.updateParticleSystems();
+        dummy_body.updateSysMaxVals(bd_ms_dummy, bd_mf_dummy);
+    }
     // OSC - Receive the messages
     while (osc_receiver.hasWaitingMessages())
     {
@@ -49,6 +71,8 @@ void ofApp::update()
         osc_receiver.getNextMessage(m);
         if (OSC_DEBUG) cout << "Message Received : ";
         handle_address(&m); // Updates the global_model with the latest values arrived by osc
+        //std::cout << "receiving osc msg" << std::endl;
+        draw_dummy = false;
     }
 
     // OSC - Send the messages
@@ -118,10 +142,11 @@ void ofApp::draw()
     wall_material.end();
 
     //ofDrawGrid(10, 20, true, true, true, true); //3D grid
+    if(draw_dummy)
+        dummy_body.draw();
 
     body.draw();
     shadow.draw();
-
 
     //!application of the transformation
     // ofMultMatrix(mat); //this matrix multiplication allow us to see the circle
@@ -765,5 +790,203 @@ void ofApp::handle_address(ofxOscMessage * m) {
     {
         if (OSC_DEBUG) cout << "not recognized" << endl;
     }
+
+}
+
+void ofApp::defineInitModel(Json::Value initPoseJson)
+{
+    string main_components[6] = { "face", "body", "left_arm", "right_arm", "left_leg", "right_leg" };
+    string type = "pose";
+    for (int i = 0; i < 6; i++)
+    {
+        string area = main_components[i];
+
+        Json::Value sub_components = initPoseJson[main_components[i]];
+
+        if (area == "face")
+        {
+            init_model.pose.face_centroid[0] = (sub_components["_centroid"])[0].asFloat();
+            init_model.pose.face_centroid[1] = (sub_components["_centroid"])[1].asFloat();
+            init_model.pose.face_centroid[2] = (sub_components["_centroid"])[2].asFloat();
+
+            init_model.pose.nose[0] = (sub_components["nose"])[0].asFloat();
+            init_model.pose.nose[1] = (sub_components["nose"])[1].asFloat();
+            init_model.pose.nose[2] = (sub_components["nose"])[2].asFloat();
+
+            init_model.pose.left_eye_inner[0] = (sub_components["left_eye_inner"])[0].asFloat();
+            init_model.pose.left_eye_inner[1] = (sub_components["left_eye_inner"])[1].asFloat();
+            init_model.pose.left_eye_inner[2] = (sub_components["left_eye_inner"])[2].asFloat();
+
+            init_model.pose.left_eye[0] = (sub_components["left_eye"])[0].asFloat();
+            init_model.pose.left_eye[1] = (sub_components["left_eye"])[1].asFloat();
+            init_model.pose.left_eye[2] = (sub_components["left_eye"])[2].asFloat();
+
+            init_model.pose.left_eye_outer[0] = (sub_components["left_eye_outer"])[0].asFloat();
+            init_model.pose.left_eye_outer[1] = (sub_components["left_eye_outer"])[1].asFloat();
+            init_model.pose.left_eye_outer[2] = (sub_components["left_eye_outer"])[2].asFloat();
+
+            init_model.pose.right_eye_inner[0] = (sub_components["right_eye_inner"])[0].asFloat();
+            init_model.pose.right_eye_inner[1] = (sub_components["right_eye_inner"])[1].asFloat();
+            init_model.pose.right_eye_inner[2] = (sub_components["right_eye_inner"])[2].asFloat();
+
+            init_model.pose.right_eye[0] = (sub_components["right_eye"])[0].asFloat();
+            init_model.pose.right_eye[1] = (sub_components["right_eye"])[1].asFloat();
+            init_model.pose.right_eye[2] = (sub_components["right_eye"])[2].asFloat();
+
+            init_model.pose.right_eye_outer[0] = (sub_components["right_eye_outer"])[0].asFloat();
+            init_model.pose.right_eye_outer[1] = (sub_components["right_eye_outer"])[1].asFloat();
+            init_model.pose.right_eye_outer[2] = (sub_components["right_eye_outer"])[2].asFloat();
+
+            init_model.pose.left_ear[0] = (sub_components["left_ear"])[0].asFloat();
+            init_model.pose.left_ear[1] = (sub_components["left_ear"])[1].asFloat();
+            init_model.pose.left_ear[2] = (sub_components["left_ear"])[2].asFloat();
+
+            init_model.pose.right_ear[0] = (sub_components["right_ear"])[0].asFloat();
+            init_model.pose.right_ear[1] = (sub_components["right_ear"])[1].asFloat();
+            init_model.pose.right_ear[2] = (sub_components["right_ear"])[2].asFloat();
+
+            init_model.pose.mouth_left[0] = (sub_components["mouth_left"])[0].asFloat();
+            init_model.pose.mouth_left[1] = (sub_components["mouth_left"])[1].asFloat();
+            init_model.pose.mouth_left[2] = (sub_components["mouth_left"])[2].asFloat();
+
+            init_model.pose.mouth_right[0] = (sub_components["mouth_right"])[0].asFloat();
+            init_model.pose.mouth_right[1] = (sub_components["mouth_right"])[1].asFloat();
+            init_model.pose.mouth_right[2] = (sub_components["mouth_right"])[2].asFloat();
+
+        }
+
+        else if (area == "body")
+        {
+            init_model.pose.body_centroid[0] = (sub_components["_centroid"])[0].asFloat();
+            init_model.pose.body_centroid[1] = (sub_components["_centroid"])[1].asFloat();
+            init_model.pose.body_centroid[2] = (sub_components["_centroid"])[2].asFloat();
+
+            init_model.pose.left_shoulder[0] = (sub_components["left_shoulder"])[0].asFloat();
+            init_model.pose.left_shoulder[1] = (sub_components["left_shoulder"])[1].asFloat();
+            init_model.pose.left_shoulder[2] = (sub_components["left_shoulder"])[2].asFloat();
+
+            init_model.pose.right_shoulder[0] = (sub_components["right_shoulder"])[0].asFloat();
+            init_model.pose.right_shoulder[1] = (sub_components["right_shoulder"])[1].asFloat();
+            init_model.pose.right_shoulder[2] = (sub_components["right_shoulder"])[2].asFloat();
+
+            init_model.pose.left_hip[0] = (sub_components["left_hip"])[0].asFloat();
+            init_model.pose.left_hip[1] = (sub_components["left_hip"])[1].asFloat();
+            init_model.pose.left_hip[2] = (sub_components["left_hip"])[2].asFloat();
+
+            init_model.pose.right_hip[0] = (sub_components["right_hip"])[0].asFloat();
+            init_model.pose.right_hip[1] = (sub_components["right_hip"])[1].asFloat();
+            init_model.pose.right_hip[2] = (sub_components["right_hip"])[2].asFloat();
+
+        }
+
+        else if (area == "left_arm")
+        {
+            init_model.pose.left_arm_centroid[0] = (sub_components["_centroid"])[0].asFloat();
+            init_model.pose.left_arm_centroid[1] = (sub_components["_centroid"])[1].asFloat();
+            init_model.pose.left_arm_centroid[2] = (sub_components["_centroid"])[2].asFloat();
+
+            init_model.pose.left_elbow[0] = (sub_components["left_elbow"])[0].asFloat();
+            init_model.pose.left_elbow[1] = (sub_components["left_elbow"])[1].asFloat();
+            init_model.pose.left_elbow[2] = (sub_components["left_elbow"])[2].asFloat();
+
+            init_model.pose.left_wrist[0] = (sub_components["left_wrist"])[0].asFloat();
+            init_model.pose.left_wrist[1] = (sub_components["left_wrist"])[1].asFloat();
+            init_model.pose.left_wrist[2] = (sub_components["left_wrist"])[2].asFloat();
+
+            init_model.pose.left_pinky[0] = (sub_components["left_pinky"])[0].asFloat();
+            init_model.pose.left_pinky[1] = (sub_components["left_pinky"])[1].asFloat();
+            init_model.pose.left_pinky[2] = (sub_components["left_pinky"])[2].asFloat();
+
+            init_model.pose.left_index[0] = (sub_components["left_index"])[0].asFloat();
+            init_model.pose.left_index[1] = (sub_components["left_index"])[1].asFloat();
+            init_model.pose.left_index[2] = (sub_components["left_index"])[2].asFloat();
+
+            init_model.pose.left_thumb[0] = (sub_components["left_thumb"])[0].asFloat();
+            init_model.pose.left_thumb[1] = (sub_components["left_thumb"])[1].asFloat();
+            init_model.pose.left_thumb[2] = (sub_components["left_thumb"])[2].asFloat();
+        }
+
+        else if (area == "right_arm")
+        {
+            init_model.pose.right_arm_centroid[0] = (sub_components["_centroid"])[0].asFloat();
+            init_model.pose.right_arm_centroid[1] = (sub_components["_centroid"])[1].asFloat();
+            init_model.pose.right_arm_centroid[2] = (sub_components["_centroid"])[2].asFloat();
+
+            init_model.pose.right_elbow[0] = (sub_components["right_elbow"])[0].asFloat();
+            init_model.pose.right_elbow[1] = (sub_components["right_elbow"])[1].asFloat();
+            init_model.pose.right_elbow[2] = (sub_components["right_elbow"])[2].asFloat();
+
+            init_model.pose.right_wrist[0] = (sub_components["right_wrist"])[0].asFloat();
+            init_model.pose.right_wrist[1] = (sub_components["right_wrist"])[1].asFloat();
+            init_model.pose.right_wrist[2] = (sub_components["right_wrist"])[2].asFloat();
+
+            init_model.pose.right_pinky[0] = (sub_components["right_pinky"])[0].asFloat();
+            init_model.pose.right_pinky[1] = (sub_components["right_pinky"])[1].asFloat();
+            init_model.pose.right_pinky[2] = (sub_components["right_pinky"])[2].asFloat();
+
+            init_model.pose.right_index[0] = (sub_components["right_index"])[0].asFloat();
+            init_model.pose.right_index[1] = (sub_components["right_index"])[1].asFloat();
+            init_model.pose.right_index[2] = (sub_components["right_index"])[2].asFloat();
+
+            init_model.pose.right_thumb[0] = (sub_components["right_thumb"])[0].asFloat();
+            init_model.pose.right_thumb[1] = (sub_components["right_thumb"])[1].asFloat();
+            init_model.pose.right_thumb[2] = (sub_components["right_thumb"])[2].asFloat();
+        }
+
+        else if (area == "left_leg")
+        {
+            init_model.pose.left_leg_centroid[0] = (sub_components["_centroid"])[0].asFloat();
+            init_model.pose.left_leg_centroid[1] = (sub_components["_centroid"])[1].asFloat();
+            init_model.pose.left_leg_centroid[2] = (sub_components["_centroid"])[2].asFloat();
+
+            init_model.pose.left_knee[0] = (sub_components["left_knee"])[0].asFloat();
+            init_model.pose.left_knee[1] = (sub_components["left_knee"])[1].asFloat();
+            init_model.pose.left_knee[2] = (sub_components["left_knee"])[2].asFloat();
+
+            init_model.pose.left_ankle[0] = (sub_components["left_ankle"])[0].asFloat();
+            init_model.pose.left_ankle[1] = (sub_components["left_ankle"])[1].asFloat();
+            init_model.pose.left_ankle[2] = (sub_components["left_ankle"])[2].asFloat();
+
+            init_model.pose.left_heel[0] = (sub_components["left_heel"])[0].asFloat();
+            init_model.pose.left_heel[1] = (sub_components["left_heel"])[1].asFloat();
+            init_model.pose.left_heel[2] = (sub_components["left_heel"])[2].asFloat();
+
+            init_model.pose.left_foot_index[0] = (sub_components["left_foot_index"])[0].asFloat();
+            init_model.pose.left_foot_index[1] = (sub_components["left_foot_index"])[1].asFloat();
+            init_model.pose.left_foot_index[2] = (sub_components["left_foot_index"])[2].asFloat();
+
+        }
+
+        else if (area == "right_leg")
+        {
+            init_model.pose.right_leg_centroid[0] = (sub_components["_centroid"])[0].asFloat();
+            init_model.pose.right_leg_centroid[1] = (sub_components["_centroid"])[1].asFloat();
+            init_model.pose.right_leg_centroid[2] = (sub_components["_centroid"])[2].asFloat();
+
+            init_model.pose.right_knee[0] = (sub_components["right_knee"])[0].asFloat();
+            init_model.pose.right_knee[1] = (sub_components["right_knee"])[1].asFloat();
+            init_model.pose.right_knee[2] = (sub_components["right_knee"])[2].asFloat();
+
+            init_model.pose.right_ankle[0] = (sub_components["right_ankle"])[0].asFloat();
+            init_model.pose.right_ankle[1] = (sub_components["right_ankle"])[1].asFloat();
+            init_model.pose.right_ankle[2] = (sub_components["right_ankle"])[2].asFloat();
+
+            init_model.pose.right_heel[0] = (sub_components["right_heel"])[0].asFloat();
+            init_model.pose.right_heel[1] = (sub_components["right_heel"])[1].asFloat();
+            init_model.pose.right_heel[2] = (sub_components["right_heel"])[2].asFloat();
+
+            init_model.pose.right_foot_index[0] = (sub_components["right_foot_index"])[0].asFloat();
+            init_model.pose.right_foot_index[1] = (sub_components["right_foot_index"])[1].asFloat();
+            init_model.pose.right_foot_index[2] = (sub_components["right_foot_index"])[2].asFloat();
+        }
+
+        //std::cout << "centroid of each sub component" << (sub_components["_centroid"])[0].asFloat() << std::endl;
+
+        //std::cout << sub_components << std::endl;
+
+        //std::cout << initPoseJson[main_components[i]] << std::endl;
+
+    }
+    //init_model.print();
 
 }
