@@ -10,6 +10,8 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
+    background.load("futuristic_interior_background.jpg");
+
     light.setup();
     light.setPosition(200, 100, 400);
 
@@ -21,7 +23,7 @@ void ofApp::setup()
     mat.rotate(90, 0, 0, 1);    //with this two commands, we are combining two "high-abstraction level" matrix transformations
     mat.translate(0, 0, 1);    //in just one (otherwise, at a low level you can define manually a 4x4 mat that performs your transformation)
 
-    plane_floor.set(PL_XZ, PL_XZ);
+    plane_floor.set(PL_XZ, PL_XZ); //original setup
     plane_floor.rotateDeg(270, 1, 0, 0); //by default, it is orthogonal to x axis, centered in origin
     plane_floor.move(PL_XZ/2, 0, PL_XZ/2);
 
@@ -127,10 +129,26 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+    //changing background
+    ofEnableLighting();
+    ofDisableDepthTest();
+    ///draw the backdrop
+    ofPushMatrix();
+    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2, 0);
+    ofSetColor(255); //will be black if this is not included 
+    background.getTexture().bind();
+    backdrop.resizeToTexture(background.getTexture());
+    backdrop.set(ofGetWidth(), ofGetHeight());
+    backdrop.draw();
+    background.getTexture().unbind();
+    ofPopMatrix();
+    ofEnableDepthTest();
+    //end of changing background
+    
     //everything shown in 3D rendering goes btw cam.begin() and cam.end(), same for material
     cam.begin();
 
-    ofBackground(142, 124, 200);
+    //ofBackground(142, 124, 200);
     ofEnableAlphaBlending();
 
     floor_material.begin();

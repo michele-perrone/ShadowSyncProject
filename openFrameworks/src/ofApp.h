@@ -76,4 +76,7 @@ class ofApp : public ofBaseApp{
 		//init
 		GlobalModel init_model;
 		void defineInitModel(Json::Value js);
+
+		ofPlanePrimitive backdrop;
+		ofImage background;
 };
