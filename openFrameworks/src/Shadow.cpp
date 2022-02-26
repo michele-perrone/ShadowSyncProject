@@ -1,6 +1,6 @@
 #include "Shadow.h"
 #define NUMPARTICLES 30
-#define NUMPARTICLESNM 30
+#define NUMPARTICLESNM 35
 #define P_LIFESPAN 200
 #define P_RADIUS 2
 #define SHADOW_RADIUS 1.5
@@ -40,7 +40,7 @@ void Shadow::setup(Pose* pose_shadow)
 
 void Shadow::draw()
 {
-	
+	/*
 	for (int i = 0; i < shadow_junctions.size(); i++)
 	{
 		if (i < POSE_CENTROID_NUM)
@@ -48,7 +48,7 @@ void Shadow::draw()
 		else
 			shadow_junctions[i].draw(ofFloatColor::green, 200);//other junctions
 	}
-
+	*/
 
 	
 	

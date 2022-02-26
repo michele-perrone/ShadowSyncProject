@@ -45,7 +45,7 @@ void ofApp::setup()
     osc_sender.setup("192.168.178.135", PORT_SENDER); // 1255
 
     //INITAL STATE POSE -while not receiving osc messages yet-
-    ifstream file("initialpose_1.json");
+    ifstream file("initialpose.json");
     Json::Value initPoseJson;
     Json::Reader reader;
     reader.parse(file, initPoseJson);
