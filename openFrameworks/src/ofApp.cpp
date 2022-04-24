@@ -93,7 +93,6 @@ void ofApp::update()
     if( (global_model.installation_phase == 1 || global_model.installation_phase == 2)
             && global_model.detect_same_pose(0, 1, 0.75))
     {
-        std::cout << "I'm at line 64" << std::endl;
         message_to_send.clear();
         message_to_send.setAddress("/ofxUtil/tutorialComplete");
         message_to_send.addIntArg(global_model.i_am);
@@ -111,19 +110,23 @@ void ofApp::update()
 
     
     //2D Shadow
-    global_model.update_blending();
     //shadow.getCentroidsPositions(); //not updated centroids position
     shadow.moveJunctions();
     shadow.moveCentroids();
     shadow.updateParticleSystems();
     shadow.updateSysMaxVals(sh_ms, sh_mf);
 
+    // Update the blending
+    // CAUTION: updating the blending is not something we want to do
+    //          at every update cycle, especially during installation
+    //          phases 1 and 2!
+    if(global_model.continuous_blending)
+        global_model.update_blending();
+
     //check if the pose is moving
     //std::cout << "Is face centroid moving? " << shadow.isCentroidMoving(0) << std::endl;
     // 
     //global_model.pose.isInFrontOfCam();
-
-
 }
 
 //--------------------------------------------------------------
@@ -340,7 +343,8 @@ void ofApp::handle_address(ofxOscMessage * m) {
 
 //    if (OSC_DEBUG) cout << "Separated address: " << "-" << type << "-" << area << "-" << component << "-" << sub_component << "-" << endl;
 
-    if(type == "pose"){
+    if(type == "pose")
+    {
         if (OSC_DEBUG) cout << address << endl;
         if(area == "face") {
             if(component=="_completely_detected") {
@@ -547,10 +551,11 @@ void ofApp::handle_address(ofxOscMessage * m) {
                 if (OSC_DEBUG) cout << "not recognized" << endl;
             }
         }
-    } else if (type == "other_pose"
-               && global_model.installation_phase != 0
-               && global_model.installation_phase != 1
-               && global_model.installation_phase != 2) {
+    }
+
+    // We don't want to receive "other_pose" during the tutorial (installation phases 0, 1, and 2)
+    else if (type == "other_pose" && global_model.installation_phase >= 3)
+    {
         if (OSC_DEBUG) cout << address << endl;
         if(area == "face") {
             if(component=="_completely_detected") {
@@ -748,14 +753,12 @@ void ofApp::handle_address(ofxOscMessage * m) {
             }
         }
     }
+
     else if (type == "ofxUtil")
     {
         if (OSC_DEBUG) cout << address << endl;
-        if(area == "blend"
-                && global_model.installation_phase != 0 // Blend is ignored in phase 0 ..
-                && global_model.installation_phase != 1 // ... 1 ...
-                && global_model.installation_phase != 2 // ... and 2
-                )
+        // We don't want to receive "blend" during the tutorial (installation phases 0, 1, and 2)
+        if(area == "blend" && global_model.installation_phase >= 3)
         {
             // blend=0 is just shadow, blend=1 is all other pose
             global_model.blend = m->getArgAsFloat(0);
@@ -769,44 +772,71 @@ void ofApp::handle_address(ofxOscMessage * m) {
 
             if (global_model.installation_phase == 0)
             {
-                // "other_pose" must mimick "pose".
-                // (this is equivalent to setting "blend" to zero)
+                cout << "Phase 0: tutorial hasn't started yet" << endl;
+
+                // "other_pose" must mimick "pose", CONTINUOUSLY.
+                // This can be achieved by setting "blend" to zero,
+                // and by updating constantly the blending.
+                // This way, we guarantee that "pose" is continuously
+                // copied into "other_pose".
                 global_model.blend = 0;
+                global_model.continuous_blending = true;
 
                 // (Remember that in this phase,
-                //  the "blend" parameter won't be received)
+                //  the "blend" parameter is not received)
             }
             else if (global_model.installation_phase == 1)
             {
-                cout << "Phase 1: tutorial started" << endl;
+                cout << "Phase 1: tutorial pt. 1 started" << endl;
 
-                // 1. Save the last received "other_pose"
-                //    (nothing to do here)
+                // In this phase, "other_pose" is not being received.
+                // We copy the CURRENT "pose" into "other_pose". This is done ONCE.
+                // Then, "other_pose" remains LOCKED.
+                // We remain in this phase until "pose" and "other pose" reach enough similarity.
 
-                // 2. Stop receiving other_pose
-                //    (nothing to do here)
+                // Last received "pose" is copied into "other_pose"
+                global_model.blend = 0;
+                global_model.update_blending();
 
-                // 3. Compare "pose" with "other_pose" and send the result via OSC
-                //    (this is done in ofApp::update)
+                // By setting "continuous_blending" to FALSE, we ensure that the above step
+                // is performed only ONCE.
+                // (GlobalModel::update_blending won't be called in ofApp::update)
+                global_model.continuous_blending = false;
+
+                // "pose" is compared with "other_pose" and the result is sent via OSC.
+                // This is done at every cycle ofApp::update.
             }
             else if (global_model.installation_phase == 2)
             {
-                cout << "Phase 2" << endl;
+                cout << "Phase 2: tutorial pt. 2 started" << endl;
 
-                // 1. Copy "pose" into "other_pose"
-                // (this can be done by setting "blend" to zero)
-                global_model.blend = 1;
+                // In this phase, "other_pose" is not being received.
+                // We copy the CURRENT "pose" into "other_pose". This is done ONCE.
+                // Then, "other_pose" remains LOCKED.
+                // We remain in this phase until "pose" and "other pose" reach enough similarity.
 
-                // other_pose viene "sbloccata" e subito ribloccata e comparo pose con other_pose
+                // Last received "pose" is copied into "other_pose"
+                global_model.blend = 0;
+                global_model.update_blending();
+
+                // By setting "continuous_blending" to FALSE, we ensure that the above step
+                // is performed only ONCE.
+                // (GlobalModel::update_blending won't be called in ofApp::update)
+                global_model.continuous_blending = false;
+
+                // "pose" is compared with "other_pose" and the result is sent via OSC.
+                // This is done at every cycle ofApp::update.
             }
         }
         else if (area == "startForReal")
         {
             cout << area << endl;
 
-            // By setting "installation_phase" to 3, we start receiving
-            // and updating again "other_pose"
+            // By setting "installation_phase" to 3, we start receiving and updating:
+            // -- "other_pose"
+            // -- "blend"
             global_model.installation_phase = 3;
+            global_model.continuous_blending = true;
         }
     }
     else
