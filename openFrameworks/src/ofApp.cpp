@@ -54,6 +54,8 @@ void ofApp::setup()
     defineInitModel(initPoseJson);
     
     global_model.pose = init_model.pose; //when osc are received the body is generated where the dummy body was
+
+    this->delay_timer = 0;
 }
 
 //--------------------------------------------------------------
@@ -90,14 +92,24 @@ void ofApp::update()
         osc_sender.sendMessage(message_to_send);
     }
 
-    if( (global_model.installation_phase == 1 || global_model.installation_phase == 2)
-            && global_model.detect_same_pose(0, 1, 0.75))
+    // This is where we send the OSC message when the "pose" and "other_pose"
+    // reach a decent level of similarity.
+    // The comparison is done when ofApp::delay_timer reaches a certain value.
+    if(this->delay_timer < 90)
     {
-        message_to_send.clear();
-        message_to_send.setAddress("/ofxUtil/tutorialComplete");
-        message_to_send.addIntArg(global_model.i_am);
-        message_to_send.addIntArg(global_model.installation_phase);
-        osc_sender.sendMessage(message_to_send);
+        this->delay_timer++;
+    }
+    else
+    {
+        if( (global_model.installation_phase == 1 || global_model.installation_phase == 2)
+                && global_model.detect_same_pose(0, 1, 0.75))
+        {
+            message_to_send.clear();
+            message_to_send.setAddress("/ofxUtil/tutorialComplete");
+            message_to_send.addIntArg(global_model.i_am);
+            message_to_send.addIntArg(global_model.installation_phase);
+            osc_sender.sendMessage(message_to_send);
+        }
     }
 
     //3D Body
@@ -805,6 +817,8 @@ void ofApp::handle_address(ofxOscMessage * m) {
 
                 // "pose" is compared with "other_pose" and the result is sent via OSC.
                 // This is done at every cycle ofApp::update.
+                // Reset the delay timer to zero
+                this->delay_timer = 0;
             }
             else if (global_model.installation_phase == 2)
             {
@@ -826,6 +840,8 @@ void ofApp::handle_address(ofxOscMessage * m) {
 
                 // "pose" is compared with "other_pose" and the result is sent via OSC.
                 // This is done at every cycle ofApp::update.
+                // Reset the delay timer to zero
+                this->delay_timer = 0;
             }
         }
         else if (area == "startForReal")
