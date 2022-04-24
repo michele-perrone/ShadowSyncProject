@@ -14,6 +14,6 @@ class Model:
         self.latest_correlation_value = [0, 0, 0]
         self.START = 0
         self.installation_phase = 0
-        self.dur = 2
-        self.oldDur = 2
+        self.dur = [0, 2, 2]
+        self.oldDur = [0, 2, 2]
         

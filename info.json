@@ -1,7 +1,7 @@
 {
   "i_am": "1",
   "commento_perche_non_ci_sono_commenti_nei_json": "i_am is just either '1' or '2'",
-  "ip_client_1": "192.168.178.36",
-  "ip_client_2": "192.168.178.117",
-  "ip_server": "192.168.178.135"
+  "ip_client_1": "192.168.1.220",
+  "ip_client_2": "192.168.1.170",
+  "ip_server": "192.168.1.31"
 }

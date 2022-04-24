@@ -74,23 +74,23 @@ def pose_handler(address, *args):
         to_ofx2.send_message(address, args)
 
 
-def correlation_controller(correlation):
+def correlation_controller(n, correlation):
     if correlation <= 0.2:
-        value = [1, 0.05, global_model.oldDur, 2]
-        global_model.dur = 0.05
+        value = [1, 0.05, global_model.oldDur[n], 2]
+        global_model.dur[n] = 0.05
     elif 0.2 < correlation <= 0.4:
-        value = [1, 0.1, global_model.oldDur, 2]
-        global_model.dur = 0.1
+        value = [1, 0.1, global_model.oldDur[n], 2]
+        global_model.dur[n] = 0.1
     elif 0.4 < correlation <= 0.6:
-        value = [1, 0.5, global_model.oldDur, 1]
-        global_model.dur = 0.5
+        value = [1, 0.5, global_model.oldDur[n], 1]
+        global_model.dur[n] = 0.5
     elif 0.6 < correlation < 0.8:
-        value = [1, 1, global_model.oldDur, 1]
-        global_model.dur = 1
-    else:
-        value = [1, 3, global_model.oldDur, 1]
-        global_model.dur = 3
-    global_model.oldDur = global_model.dur
+        value = [1, 1, global_model.oldDur[n], 1]
+        global_model.dur[n] = 1
+    elif correlation>=0.8:
+        value = [1, 3, global_model.oldDur[n], 1]
+        global_model.dur[n] = 3
+    global_model.oldDur[n] = global_model.dur[n]
     return value
 
 
@@ -99,27 +99,24 @@ def correlation_handler(address, *args):
 
     correlation = global_model.latest_correlation_value[args[0]]
 
-    if args[0]==1:
-        print("Correlation 1: ", correlation)
-    elif args[0]==2:
-        print("Correlation 2: --------->", correlation)
-
-    
-    print("MEDIA CORRELATION ----------------------------> ",  (global_model.latest_correlation_value[1] + global_model.latest_correlation_value[2]) / 2)
-
+    # if args[0]==1:
+    #     print("Correlation 1: ", correlation)
+    # elif args[0]==2:
+    #     print("Correlation 2: --------->", correlation)
     if global_model.installation_phase == 0:
         to_supercollider1.send_message("/correlation", 0)
         to_supercollider2.send_message("/correlation", 0)
     elif global_model.installation_phase == 1 or global_model.installation_phase == 2:
-        if args[0] == 1:
-            value = correlation_controller(correlation)
+        value = correlation_controller(args[0], correlation**2)
+        print(args[0], value, '-----> ', correlation**2)
+        if args[0] == 1:       
             to_supercollider1.send_message("/correlation", value)
         if args[0] == 2:
-            value = correlation_controller(correlation)
             to_supercollider2.send_message("/correlation", value)
     elif global_model.installation_phase != 0 and global_model.installation_phase != 1 and global_model.installation_phase != 2:
-        correlation = (global_model.latest_correlation_value[1] + global_model.latest_correlation_value[2]) / 2
-        value = correlation_controller(correlation)
+        correlation = ((global_model.latest_correlation_value[1] + global_model.latest_correlation_value[2]) / 2)**2 
+        # print("MEDIA CORRELATION ---------------------------->",  correlation)
+        value = correlation_controller(args[0], correlation)
         to_supercollider1.send_message("/correlation", value)
         to_supercollider2.send_message("/correlation", value)
 
@@ -129,15 +126,16 @@ def correlation_handler(address, *args):
 
 
 def tutorial_handler(address, *args):
-    if args[1] >= 2:
-        if args[0] == 1:
-            to_ofx1.send_message("/ofxUtil/startForReal", 0)
-        elif args[0] == 2:
-            to_ofx2.send_message("/ofxUtil/startForReal", 0)
-    elif args[1] <= 0:
-        return
-    else:
-        start_tutorial_phase(args[1] + 1)
+    # if args[1] >= 2:
+    #     if args[0] == 1:
+    #         to_ofx1.send_message("/ofxUtil/startForReal", 0)
+    #     elif args[0] == 2:
+    #         to_ofx2.send_message("/ofxUtil/startForReal", 0)
+    # elif args[1] <= 0:
+    #     return
+    # else:
+    #     start_tutorial_phase(args[1] + 1)
+    print("TUTORIAL PHASE", args[1], "OF CLIENT", args[0], 'COMPLETE')
 
 
 # Default Handler
@@ -170,6 +168,7 @@ to_me = SimpleUDPClient(my_ip, listen_port)
 
 
 def start_tutorial_phase(n):
+    print('STARTING PHASE ----------------------------------------------------------------> ', n)
     global_model.installation_phase = n
     to_ofx1.send_message("/ofxUtil/startTutorial", n)
     to_ofx2.send_message("/ofxUtil/startTutorial", n)
@@ -195,9 +194,10 @@ def start_blend_sequence():  # INACTIVE
 
 async def app_main():
     cap, mpDraw, mpPose, pose_cv, pose, poseLandmarksArray = init_pose_estimation()
+    started = 0
 
-    to_supercollider1.send_message("/correlation", "start")
-    to_supercollider2.send_message("/correlation", "start")
+    # to_supercollider1.send_message("/correlation", "start")
+    # to_supercollider2.send_message("/correlation", "start")
 
     while (True):
 
@@ -217,7 +217,8 @@ async def app_main():
         to_py1.send_message("/pyUtil/ping", 0)
         to_py2.send_message("/pyUtil/ping", 0)
 
-        print_connection_status()
+        if started == 0:
+            print_connection_status()
 
         # global_model.blend = 0
         # for i in range(24):
@@ -227,7 +228,7 @@ async def app_main():
             # global_model.has_started = 1
             # blend_sequence = Thread(target=start_blend_sequence, daemon=True)
             # blend_sequence.start()
-
+            started = 1
             debug_print("Checking if all computers are online in order to start.")
             if global_model.computer_online[1] == 1 and global_model.computer_online[2] == 1:
                 debug_print("3...")
@@ -261,10 +262,12 @@ async def app_main():
             global_model.installation_phase = 3
             to_ofx1.send_message("/ofxUtil/startForReal", 0)
             to_ofx2.send_message("/ofxUtil/startForReal", 0)
-
-        if keyboard.is_pressed('alt+c'):
+            global_model.blend = 1
+            update_installation_phase()
             to_supercollider1.send_message("/correlation", "start")
             to_supercollider2.send_message("/correlation", "start")
+
+        # if keyboard.is_pressed('alt+c'):
 
         if keyboard.is_pressed('alt+w+1'): # DA CAMBIARE
             debug_print("Starting Installation Full Regime")
@@ -281,8 +284,8 @@ async def app_main():
 
         await asyncio.sleep(1)
 
-    to_supercollider1.send_message("/correlation", 0)
-    to_supercollider2.send_message("/correlation", 0)
+    # to_supercollider1.send_message("/correlation", 0)
+    # to_supercollider2.send_message("/correlation", 0)
 
 
 async def init_main():
