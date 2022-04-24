@@ -50,7 +50,7 @@ void GlobalModel::print()
 
 void GlobalModel::update_blending()
 {
-    // 0 --> "other_pose" is a copy "pose".
+    // 0 --> "other_pose" is a copy "pose" ("pose" is copied into "other_pose")
     // In other words: you (pose) are FULLY controlling your own shadow (other_pose).
 
     // 1 --> "other_pose" and "pose" are fully distinct.
