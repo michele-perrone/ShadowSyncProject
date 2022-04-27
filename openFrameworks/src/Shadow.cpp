@@ -1,6 +1,6 @@
 #include "Shadow.h"
 #define NUMPARTICLES 30
-#define NUMPARTICLESNM 35
+#define NUMPARTICLESNM 45
 #define P_LIFESPAN 200
 #define P_RADIUS 2
 #define SHADOW_RADIUS 1.5

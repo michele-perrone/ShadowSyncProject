@@ -79,4 +79,10 @@ class ofApp : public ofBaseApp{
 
 		ofPlanePrimitive backdrop;
 		ofImage background;
+
+        // This timer is used when we enter phase 1 and phase 2 of the installation.
+        // It is used to delay the moment from which we start calculating the
+        // similarity between "pose" and "other_pose".
+        // It is incremented at each cycle of ofApp:update()
+        uint32_t delay_timer;
 };

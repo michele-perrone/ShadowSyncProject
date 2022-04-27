@@ -36,6 +36,11 @@ public:
      *       The other person's shadow (other_pose) is you shadow
      */
     float blend = 0.0f; // By default, your shadow follows YOU (pose)
+    /**
+     * @brief Once blend is set, continuous_blending is used to control whether
+     * the blend should be carried out continuously (true) or una tantum (false)
+     */
+    bool continuous_blending = true;
 
     GlobalModel();
     GlobalModel(Pose pose, Pose other_pose);
