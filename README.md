@@ -1,6 +1,6 @@
 # Shadow Sync Project
 
-Shadow Sync Project (SSP) is an interactive installation 
+Shadow Sync Project (SSP) is an interactive installation with the aim of finding a connection between people through their body movements.
 
 ## Page index
   1. [Documents](#documents)
