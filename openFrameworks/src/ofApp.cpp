@@ -42,7 +42,7 @@ void ofApp::setup()
 
     // OSC - Receiver and Sender
     osc_receiver.setup(PORT_RECEIVER_BASE+global_model.i_am); // It is 5501 or 5502
-    osc_sender.setup("192.168.178.135", PORT_SENDER); // 1255
+    osc_sender.setup("192.168.1.31", PORT_SENDER); // 1255
 
     //INITAL STATE POSE -while not receiving osc messages yet-
     ifstream file("initialpose.json");
@@ -94,21 +94,21 @@ void ofApp::update()
 
     // This is where we send the OSC message when the "pose" and "other_pose"
     // reach a decent level of similarity.
-    // The comparison is done when ofApp::delay_timer reaches a certain value.
-    if(this->delay_timer < 90)
-    {
-        this->delay_timer++;
-    }
-    else
+    if(this->delay_timer >= 90)
     {
         if( (global_model.installation_phase == 1 || global_model.installation_phase == 2)
-                && global_model.detect_same_pose(0, 1, 0.75))
+                && global_model.detect_same_pose(0, 1, 0.8))
         {
             message_to_send.clear();
             message_to_send.setAddress("/ofxUtil/tutorialComplete");
             message_to_send.addIntArg(global_model.i_am);
             message_to_send.addIntArg(global_model.installation_phase);
             osc_sender.sendMessage(message_to_send);
+            std::cout << "******************************" << std::endl;
+            std::cout << "******************************" << std::endl;
+            std::cout << "TUTORIAL COMPLETE MESSAGE SENT" << std::endl;
+            std::cout << "******************************" << std::endl;
+            std::cout << "******************************" << std::endl;
         }
     }
 
@@ -144,6 +144,12 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+    // The comparison is done when ofApp::delay_timer reaches a certain value.
+    if(this->delay_timer < 90)
+    {
+        this->delay_timer++;
+    }
+
     //changing background
     ofEnableLighting();
     ofDisableDepthTest();
