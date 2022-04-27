@@ -42,7 +42,7 @@ void ofApp::setup()
 
     // OSC - Receiver and Sender
     osc_receiver.setup(PORT_RECEIVER_BASE+global_model.i_am); // It is 5501 or 5502
-    osc_sender.setup("192.168.1.31", PORT_SENDER); // 1255
+    osc_sender.setup(global_model.ip_server, PORT_SENDER); // 1255
 
     //INITAL STATE POSE -while not receiving osc messages yet-
     ifstream file("initialpose.json");
