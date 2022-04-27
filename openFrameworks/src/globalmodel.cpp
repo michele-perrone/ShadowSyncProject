@@ -15,15 +15,15 @@ GlobalModel::GlobalModel()
     Json::Reader reader;
     Json::Value info;
     reader.parse(file_input, info);
-    ip_server = info["ip_server"].toStyledString();
+    ip_server = info["ip_server"].asString();
 
-    cout << ip_server << endl;
+    cout << "ip_server: " << ip_server << endl;
 
     string i_am_string = info["i_am"].toStyledString();
     i_am_string = i_am_string[1];
     i_am = stoi(i_am_string);
 
-    cout << i_am << endl;
+    cout << "i_am: " << i_am << endl;
 
 }
 
