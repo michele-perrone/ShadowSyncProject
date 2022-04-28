@@ -18,3 +18,4 @@ osc/openframeworks_osc/SimpleOSCSender/SimpleOSCSender.qbs.user
 openFrameworks/.DS_Store
 openFrameworks/src/.DS_Store
 /python/
+*.backup
