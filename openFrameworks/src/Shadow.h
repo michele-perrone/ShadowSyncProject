@@ -22,6 +22,8 @@ public:
 	void EmitterAttractorSetup();
 	void setupEA(int e, int a);
 
+	void full_sync();
+
 private:
 	vector<Circle> shadow_junctions;
 	vector<ParticleSystem2D> particle_systems_2d;

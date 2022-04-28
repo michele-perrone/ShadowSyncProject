@@ -15,16 +15,17 @@ public:
     void setup(glm::vec3 origin, int numParticles, int particleRadius, int particleLifespan);
     void update();
     void draw();
-    void setMaterial(ofMaterial& material);
-    void setOrigin(int x, int y, int z);
+    //void setMaterial(ofMaterial& material);
+    //void setOrigin(int x, int y, int z);
     void moveOrigin(glm::vec3 newOrigin);
-    void setDestination(int x, int y, int z);
-    void moveDestination(int x_dir, int y_dir, int z_dir);
+    //void setDestination(int x, int y, int z);
+    //void moveDestination(int x_dir, int y_dir, int z_dir);
     void addParticle();
     void decay();
     void updateParticleMaxVals(float ms, float mf);
     void setAttractor(ofSpherePrimitive* attractor);
     int origin_idx_in_body_junction_domain;
+    void full_sync();
 private:
     int numParticles, particleRadius, particleLifespan;
     glm::vec3 origin_PS;

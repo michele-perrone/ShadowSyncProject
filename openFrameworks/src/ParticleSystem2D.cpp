@@ -69,12 +69,6 @@ void ParticleSystem2D::draw()
 			particles[i].draw();
 	}
 }
-/*
-void ParticleSystem2D::setOrigin(int x, int y)
-{
-	origin_PS2D.x = x;
-	origin_PS2D.y = y;
-}*/
 
 void ParticleSystem2D::moveOrigin(glm::vec2& newOrigin)
 {
@@ -83,19 +77,6 @@ void ParticleSystem2D::moveOrigin(glm::vec2& newOrigin)
 	
 }
 
-/*
-void ParticleSystem2D::setDestination(int x, int y)
-{
-	destination.x = x;
-	destination.y = y;
-}
-
-void ParticleSystem2D::moveDestination(int x_dir, int y_dir)
-{
-	destination.x += x_dir;
-	destination.y += y_dir;
-}
-*/
 
 void ParticleSystem2D::addParticle() //QUI la (nuova) origine del PS deve essere passata alla particella
 {
@@ -115,4 +96,12 @@ void ParticleSystem2D::addParticle() //QUI la (nuova) origine del PS deve essere
 void ParticleSystem2D::setAttractor(Circle* attractor)
 {
 	this->attractor = attractor;
+}
+
+void ParticleSystem2D::full_sync()
+{
+	for (int i = particles.size() - 1; i >= 0; i--)
+	{
+		particles[i].setSyncColor();
+	}
 }

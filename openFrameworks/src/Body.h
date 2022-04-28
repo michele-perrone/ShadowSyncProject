@@ -21,11 +21,12 @@ public:
 	void updateSysMaxVals(float ms, float mf);
 	void EmitterAttractorSetup();
 	void setupEA(int e, int a);
+
+	void full_sync();
 	
 private:
     vector <ofSpherePrimitive> body_junctions;
-    vector <ParticleSystem> particle_systems;	//movement
-	vector <ParticleSystem> particle_systems_nm; //non movevement
+    vector <ParticleSystem> particle_systems;
 	glm::vec3 body_origin;
 	float* sys_origin;
 	Pose* pose;

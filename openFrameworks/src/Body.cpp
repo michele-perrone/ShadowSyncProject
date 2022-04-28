@@ -1,6 +1,6 @@
 #include "Body.h"
 #define NUMPARTICLES 30
-#define NUMPARTICLESNM 45
+#define NUMPARTICLESNM 70
 #define P_LIFESPAN 200
 #define P_RADIUS 2
 #define BODY_RADIUS 2
@@ -13,8 +13,6 @@ void Body::setup(Pose* pose_body)
     j_material.setDiffuseColor(ofColor::aqua);
     c_material.setDiffuseColor(ofColor::purple);
     pose = pose_body;
-   // sys_origin = pose->body_centroid;
-   // body_origin = glm::make_vec3(sys_origin);
 
     for (int i = 0; i < POSE_JUNCTIONS + POSE_CENTROID_NUM; i++) //fixed size!
     {
@@ -24,14 +22,6 @@ void Body::setup(Pose* pose_body)
 		body_junctions.push_back(temp_junction);
 	}
     
-    /*for (int i = 0; i < POSE_CENTROID_NUM; i++)
-    {
-        ParticleSystem temp_ps;
-        temp_ps.setup(body_junctions[i].getGlobalPosition(), NUMPARTICLES, P_RADIUS, P_LIFESPAN);
-        particle_systems.push_back(temp_ps);
-        particle_systems[i].setAttractor(&(body_junctions[i])); //ps attracted by itself, pose moving 
-
-    }*/
     
     EmitterAttractorSetup();
   
@@ -40,37 +30,15 @@ void Body::setup(Pose* pose_body)
 
 void Body::draw()
 {
-    /*
-    c_material.begin();
-    for (int i = 0; i < POSE_CENTROID_NUM; i++)
-        body_junctions[i].draw();
-    c_material.end();
-	
-
-    j_material.begin(); //this will affect all the elements inside (like push/pop matrix)
-    for (int i = POSE_CENTROID_NUM; i < body_junctions.size(); i++)
-        body_junctions[i].draw();
-    j_material.end();*/
-    
-   /* for (int i = 0; i < particle_systems.size(); i++)
-        particle_systems[i].draw();*/
-    
-    
-    for (int j = 0; j < particle_systems_nm.size(); j++)
-        particle_systems_nm[j].draw();
-        
+    for (int j = 0; j < particle_systems.size(); j++)
+        particle_systems[j].draw();       
 }
 
 //moves the entire body rigidly
 void Body::moveCentroids()
 {
-    /*for (int i = 0; i < particle_systems.size(); i++)
-    {
-        particle_systems[i].moveOrigin(body_junctions[i].getGlobalPosition());
-      //  std::cout << "Move centroids: " << body_junctions[i].getGlobalPosition() << std::endl;
-    }*/
-    for (int j = 0; j < particle_systems_nm.size(); j++)
-        particle_systems_nm[j].moveOrigin(body_junctions[particle_systems_nm[j].origin_idx_in_body_junction_domain].getGlobalPosition());
+    for (int j = 0; j < particle_systems.size(); j++)
+        particle_systems[j].moveOrigin(body_junctions[particle_systems[j].origin_idx_in_body_junction_domain].getGlobalPosition());
 }
 
 
@@ -111,40 +79,14 @@ bool Body::areCentroidMoving()
 
 void Body::updateParticleSystems()
 {
-    //for (int i = 0; i < POSE_CENTROID_NUM; i++)
-    //    particle_systems[i].update();
-    
-    //MOVING VS NON-MOVING POSE HP
-    /*if (areCentroidMoving()) //activate centroids PS, where EMI = ATT
-    {
-        std::cout << "centroid is moving" << std::endl;
-        for (int i = 0; i < POSE_CENTROID_NUM; i++)
-            particle_systems[i].update();
-        for (int j = 0; j < particle_systems_nm.size(); j++)
-        {
-            particle_systems_nm[j].decay();
-        }
-    }
-    else    //activate other PS, where EMI != ATT
-    {
-        std::cout << "centroid is NOT moving" << std::endl;*/
-        for (int j = 0; j < particle_systems_nm.size(); j++)
-            particle_systems_nm[j].update();
-        /*for (int i = 0; i < POSE_CENTROID_NUM; i++)
-        {
-            particle_systems[i].decay();
-        }*/
-
-    
-        
+        for (int j = 0; j < particle_systems.size(); j++)
+            particle_systems[j].update();         
 }
 
 void Body::updateSysMaxVals(float ms, float mf)
 {
-    /*for (int i = 0; i < particle_systems.size(); i++)
-        particle_systems[i].updateParticleMaxVals(ms, mf);*/
-    for (int j = 0; j < particle_systems_nm.size(); j++)
-        particle_systems_nm[j].updateParticleMaxVals(ms, mf);
+    for (int j = 0; j < particle_systems.size(); j++)
+        particle_systems[j].updateParticleMaxVals(ms, mf);
 }
 
 void Body::moveJunctions()
@@ -153,6 +95,7 @@ void Body::moveJunctions()
     glm::vec3 scale_vec(SCALE_VECTOR);
     scale_vec *= SCALE_FACTOR;
     glm::vec3 trasl_vec(TRASL_VECTOR);
+    glm::vec3 trasl_leg({ 1.1, 1, 1.1 });
 
 
     //centroids
@@ -194,13 +137,13 @@ void Body::moveJunctions()
     body_junctions[29].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->right_elbow)));
     body_junctions[30].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->right_wrist)));
     //left leg
-    body_junctions[31].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->left_heel)));
-    body_junctions[32].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->left_foot_index)));
+    body_junctions[31].setGlobalPosition(scale_vec * (trasl_vec * trasl_leg +glm::make_vec3(pose->left_heel)));
+    body_junctions[32].setGlobalPosition(scale_vec * (trasl_vec * trasl_leg +glm::make_vec3(pose->left_foot_index)));
     body_junctions[33].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->left_knee)));
     body_junctions[34].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->left_ankle)));
     //right leg
-    body_junctions[35].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->right_heel)));
-    body_junctions[36].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->right_foot_index)));
+    body_junctions[35].setGlobalPosition(scale_vec * (trasl_vec * trasl_leg +glm::make_vec3(pose->right_heel)));
+    body_junctions[36].setGlobalPosition(scale_vec * (trasl_vec * trasl_leg +glm::make_vec3(pose->right_foot_index)));
     body_junctions[37].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->right_knee)));
     body_junctions[38].setGlobalPosition(scale_vec * (trasl_vec +glm::make_vec3(pose->right_ankle)));
 
@@ -241,8 +184,13 @@ void Body::setupEA(int e , int a)
 {
     ParticleSystem temp_ps;
     temp_ps.setup(body_junctions[POSE_CENTROID_NUM + e].getGlobalPosition(), NUMPARTICLESNM, P_RADIUS, P_LIFESPAN);
-    particle_systems_nm.push_back(temp_ps);
-    particle_systems_nm[particle_systems_nm.size() - 1].origin_idx_in_body_junction_domain = POSE_CENTROID_NUM + e; //setup its origin, see moveCentroids()
-    particle_systems_nm[particle_systems_nm.size() - 1].setAttractor(&(body_junctions[POSE_CENTROID_NUM + a]));
+    particle_systems.push_back(temp_ps);
+    particle_systems[particle_systems.size() - 1].origin_idx_in_body_junction_domain = POSE_CENTROID_NUM + e; //setup its origin, see moveCentroids()
+    particle_systems[particle_systems.size() - 1].setAttractor(&(body_junctions[POSE_CENTROID_NUM + a]));
 }
 
+void Body::full_sync()
+{
+    for (int j = 0; j < particle_systems.size(); j++)
+        particle_systems[j].full_sync();
+}

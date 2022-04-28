@@ -9,7 +9,6 @@ class Particle2D
 public:
 	Particle2D();
 	void setup(glm::vec2& origin, float rad, float lifesp, glm::vec2 f);
-	void update();
 	void draw();
 	bool isDead();
 	float lifespan;
@@ -21,10 +20,14 @@ public:
 
 	void setMaxStuff(float ms, float mf);
 
+	void setSyncColor();
+
 private:
 	glm::vec2 position, velocity, force, target, distance;
 	float radius;
 	Circle my2dParticle; //counterpart of ofSpherePrimitive
 	ofColor my2dParticleColor;
-	float death_rate = ofRandom(1,5);
+	float death_rate = ofRandom(2,5);
+	bool sync_color = false;
+
 };

@@ -65,8 +65,8 @@ class ofApp : public ofBaseApp{
 
 		Body dummy_body;
 		bool draw_dummy = true;
-		float bd_ms_dummy = 0.45;
-		float bd_mf_dummy = 0.45;
+		float bd_ms_dummy = 0.5;
+		float bd_mf_dummy = 1.5;
 
 		//2D shadow 
 		Shadow shadow;
@@ -85,4 +85,7 @@ class ofApp : public ofBaseApp{
         // similarity between "pose" and "other_pose".
         // It is incremented at each cycle of ofApp:update()
         uint32_t delay_timer;
+
+		bool full_sync = false;
+
 };

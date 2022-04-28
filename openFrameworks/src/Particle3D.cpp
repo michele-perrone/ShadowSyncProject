@@ -8,7 +8,6 @@ void Particle3D::setup(glm::vec3& origin, float radius, float lifespan, glm::vec
 {
     velocity *= 0;
     position = origin;
-   // std::cout << "Particle origin: " << position << std::endl;
     this->radius = radius;
     this->lifespan = lifespan;
     this->force = force;
@@ -17,16 +16,9 @@ void Particle3D::setup(glm::vec3& origin, float radius, float lifespan, glm::vec
 
     //color setup
     ofColor p_color = ofColor::aquamarine;
-    my3dParticleColor = (p_color, this->lifespan);
-    p_material.setDiffuseColor(my3dParticleColor);
+    this->my3dParticleColor = (p_color, this->lifespan);
+    p_material.setDiffuseColor(this->my3dParticleColor);
  }
-
-void Particle3D::update() {
-    velocity += force;
-    position += velocity;
-    myParticle.move(velocity);
-    lifespan -= death_rate;
-}
 
 void Particle3D::update(ofSpherePrimitive * attractor)
 {
@@ -43,7 +35,7 @@ void Particle3D::update(ofSpherePrimitive * attractor)
     {
         distance *= body_ps_max_speed;
     }
-    glm::vec3 steer = (distance - velocity); //(desired-velocity)*0.0001;
+    glm::vec3 steer = (distance - velocity); 
     float limit_steer = (glm::length(steer) / body_ps_max_force);
     steer.x = steer.x / limit_steer;
     steer.y = steer.y / limit_steer;
@@ -51,7 +43,6 @@ void Particle3D::update(ofSpherePrimitive * attractor)
     float rand[] = { ofRandom(-RANDOM_FORCE_MAG, RANDOM_FORCE_MAG), ofRandom(-RANDOM_FORCE_MAG , RANDOM_FORCE_MAG) , ofRandom(-RANDOM_FORCE_MAG, RANDOM_FORCE_MAG) };
     glm::vec3 random_force = glm::make_vec3(rand);
     steer += random_force;
-    //applyforce(steer);
     force += steer;
 
     velocity += force;
@@ -61,13 +52,15 @@ void Particle3D::update(ofSpherePrimitive * attractor)
 
     position += velocity;
     myParticle.move(velocity);
-    //myParticle.setGlobalPosition(position);
     lifespan -= death_rate;
 
     force *= 0;
 
-    my3dParticleColor = (my3dParticleColor, -lifespan); //updating color alpha
-    p_material.setDiffuseColor(my3dParticleColor);
+    if (sync_color == false)
+    {
+        my3dParticleColor = (my3dParticleColor, -lifespan); //updating color alpha
+        p_material.setDiffuseColor(my3dParticleColor);
+    }
 
 }
 
@@ -81,11 +74,18 @@ void Particle3D::draw()
 bool Particle3D::isDead() 
 {
     return (this->lifespan <= 6); //not to end black on decay cycle
-    //return false;
 }
 
 void Particle3D::setMaxStuff(float ms, float mf)
 {
     body_ps_max_force = mf;
     body_ps_max_speed = ms;
+}
+
+void Particle3D::setSyncColor()
+{
+    this->sync_color = true;
+    ofColor p_color = ofColor::aquamarine;
+    this->my3dParticleColor = p_color;
+    p_material.setDiffuseColor(this->my3dParticleColor);
 }

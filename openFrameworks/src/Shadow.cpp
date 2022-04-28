@@ -12,8 +12,6 @@
 void Shadow::setup(Pose* pose_shadow)
 {
 	pose = pose_shadow;
-	//sys_origin = pose->body_centroid; //pointer
-	//shadow_origin = glm::make_vec2(sys_origin);
 
 	//CENTROIDS are the first "POSE_CENTROID_NUM" JUNCTIONS
 	for (int i = 0; i < POSE_JUNCTIONS + POSE_CENTROID_NUM; i++)
@@ -22,17 +20,6 @@ void Shadow::setup(Pose* pose_shadow)
 		temp_junction.setRadius(SHADOW_RADIUS);
 		shadow_junctions.push_back(temp_junction);
 	}
-	
-	//setup of the 2D particle systems 
-	for (int i = 0; i < POSE_CENTROID_NUM; i++)
-	{
-		ParticleSystem2D temp_ps;
-		temp_ps.setup(shadow_junctions[i].center, NUMPARTICLES, P_RADIUS, P_LIFESPAN);
-		particle_systems_2d.push_back(temp_ps);
-
-		//attractor setting: with this config, each ps it itself its attractor
-		particle_systems_2d[i].setAttractor(&(shadow_junctions[i]));
-	}
 
 	EmitterAttractorSetup();
 }
@@ -40,26 +27,10 @@ void Shadow::setup(Pose* pose_shadow)
 
 void Shadow::draw()
 {
-	/*
-	for (int i = 0; i < shadow_junctions.size(); i++)
-	{
-		if (i < POSE_CENTROID_NUM)
-			shadow_junctions[i].draw(ofFloatColor::red, 200); //centroids
-		else
-			shadow_junctions[i].draw(ofFloatColor::green, 200);//other junctions
-	}
-	*/
 
-	
-	
-	/*for (int i = 0; i < particle_systems_2d.size(); i++)
+	for (int j = 0; j < particle_systems_2d.size(); j++)
 	{
-		particle_systems_2d[i].draw();
-	}*/
-
-	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
-	{
-		particle_systems_2d_nm[j].draw();
+		particle_systems_2d[j].draw();
 	}
 	
 }
@@ -67,14 +38,9 @@ void Shadow::draw()
 void Shadow::moveCentroids()
 {
 
-	/*for (int i = 0; i < particle_systems_2d.size(); i++)
+	for (int j = 0; j < particle_systems_2d.size(); j++)
 	{
-		particle_systems_2d[i].moveOrigin(shadow_junctions[i].center); //each ps has its own centroid (which are the first CENTROID_NUM junctions)
-	}*/
-
-	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
-	{
-		particle_systems_2d_nm[j].moveOrigin(shadow_junctions[particle_systems_2d_nm[j].origin_idx_in_shadow_junction_domain].center);
+		particle_systems_2d[j].moveOrigin(shadow_junctions[particle_systems_2d[j].origin_idx_in_shadow_junction_domain].center);
 	}
 
 }
@@ -101,23 +67,17 @@ bool Shadow::isCentroidMoving(int idx_centroid)
 
 void Shadow::updateParticleSystems()
 {
-	//for (int i = 0; i < particle_systems_2d.size(); i++)
-	//	particle_systems_2d[i].update();
 
-	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
-		particle_systems_2d_nm[j].update();
 
-	/*for (int i = 0; i < particle_systems_2d.size(); i++)
-		particle_systems_2d[i].decay();*/
+	for (int j = 0; j < particle_systems_2d.size(); j++)
+		particle_systems_2d[j].update();
+
 }
 
 void Shadow::updateSysMaxVals(float ms, float mf)
 {
-	for (int i = 0; i < particle_systems_2d.size(); i++)
-		particle_systems_2d[i].updateParticleMaxVals(ms, mf);
-
-	for (int j = 0; j < particle_systems_2d_nm.size(); j++)
-		particle_systems_2d_nm[j].updateParticleMaxVals(ms, mf);
+	for (int j = 0; j < particle_systems_2d.size(); j++)
+		particle_systems_2d[j].updateParticleMaxVals(ms, mf);
 }
 
 void Shadow::moveJunctions()
@@ -212,13 +172,19 @@ void Shadow::setupEA(int e, int a)
 {
 	ParticleSystem2D temp_ps;
 	temp_ps.setup(shadow_junctions[POSE_CENTROID_NUM + e].center, NUMPARTICLESNM, P_RADIUS, P_LIFESPAN);
-	particle_systems_2d_nm.push_back(temp_ps);
-	particle_systems_2d_nm[particle_systems_2d_nm.size() - 1].origin_idx_in_shadow_junction_domain = POSE_CENTROID_NUM + e; //setup its origin, see moveCentroids()
-	particle_systems_2d_nm[particle_systems_2d_nm.size() - 1].setAttractor(&(shadow_junctions[POSE_CENTROID_NUM + a]));
+	particle_systems_2d.push_back(temp_ps);
+	particle_systems_2d[particle_systems_2d.size() - 1].origin_idx_in_shadow_junction_domain = POSE_CENTROID_NUM + e; //setup its origin, see moveCentroids()
+	particle_systems_2d[particle_systems_2d.size() - 1].setAttractor(&(shadow_junctions[POSE_CENTROID_NUM + a]));
 
 
 }
 
+
+void Shadow::full_sync()
+{
+	for (int j = 0; j < particle_systems_2d.size(); j++)
+		particle_systems_2d[j].full_sync();
+}
 
 
 

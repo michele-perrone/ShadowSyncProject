@@ -19,9 +19,6 @@ void ofApp::setup()
 
     cam.setPosition(ofVec3f(157, 52, 263)); //camera positioning and heading configuration
     cam.lookAt(ofVec3f(PL_XZ/2, PL_Y/2, 0));
-    //!definition of the transformation
-    mat.rotate(90, 0, 0, 1);    //with this two commands, we are combining two "high-abstraction level" matrix transformations
-    mat.translate(0, 0, 1);    //in just one (otherwise, at a low level you can define manually a 4x4 mat that performs your transformation)
 
     plane_floor.set(PL_XZ, PL_XZ); //original setup
     plane_floor.rotateDeg(270, 1, 0, 0); //by default, it is orthogonal to x axis, centered in origin
@@ -109,6 +106,10 @@ void ofApp::update()
             std::cout << "TUTORIAL COMPLETE MESSAGE SENT" << std::endl;
             std::cout << "******************************" << std::endl;
             std::cout << "******************************" << std::endl;
+
+            //activate synchronization effect
+            this->full_sync = true;
+
         }
     }
 
@@ -139,6 +140,16 @@ void ofApp::update()
     //std::cout << "Is face centroid moving? " << shadow.isCentroidMoving(0) << std::endl;
     // 
     //global_model.pose.isInFrontOfCam();
+    if (this->full_sync == true)
+    {
+        body.full_sync();
+        dummy_body.full_sync();
+        shadow.full_sync();
+        this->full_sync = false;
+        std::cout << "full sync achieved" << std::endl;
+        
+    }
+
 }
 
 //--------------------------------------------------------------
@@ -149,8 +160,8 @@ void ofApp::draw()
     {
         this->delay_timer++;
     }
-
-    //changing background
+           
+    //background
     ofEnableLighting();
     ofDisableDepthTest();
     ///draw the backdrop
@@ -191,11 +202,6 @@ void ofApp::draw()
 
     body.draw();
     shadow.draw();
-
-    //!application of the transformation
-    // ofMultMatrix(mat); //this matrix multiplication allow us to see the circle
-    //shadow.draw(); //dummy solution, otherwise not visible since its a 2D entity and gets covered by wall plane
-    //ofPopMatrix();
 
     cam.end();
 
@@ -274,6 +280,10 @@ void ofApp::keyPressed(int key){
         break;
     case 'I':
         bd_ms += 0.05;
+        break;
+
+    case 'n':
+        this->full_sync = true;
         break;
     }
 

@@ -94,4 +94,10 @@ void ParticleSystem::setAttractor(ofSpherePrimitive* attractor)
     this->attractor = attractor;
 }
 
-
+void ParticleSystem::full_sync()
+{
+    for (int i = particles.size() - 1; i >= 0; i--)
+    {
+        particles[i].setSyncColor();
+    }
+}

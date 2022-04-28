@@ -6,7 +6,6 @@ class Particle3D
 public:
     Particle3D();
     void setup(glm::vec3& origin, float radius, float lifespan, glm::vec3 force);
-    void update();
     void draw();
     bool isDead();
     float lifespan;
@@ -17,11 +16,14 @@ public:
 
     void setMaxStuff(float ms, float mf);
     bool dead = false;
+
+    void setSyncColor();
 private:
     glm::vec3 position, velocity, force, target, distance;
     float radius;
     ofSpherePrimitive myParticle;
     ofColor my3dParticleColor;
-    float death_rate = ofRandom(1, 5);
+    float death_rate = ofRandom(2, 5);
     ofMaterial p_material;
+    bool sync_color = false;
 };
