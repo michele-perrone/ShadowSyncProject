@@ -1,90 +1,80 @@
-# Shadow_sync_project
+# Shadow Sync Project
 
-* [Shadow_sync_project](#shadow_sync_project)
-  * [Documents](#documents)
-  * [Installation](#installation)
-   * [Virtual Enviroment](#virtual-enviroment)
-  * [Libraries](#libraries)
+Shadow Sync Project (SSP) is an interactive installation with the aim of finding a connection between people through their body movements.
+
+## Page index
+  1. [Documents](#documents)
+  2. [Installation](#installation)
+  3. [Virtual Enviroment](#virtual-enviroment)
+  4. [Libraries](#libraries)
 
 ## Documents
 [Abstract](https://www.overleaf.com/3486219427fydybqrpkgxq)
 
-[Presentation](https://docs.google.com/presentation/d/1LFyTLhim1t9SbvFDJJ7-GJlO1ojOpn4Hszm1eV8Ltk4/edit?usp=sharing)
+[PPT Presentation](https://docs.google.com/presentation/d/1LFyTLhim1t9SbvFDJJ7-GJlO1ojOpn4Hszm1eV8Ltk4/edit?usp=sharing)
 
 [OSC Communication Scheme](https://docs.google.com/drawings/d/1_bteFoAQ-XNcbMFUPh2aHLeAcxxXcW8jXVOBckXudQc/edit?usp=sharing)
 
 ## Installation
 
-
-Scaricare la repo.
+The instructions and the commands are meant for Linux and macOS. On Windows, it is suggested to install a POSIX shell or Windows Subsystems for Linux (WSL).   
+Download the repository first:
 
 ```
 git clone https://github.com/Jacopo-brz/Shadow_sync_project.git
 cd Shadow_sync_project
 ```
 
-Verificare se usare python o python3. Eseguire il seguente comando
+SSP needs a Python installation in order to work. Please verify whether you have Python 2 or Python 3 installed by running the following command:
 
 ```
 python -V
 >>> Python 3.8.X
 ```
 
-Verificare che l'output è della forma `3.X.Y`. Altrimenti ai comandi successivi utilizzare `python3` invece che `python`.
+If the output is NOT the form`3.X.Y`, call the python scripts with the `python` command. Otherwise, use the `python3` command.
 
-### Virtual enviroment
+### Virtual environment
 
-#### Windows
-[Tutorial](https://www.youtube.com/watch?v=ThU13tikHQw)
+It is suggested to make use of a virtual environment in order to obtain the necessary dependencies.
 
-#### Linux:
 Conda:
 ```
 conda create -n yourenvname python=x.x
 conda activate myenv
+conda install --file requirements.txt 
 ```
 
 Pip:
 ```
 python3 -m venv venv
 source venv/bin/activate
-```
-Installare le dipendenze di python.
-
-Conda:
-
-Pip:
-```
 python -m pip install -r requirements.txt
 ```
-#### Mac
-conda:
-
-pip:
 
 ### Python Backend
-Il setup richiede 3 computer fisici, di cui uno è il Server (d'ora in poi chiamato 'S'), il quale gestisce la comunicazione tra due client ('C1', 'C2'), che eseguono ognuno un backend python, un frontend Ofx e un'istanza di supercollider. Ci si assicuri che il firewall di ogni computer tenga aperte le corrette porte come da schema sotto per la rete locale (1255 per S, 5555 per C1 e C2, 5501 e 5511 per C1, 5502 e 5522 per C2).
+The setup requires 3 physical computers, one of which is the Server (henceforth called 'S'), which handles communication between two clients ('C1', 'C2'), each running a python backend, an Ofx frontend and a supercollider instance. Make sure that the firewall of each computer keeps the correct ports open as per the diagram below for the local network (1255 for S, 5555 for C1 and C2, 5501 and 5511 for C1, 5502 and 5522 for C2).
 
 ![OSC Communication Scheme](/documentation/osc_communication_scheme.png)
 
-Compilare congruamente il file info.json con gli ip e, per i due client, con il proprio numero (1 o 2). Se si è sicuri della correttezza degli ip inseriti e dell'apertura delle porte saltare il prossimo punto e andare a quello dopo.
+1. Fill the info.json file with the IPs and, for the two clients, with their number (1 or 2). If you are sure that the entered IPs are correct and the ports are open, skip step 2 and go to step 3.
 
-Per testare in modo conveniente l'apertura delle porte sono forniti uno script Python what_is_my_ip.py (estrae l'ip locale del computer che lo esegue) e due script Processing in osc/processing_osc, SimpleOSCSender e SuperBaseOSCReceiver, che rispettivamente sono in grado di mandare e ricevere messaggi OSC verso e da ip e porte definite chiaramente nel codice.
+2. To conveniently test if the correct ports are opened, we provide a Python script, called called `what_is_my_ip.py` (it extracts the local IP of the computer running it), and two Processing scripts in `osc/processing_osc`, `SimpleOSCSender and SuperBaseOSCReceiver`, which respectively are able to send and receive OSC messages to and from IPs and ports defined in the code.
 
-Avviare server_main.py su S. In console viene stampato a intervalli periodici lo stato di rete dei due client, che a questo punto dovrebbe essere OFFLINE.
+3. Start `server_main.py` on S. The console periodically prints the network status of the two clients, which at this point should be OFFLINE.
 
-Avviare client_main.py su C1 e C2. Se tutte le operazioni prima di avviare il server sono state eseguite correttamente, sulla console del server figureranno come ONLINE.
+4. Start `client_main.py` on C1 and C2. If all the operations before starting the server have been done correctly, they will appear as ONLINE on the server console.
 
-A questo punto avviare Ofx e Supercollider come da sezione seguente.
+5. At this point start Ofx and Supercollider as per the following section.
 
 [TUTORIAL TODO]
 
-Per iniziare l'esecuzione dell'installazione, dare in input al server alt+w.
+To start the installation, give as input to the server `alt`+`w`.
 
-Per fare in modo che supercollider cominci a suonare, dare in input al server alt+c.
+To make supercollider start playing, give the server `alt`+`c` as input.
 
-Per terminare l'esecuzione, dare in input al server alt+q.
+To stop the execution, give input to the server `alt`+`q`.
 
 ## Libraries
-[Mediapipe](https://google.github.io/mediapipe/)
-python-osc
+- [Mediapipe](https://google.github.io/mediapipe/)
+- [python-osc](https://pypi.org/project/python-osc/)
