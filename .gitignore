@@ -17,3 +17,4 @@ osc/openframeworks_osc/SimpleOSCSender/SimpleOSCSender.qbs.user
 .idea/
 openFrameworks/.DS_Store
 openFrameworks/src/.DS_Store
+/python/
